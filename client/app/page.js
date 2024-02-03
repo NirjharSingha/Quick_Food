@@ -4,10 +4,7 @@ import Landing from "./components/Landing";
 
 export default function Home() {
   return (
-    <main
-      className="min-w-screen min-h-screen"
-      // style={{ backgroundColor: "#FFF4EF" }}
-    >
+    <main className="min-w-screen min-h-screen">
       <NavBar />
       <Landing />
     </main>

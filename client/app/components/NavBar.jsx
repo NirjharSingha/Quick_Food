@@ -2,8 +2,27 @@
 
 import React from "react";
 import Searchbar from "./Searchbar";
+import { useGlobals } from "../contexts/Globals";
+import { useEffect, useState } from "react";
+import { RxHamburgerMenu, RxCross1 } from "react-icons/rx";
+import Drawer from "./Drawer";
 
 const NavBar = () => {
+  const { windowWidth, setWindowWidth } = useGlobals();
+  useEffect(() => {
+    setWindowWidth(window.innerWidth);
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const [showDrawer, setShowDrawer] = useState(false);
+
   return (
     <div
       className="navbar h-[4rem] bg-base-100"
@@ -69,7 +88,7 @@ const NavBar = () => {
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
           </svg>
         </label>
-        <div className="dropdown relative">
+        {/* {<div className="dropdown relative">
           <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -101,7 +120,20 @@ const NavBar = () => {
               <a>About</a>
             </li>
           </ul>
-        </div>
+        </div>} */}
+        {!showDrawer && (
+          <RxHamburgerMenu
+            className="font-black text-xl ml-2 mr-8 cursor-pointer"
+            onClick={() => setShowDrawer(true)}
+          />
+        )}
+        {showDrawer && (
+          <RxCross1
+            className="font-black text-xl ml-2 mr-8 cursor-pointer"
+            onClick={() => setShowDrawer(false)}
+          />
+        )}
+        {showDrawer && <Drawer />}
       </div>
     </div>
   );

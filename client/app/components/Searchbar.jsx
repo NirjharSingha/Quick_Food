@@ -27,7 +27,7 @@ const Searchbar = () => {
   };
 
   return (
-    <div className="flex items-center ml-10 navbar-start">
+    <div className="flex items-center ml-8 navbar-start">
       <Image src={FavIcon} alt="logo" width={30} className="mr-2" />
       <div className="flex w-full">
         <div className="h-[1.8rem] w-16 bg-white border-2 border-solid border-gray-500 flex justify-center items-center mt-0.5rem rounded-l-full border-r-0 max-w-14">
@@ -44,7 +44,10 @@ const Searchbar = () => {
       {showSearchList && (
         <div className="absolute top-16 left-14 w-[17.3rem] h-2/5 bg-gray-200 rounded-lg rounded-t-none border-0 border-gray-500 shadow-md overflow-x-hidden overflow-y-auto z-50">
           {filteredData.map((searchItem) => (
-            <div className="w-[100%] h-[42px] p-[5px] pb-[2.5px] pt-[2.5px] mb-1 ml-1 flex items-center rounded hover:cursor-pointer hover:bg-gray-400">
+            <div
+              key={searchItem}
+              className="w-[100%] h-[42px] p-[5px] pb-[2.5px] pt-[2.5px] mb-1 ml-1 flex items-center rounded hover:cursor-pointer hover:bg-gray-400"
+            >
               <img
                 src={"/favicon.ico"}
                 alt=""

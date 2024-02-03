@@ -25,3 +25,16 @@ body {
     )
     rgb(var(--background-start-rgb));
 } */
+
+.scrollNone::-webkit-scrollbar {
+  display: none;
+}
+.drawerAnimation {
+  transform: translateX(100%);
+  animation: slide-in 0.5s forwards;
+}
+@keyframes slide-in {
+  to {
+    transform: translateX(0);
+  }
+}
