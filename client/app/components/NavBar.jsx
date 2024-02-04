@@ -88,40 +88,46 @@ const NavBar = () => {
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
           </svg>
         </label>
-        {/* {<div className="dropdown relative">
-          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+        {
+          <div className="dropdown relative">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-circle"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h7"
-              />
-            </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16M4 18h7"
+                />
+              </svg>
+            </div>
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-40"
+              style={{ position: "absolute", top: "100%", right: "0" }}
+            >
+              <li>
+                <a>Homepage</a>
+              </li>
+              <li>
+                <a>Portfolio</a>
+              </li>
+              <li>
+                <a>About</a>
+              </li>
+            </ul>
           </div>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-40"
-            style={{ position: "absolute", top: "100%", right: "0" }}
-          >
-            <li>
-              <a>Homepage</a>
-            </li>
-            <li>
-              <a>Portfolio</a>
-            </li>
-            <li>
-              <a>About</a>
-            </li>
-          </ul>
-        </div>} */}
-        {!showDrawer && (
+        }
+        {/* {!showDrawer && (
           <RxHamburgerMenu
             className="font-black text-xl ml-2 mr-8 cursor-pointer"
             onClick={() => setShowDrawer(true)}
@@ -132,7 +138,7 @@ const NavBar = () => {
             className="font-black text-xl ml-2 mr-8 cursor-pointer"
             onClick={() => setShowDrawer(false)}
           />
-        )}
+        )} */}
         {showDrawer && <Drawer />}
       </div>
     </div>
