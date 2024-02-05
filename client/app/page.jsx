@@ -4,7 +4,7 @@ import Landing from "./components/Landing";
 
 export default function Home() {
   return (
-    <main className="min-w-screen min-h-screen">
+    <main className="min-w-screen min-h-screen overflow-x-hidden scrollNone">
       <NavBar />
       <Landing />
     </main>

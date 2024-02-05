@@ -28,7 +28,9 @@ const Searchbar = () => {
 
   return (
     <div className="flex items-center ml-8 navbar-start">
-      <Image src={FavIcon} alt="logo" width={30} className="mr-2" />
+      <div className="bg-yellow-50 p-[0.35rem] flex justify-center items-center mr-2 rounded-full border-2 border-solid border-white">
+        <Image src={FavIcon} alt="logo" width={30} />
+      </div>
       <div className="flex w-full">
         <div className="h-[1.8rem] w-16 bg-white border-2 border-solid border-gray-500 flex justify-center items-center mt-0.5rem rounded-l-full border-r-0 max-w-14">
           <IoSearchOutline className="text-gray-500 text-[1.1rem]" />

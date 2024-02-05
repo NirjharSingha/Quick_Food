@@ -20,6 +20,9 @@ import CarouselItem14 from "@/public/CarouselItem14.jpg";
 import CarouselItem15 from "@/public/CarouselItem15.jpg";
 import CarouselItem16 from "@/public/CarouselItem16.jpg";
 import Footer from "./Footer";
+import Login from "./Login";
+import Signup from "./SignUp";
+import Profile from "./Profile";
 
 const Landing = () => {
   const carouselItems = [
@@ -46,6 +49,7 @@ const Landing = () => {
       className="w-screen overflow-x-hidden overflow-y-auto bg-orange-50 scrollNone"
       style={{ height: "calc(100svh - 4rem)" }}
     >
+      <Profile />
       <div className="bg-orange-50 flex items-center">
         <div className="flex flex-col justify-center items-center">
           <p className="w-full text-center text-gray-700 font-bold font-serif text-6xl mb-4">
