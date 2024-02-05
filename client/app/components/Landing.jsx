@@ -2,7 +2,6 @@ import React from "react";
 import FoodDelivery from "@/public/Food_Delivery.png";
 import Image from "next/image";
 import FoodItems from "@/public/FoodItems.png";
-import FoodService from "@/public/FoodService.png";
 import CarouselItem1 from "@/public/CarouselItem1.jpg";
 import CarouselItem2 from "@/public/CarouselItem2.jpg";
 import CarouselItem3 from "@/public/CarouselItem3.jpg";
@@ -19,10 +18,10 @@ import CarouselItem13 from "@/public/CarouselItem13.jpg";
 import CarouselItem14 from "@/public/CarouselItem14.jpg";
 import CarouselItem15 from "@/public/CarouselItem15.jpg";
 import CarouselItem16 from "@/public/CarouselItem16.jpg";
+import Service_1 from "@/public/Service_1.png";
+import Service_3 from "@/public/Service_3.png";
+import Service_2 from "@/public/Service_2.png";
 import Footer from "./Footer";
-import Login from "./Login";
-import Signup from "./SignUp";
-import Profile from "./Profile";
 
 const Landing = () => {
   const carouselItems = [
@@ -49,7 +48,6 @@ const Landing = () => {
       className="w-screen overflow-x-hidden overflow-y-auto bg-orange-50 scrollNone"
       style={{ height: "calc(100svh - 4rem)" }}
     >
-      <Profile />
       <div className="bg-orange-50 flex items-center">
         <div className="flex flex-col justify-center items-center">
           <p className="w-full text-center text-gray-700 font-bold font-serif text-6xl mb-4">
@@ -61,9 +59,10 @@ const Landing = () => {
           <p className="w-full text-center text-gray-700 font-bold font-serif text-3xl mb-4">
             in Minutes
           </p>
-          <p className="w-full text-center font-serif p-2 text-gray-700">
+          <p className="w-full text-center font-serif p-2 pl-4 pr-4 text-gray-700">
             We offer fastest delivery service in the city. We are here to serve
-            even outside the city.We ensure the quality of food and service.
+            even outside the city. <br /> We ensure the quality of food and
+            service.
           </p>
           <Image src={FoodItems} alt="logo" className="" />
         </div>
@@ -72,8 +71,37 @@ const Landing = () => {
       <p className="bg-orange-50 p-4 w-full text-center text-gray-700 font-bold font-serif text-4xl mt-4">
         How We Serve You
       </p>
-      <div className="mt-2 p-1 pl-4 pr-4 bg-orange-50">
-        <Image src={FoodService} alt="logo" className="w-full" />
+      <div className="mt-2 p-1 pl-4 pr-4 bg-orange-50 grid grid-cols-3 h-[45vh] overflow-hidden gap-2">
+        <div className="w-full h-full">
+          <Image
+            src={Service_1}
+            alt="logo"
+            className="h-[35vh] w-auto m-auto"
+          />
+          <p className="bg-orange-50 p-4 w-full text-center text-gray-700 font-bold font-serif text-lg mt-4">
+            Automated Packaging
+          </p>
+        </div>
+        <div className="w-full h-full">
+          <Image
+            src={Service_3}
+            alt="logo"
+            className="h-[35vh] w-auto m-auto"
+          />
+          <p className="bg-orange-50 p-4 w-full text-center text-gray-700 font-bold font-serif text-lg mt-4">
+            Packed with Love
+          </p>
+        </div>
+        <div className="w-full h-full">
+          <Image
+            src={Service_2}
+            alt="logo"
+            className="h-[35vh] w-auto m-auto"
+          />
+          <p className="bg-orange-50 p-4 w-full text-center text-gray-700 font-bold font-serif text-lg mt-4">
+            Serve hot Appetite
+          </p>
+        </div>
       </div>
       <p className="bg-orange-50 p-4 w-full text-center text-gray-700 font-bold font-serif text-4xl mt-4">
         Our Trending Items

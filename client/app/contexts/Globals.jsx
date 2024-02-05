@@ -9,7 +9,7 @@ export function useGlobals() {
 }
 
 const GlobalsProvider = ({ children }) => {
-  const [windowWidth, setWindowWidth] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(2000);
 
   return (
     <GlobalsContext.Provider

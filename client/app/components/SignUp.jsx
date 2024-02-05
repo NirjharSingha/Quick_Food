@@ -1,13 +1,13 @@
 "use client";
 
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { BsFillPersonFill } from "react-icons/bs";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
 
-const SignUp = () => {
+const SignUp = ({ setShowLogin, setShowSignUp }) => {
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [warning, setWarning] = useState("");
@@ -15,12 +15,52 @@ const SignUp = () => {
   const [username, setUsername] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target)
+      ) {
+        setShowSignUp(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
+
   return (
     <form
       className="p-7 bg-purple-300 z-50 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-xl mt-[2rem]"
       style={{ boxShadow: "-3px 5px 5px rgba(0, 0, 0, 0.3)" }}
+      ref={containerRef}
     >
-      <div className="flex justify-center items-center mb-3">
+      <button
+        className="btn btn-circle btn-outline absolute right-1 top-1"
+        onClick={() => setShowSignUp(false)}
+        type="button"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+      <div className="flex justify-center items-center mb-3 mt-2">
         <BsFillPersonFill className="mr-2 text-3xl text-gray-700" />
         <p className="font-serif text-2xl font-bold text-gray-700">Sign up</p>
       </div>
@@ -104,7 +144,13 @@ const SignUp = () => {
       </button>
       <div className="font-sans text-sm w-full text-center mt-3 text-gray-700">
         Already have an account?
-        <span className="font-bold ml-1 hover:underline cursor-pointer text-gray-700">
+        <span
+          className="font-bold ml-1 hover:underline cursor-pointer text-gray-700"
+          onClick={() => {
+            setShowSignUp(false);
+            setShowLogin(true);
+          }}
+        >
           Log in
         </span>
       </div>
