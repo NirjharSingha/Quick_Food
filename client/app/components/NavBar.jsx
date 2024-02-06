@@ -11,6 +11,7 @@ import SignUp from "./SignUp";
 import FavIcon from "@/public/favicon.ico";
 import Image from "next/image";
 import Profile from "./Profile";
+import { Dropdown } from "./Dropdown";
 
 const NavBar = () => {
   const { windowWidth, setWindowWidth } = useGlobals();
@@ -108,42 +109,6 @@ const NavBar = () => {
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
             </svg>
           </label>
-          {
-            <div className="dropdown relative">
-              <div
-                tabIndex={0}
-                role="button"
-                className="btn btn-ghost btn-circle"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h16M4 18h7"
-                  />
-                </svg>
-              </div>
-              <ul
-                tabIndex={0}
-                className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-40"
-                style={{ position: "absolute", top: "100%", right: "0" }}
-              >
-                <li onClick={() => setShowLogin(true)}>
-                  <a>Login</a>
-                </li>
-                <li onClick={() => setShowSignUp(true)}>
-                  <a>Signup</a>
-                </li>
-              </ul>
-            </div>
-          }
           {/* {!showDrawer && (
             <RxHamburgerMenu
               className="font-black text-xl ml-2 mr-8 cursor-pointer"
@@ -156,6 +121,7 @@ const NavBar = () => {
               onClick={() => setShowDrawer(false)}
             />
           )} */}
+          <Dropdown />
           {showDrawer && <Drawer />}
         </div>
       </div>
