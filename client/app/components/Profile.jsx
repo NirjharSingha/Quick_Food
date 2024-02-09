@@ -6,14 +6,15 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { BsFillPersonFill } from "react-icons/bs";
 import { MdEdit } from "react-icons/md";
 import Image from "next/image";
+import axios from "axios";
 
 const Profile = () => {
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("user1@gmail.com");
   const [username, setUsername] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
-  const [profilePic, setProfilePic] = useState({});
+  const [profilePic, setProfilePic] = useState(null);
   const [imgStream, setImgStream] = useState("");
   const [address, setAddress] = useState("");
   const [isEdit, setIsEdit] = useState(false);
@@ -30,6 +31,55 @@ const Profile = () => {
     };
   };
 
+  const handleRegSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(); // Create a new FormData object
+
+    // Append the form data to the FormData object
+    formData.append("name", username);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("address", address);
+    formData.append("mobile", phoneNum);
+    formData.append("file", profilePic);
+    formData.append("userType", "customer");
+    // const regDate = new Date().toISOString().replace("Z", "");
+    // formData.append("regDate", regDate);
+
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/user/register`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", // Set the Content-Type header to multipart/form-data
+          },
+        }
+      );
+      // if (response.status == 201) {
+      //   localStorage.setItem("token", response.data.token);
+      //   navigate("/main");
+      // }
+    } catch (error) {
+      console.log("Error:", error.response);
+      // if (error.response) {
+      //   const statusCode = error.response.status;
+      //   const errorMessage = error.response.data.error;
+      //   if (
+      //     statusCode == 409 &&
+      //     errorMessage === "Gmail address is already taken."
+      //   ) {
+      //     setWarning("Duplicate gmail address");
+      //   }
+      // } else if (error.request) {
+      //   console.error("Error:", error.request);
+      // } else {
+      //   console.error("Error:", error.message);
+      // }
+    }
+  };
+
   return (
     <form
       className="p-5 bg-slate-100 z-50 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-xl mt-[2rem] max-w-[27rem] min-w-[27rem] overflow-y-auto mb-[0.1rem] scrollNone"
@@ -37,6 +87,8 @@ const Profile = () => {
         boxShadow: "-3px 5px 5px rgba(0, 0, 0, 0.3)",
         maxHeight: "calc(100svh - 4.1rem)",
       }}
+      encType="multipart/form-data"
+      onSubmit={handleRegSubmit}
     >
       <div
         className="w-full bg-scroll bg-cover bg-center bg-no-repeat relative rounded-xl"
@@ -256,7 +308,13 @@ const Profile = () => {
         </div>
         <div
           className="w-full h-8 bg-gray-300 font-sans font-bold mt-2 rounded-2xl hover:bg-gray-400 text-gray-700 flex justify-center items-center cursor-pointer"
-          onClick={() => setIsEdit((prev) => !prev)}
+          onClick={(e) => {
+            if (!isEdit) {
+              setIsEdit(true);
+            } else {
+              handleRegSubmit(e);
+            }
+          }}
         >
           {!isEdit ? (
             <>

@@ -1,0 +1,17 @@
+server:
+    port: 8080
+    error:
+        include-message: always
+
+spring:
+    datasource:
+        url: jdbc:mysql://localhost:3306/Quick_Food_Database
+        username: root
+        password: 20NS01
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    jpa:
+        hibernate:
+            ddl-auto: update
+        show-sql: true
+        open-in-view: true
+

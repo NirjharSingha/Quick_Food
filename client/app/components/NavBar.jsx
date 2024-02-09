@@ -39,7 +39,7 @@ const NavBar = () => {
       {showSignUp && (
         <SignUp setShowSignUp={setShowSignUp} setShowLogin={setShowLogin} />
       )}
-      <Profile />
+      {<Profile />}
       <div
         className="navbar h-[4rem] bg-base-100 sticky"
         style={{ backgroundColor: "#d6c5b7" }}
