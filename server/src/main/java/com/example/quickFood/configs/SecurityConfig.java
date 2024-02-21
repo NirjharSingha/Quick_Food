@@ -26,40 +26,40 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-  @Autowired
-  private final JwtAuthenticationFilter jwtAuthenticationFilter;
-  @Autowired
-  final UserServiceImpl userService;
-  @Autowired
-  private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    @Autowired
+    final UserServiceImpl userService;
+    @Autowired
+    private final PasswordEncoder passwordEncoder;
 
-  @Bean
-  public AuthenticationProvider authenticationProvider() {
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
       DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
       authProvider.setUserDetailsService(userService.userDetailsService());
       authProvider.setPasswordEncoder(passwordEncoder);
       return authProvider;
-  }
+    }
 
-  @Bean
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
       return config.getAuthenticationManager();
-  }
-  
-  @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http
-    .csrf(AbstractHttpConfigurer::disable
-    )
-    .sessionManagement(session -> session
-      .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-    )
-    .authorizeHttpRequests(authorize -> authorize
-      .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/signup").permitAll()
-      .anyRequest().authenticated()
-    )
-    .authenticationProvider(authenticationProvider()).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+    }
 
-    return http.build();
-  }
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+        .csrf(AbstractHttpConfigurer::disable
+        )
+        .sessionManagement(session -> session
+          .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        )
+        .authorizeHttpRequests(authorize -> authorize
+          .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/signup").permitAll()
+          .anyRequest().authenticated()
+        )
+        .authenticationProvider(authenticationProvider()).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
 }

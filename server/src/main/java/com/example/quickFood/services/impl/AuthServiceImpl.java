@@ -1,11 +1,11 @@
-package com.example.quickFood.services;
+package com.example.quickFood.services.impl;
 
 import com.example.quickFood.dto.JwtAuthenticationResponse;
 import com.example.quickFood.dto.LoginDto;
 import com.example.quickFood.dto.SignupDto;
 import com.example.quickFood.models.users.User;
 import com.example.quickFood.repositories.UserRepository;
-import com.example.quickFood.services.impl.UserServiceImpl;
+import com.example.quickFood.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private final UserRepository userRepository;
@@ -25,17 +25,21 @@ public class AuthenticationService {
     private final UserServiceImpl userService;
     @Autowired
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
+    private final JwtServiceImpl jwtService;
     @Autowired
     private final AuthenticationManager authenticationManager;
 
+    @Override
     public JwtAuthenticationResponse signup(SignupDto request) {
+        String hashedPassword = passwordEncoder.encode(request.getPassword());
+
         User user = User.builder()
                 .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
+                .password(hashedPassword)
                 .name(request.getName())
                 .build();
 
+        request.setPassword(hashedPassword);
         userService.addUser(request);
 
         String jwt = jwtService.generateToken(user);
@@ -46,7 +50,8 @@ public class AuthenticationService {
     }
 
 
-    public JwtAuthenticationResponse login(LoginDto request) {
+   @Override
+   public JwtAuthenticationResponse login(LoginDto request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         var user = userRepository.findByEmail(request.getEmail())

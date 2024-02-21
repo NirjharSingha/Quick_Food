@@ -1,7 +1,7 @@
 package com.example.quickFood.filters;
 
 import org.apache.commons.lang3.StringUtils;
-import com.example.quickFood.services.JwtService;
+import com.example.quickFood.services.impl.JwtServiceImpl;
 import com.example.quickFood.services.impl.UserServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,7 +24,7 @@ import java.io.IOException;
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
   
-  private final JwtService jwtService;
+  private final JwtServiceImpl jwtService;
   private final UserServiceImpl userService;
 
   @Override
