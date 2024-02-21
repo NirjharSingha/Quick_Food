@@ -1,7 +1,7 @@
 package com.example.quickFood.controllers;
 
 import com.example.quickFood.models.users.User;
-import com.example.quickFood.service.UserService;
+import com.example.quickFood.services.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,10 +14,10 @@ import java.sql.Timestamp;
 @CrossOrigin
 public class UserController {
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
-    @PostMapping("/register")
-    public String addUser(@RequestParam(value = "file", required = false) MultipartFile file, @ModelAttribute User user) {
+    @PutMapping("/updateProfile")
+    public String updateUser(@RequestParam(value = "file", required = false) MultipartFile file, @ModelAttribute User user) {
         System.out.println("Inside controller");
         try {
             // Set profile picture data if file is present
@@ -25,11 +25,11 @@ public class UserController {
                 user.setProfilePic(file.getBytes());
             } else {
                 // Handle case where file is missing or empty
-                user.setProfilePic(new byte[0]); // Set empty byte array for profile picture
+                user.setProfilePic(new byte[0]);
             }
             user.setRegDate(new Timestamp(System.currentTimeMillis()));
-            userService.addUser(user);
-            return "User added successfully";
+            userService.updateUser(user);
+            return "user updated successfully";
         } catch (IOException e) {
             e.printStackTrace();
             return "Failed to add user";

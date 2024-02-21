@@ -15,3 +15,7 @@ spring:
         show-sql: true
         open-in-view: true
 
+jwt:
+    secret: LnHMPrP4BbL4oSnP5HKlGTiCYFUn0y1jP4qyFy4sgS48QfzWcS5NBZsP9KwFwBxQ
+    expiration: 3600000
+

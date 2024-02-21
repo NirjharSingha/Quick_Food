@@ -45,10 +45,10 @@ const Landing = () => {
 
   return (
     <div
-      className="w-screen overflow-x-hidden overflow-y-auto bg-orange-50 scrollNone"
+      className="w-screen overflow-x-hidden overflow-y-auto bg-orange-50"
       style={{ height: "calc(100svh - 4rem)" }}
     >
-      <div className="bg-orange-50 flex items-center">
+      <div className="bg-orange-50 flex items-center justify-around">
         <div className="flex flex-col justify-center items-center">
           <p className="w-full text-center text-gray-700 font-bold font-serif text-6xl mb-4">
             Quick Food
@@ -66,7 +66,7 @@ const Landing = () => {
           </p>
           <Image src={FoodItems} alt="logo" className="" />
         </div>
-        <Image src={FoodDelivery} alt="logo" className="ml-auto" />
+        <Image src={FoodDelivery} alt="logo" className="" />
       </div>
       <p className="bg-orange-50 p-4 w-full text-center text-gray-700 font-bold font-serif text-4xl mt-4">
         How We Serve You

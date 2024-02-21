@@ -48,12 +48,13 @@ const Profile = () => {
     // formData.append("regDate", regDate);
 
     try {
-      const response = await axios.post(
-        `http://localhost:8080/user/register`,
+      const response = await axios.put(
+        `http://localhost:8080/user/updateProfile`,
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data", // Set the Content-Type header to multipart/form-data
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMTIyQGdtYWlsLmNvbSIsImlhdCI6MTcwODQ3MjMxNywiZXhwIjoxNzA4NDc1OTE3fQ.vEaEg73FaVwbLjPj3an1_5yUytAp2C7VphMhc9O6YZg`,
+            "Content-Type": "multipart/form-data",
           },
         }
       );

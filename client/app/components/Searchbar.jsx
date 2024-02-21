@@ -30,12 +30,12 @@ const Searchbar = () => {
   return (
     <div ref={containerRef}>
       <div className="flex w-full">
-        <div className="h-[1.8rem] w-16 bg-white border-2 border-solid border-gray-500 flex justify-center items-center mt-0.5rem rounded-l-full border-r-0 max-w-14">
+        <div className="h-[1.8rem] w-12 bg-white border-2 border-solid border-gray-500 flex justify-center items-center mt-0.5rem rounded-l-full border-r-0 max-w-14 min-h-[1.8rem]">
           <IoSearchOutline className="text-gray-500 text-[1.1rem]" />
         </div>
         <input
           type="text"
-          className="bg-white w-80 h-[1.8rem] border-2 border-solid border-gray-500 rounded-r-full pl-2 border-l-0 focus:border-gray-500 focus:outline-none max-w-48"
+          className="bg-white w-80 h-[1.8rem] border-2 border-solid border-gray-500 rounded-r-full pl-2 border-l-0 focus:border-gray-500 focus:outline-none max-w-48 min-h-[1.8rem]"
           placeholder="Type to search"
           value={inputValue}
           onChange={(e) => handleInputChange(e.target.value)}
