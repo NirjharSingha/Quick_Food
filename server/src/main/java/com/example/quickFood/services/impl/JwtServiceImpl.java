@@ -1,5 +1,6 @@
 package com.example.quickFood.services.impl;
 
+import com.example.quickFood.services.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -16,22 +17,25 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class JwtServiceImpl {
+public class JwtServiceImpl implements JwtService {
 
     @Value("${jwt.secret}")
-    String jwtSecretKey = "JWT_SECRET";
+    String jwtSecretKey;
 
     @Value("${jwt.expiration}")
-    int jwtExpirationMs = 3600000;
+    int jwtExpirationMs;
 
+    @Override
     public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
+    @Override
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
 
+    @Override
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String userName = extractUserName(token);
         return (userName.equals(userDetails.getUsername())) && !isTokenExpired(token);

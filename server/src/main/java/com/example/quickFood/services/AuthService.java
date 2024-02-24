@@ -1,11 +1,11 @@
 package com.example.quickFood.services;
 
-import com.example.quickFood.dto.JwtAuthenticationResponse;
-import com.example.quickFood.dto.LoginDto;
-import com.example.quickFood.dto.SignupDto;
+import com.example.quickFood.dto.*;
+import org.springframework.http.ResponseEntity;
 
 public interface AuthService {
-    JwtAuthenticationResponse signup(SignupDto request);
-    JwtAuthenticationResponse login(LoginDto request);
-
+    ResponseEntity<JwtAuthenticationResponse> userSignup(SignupDto request);
+    ResponseEntity<JwtAuthenticationResponse> userLogin(LoginDto request);
+    ResponseEntity<JwtAuthenticationResponse> employeeSignup(EmployeeSignup request);
+    ResponseEntity<JwtAuthenticationResponse> employeeLogin(EmployeeLogin request);
 }

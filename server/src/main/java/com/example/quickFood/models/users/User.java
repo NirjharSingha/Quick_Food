@@ -1,12 +1,15 @@
 package com.example.quickFood.models.users;
 
+import com.example.quickFood.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -20,7 +23,8 @@ public class User implements UserDetails {
     protected String email;
     protected String name;
     protected String password;
-    protected String userType;
+    @Enumerated(EnumType.STRING)
+    protected Role role;
     protected String address;
     protected String mobile;
     protected Timestamp regDate;
@@ -30,7 +34,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override

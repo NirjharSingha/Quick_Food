@@ -83,7 +83,7 @@ const Profile = () => {
 
   return (
     <form
-      className="p-5 bg-slate-100 z-50 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-xl mt-[2rem] max-w-[27rem] min-w-[27rem] overflow-y-auto mb-[0.1rem] scrollNone"
+      className="p-5 bg-slate-100 z-50 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-xl mt-[1.5rem] max-w-[27rem] min-w-[27rem] overflow-y-auto mb-[0.1rem] scrollNone"
       style={{
         boxShadow: "-3px 5px 5px rgba(0, 0, 0, 0.3)",
         maxHeight: "calc(100svh - 4.1rem)",

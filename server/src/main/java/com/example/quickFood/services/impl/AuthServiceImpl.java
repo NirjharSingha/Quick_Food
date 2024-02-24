@@ -1,19 +1,19 @@
 package com.example.quickFood.services.impl;
 
-import com.example.quickFood.dto.JwtAuthenticationResponse;
-import com.example.quickFood.dto.LoginDto;
-import com.example.quickFood.dto.SignupDto;
+import com.example.quickFood.dto.*;
+import com.example.quickFood.models.employees.Employee;
 import com.example.quickFood.models.users.User;
+import com.example.quickFood.repositories.EmployeeRepository;
 import com.example.quickFood.repositories.UserRepository;
 import com.example.quickFood.services.AuthService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-
-import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -24,13 +24,18 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private final UserServiceImpl userService;
     @Autowired
+    private final EmployeeRepository employeeRepository;
+    @Autowired
+    private final EmployeeServiceImpl employeeService;
+    @Autowired
     private final PasswordEncoder passwordEncoder;
+    @Autowired
     private final JwtServiceImpl jwtService;
     @Autowired
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public JwtAuthenticationResponse signup(SignupDto request) {
+    public ResponseEntity<JwtAuthenticationResponse> userSignup(SignupDto request) {
         String hashedPassword = passwordEncoder.encode(request.getPassword());
 
         User user = User.builder()
@@ -40,24 +45,87 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         request.setPassword(hashedPassword);
-        userService.addUser(request);
 
-        String jwt = jwtService.generateToken(user);
+        if (userRepository.findByEmail(request.getEmail()).isEmpty()) {
+            userService.addUser(request);
+            String jwt = jwtService.generateToken(user);
 
-        return JwtAuthenticationResponse.builder()
-                .token(jwt)
-                .build();
+            return ResponseEntity.ok(JwtAuthenticationResponse.builder()
+                    .token(jwt)
+                    .build());
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(JwtAuthenticationResponse.builder()
+                            .error("Duplicate email")
+                            .build());
+        }
     }
 
 
-   @Override
-   public JwtAuthenticationResponse login(LoginDto request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
-        var jwt = jwtService.generateToken(user);
-        return JwtAuthenticationResponse.builder().token(jwt).build();
+    @Override
+    public ResponseEntity<JwtAuthenticationResponse> userLogin(LoginDto request) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+            var user = userRepository.findByEmail(request.getEmail())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
+            var jwt = jwtService.generateToken(user);
+            return ResponseEntity.ok(JwtAuthenticationResponse.builder().token(jwt).build());
+        } catch (Exception ex) {
+            return  ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(JwtAuthenticationResponse.builder()
+                        .error("Invalid credentials")
+                        .build());
+        }
+    }
+
+    @Override
+    public ResponseEntity<JwtAuthenticationResponse> employeeSignup(EmployeeSignup request) {
+        String hashedPassword = passwordEncoder.encode(request.getPassword());
+
+        Employee employee = Employee.builder()
+                .id(request.getId())
+                .password(hashedPassword)
+                .name(request.getName())
+                .build();
+
+        request.setPassword(hashedPassword);
+
+        if (employeeRepository.findById(request.getId()).isEmpty()) {
+            employeeService.addEmployee(request);
+            String jwt = jwtService.generateToken(employee);
+
+            return ResponseEntity.ok(JwtAuthenticationResponse.builder()
+                    .token(jwt)
+                    .build());
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(JwtAuthenticationResponse.builder()
+                            .error("Duplicate employee Id")
+                            .build());
+        }
+    }
+
+    @Override
+    public ResponseEntity<JwtAuthenticationResponse> employeeLogin(EmployeeLogin request) {
+        try {
+            System.out.println("employee login try");
+            System.out.println(request.getId());
+            System.out.println(request.getPassword());
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getId(), request.getPassword()));
+            System.out.println("employee login try 2");
+            var employee = employeeRepository.findById(request.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid id or password."));
+            var jwt = jwtService.generateToken(employee);
+            return ResponseEntity.ok(JwtAuthenticationResponse.builder().token(jwt).build());
+        } catch (Exception ex) {
+            System.out.println("employee login catch");
+            return  ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(JwtAuthenticationResponse.builder()
+                            .error("Invalid credentials")
+                            .build());
+        }
     }
 
 }
