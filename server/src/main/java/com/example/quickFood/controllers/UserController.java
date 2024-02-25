@@ -1,6 +1,6 @@
 package com.example.quickFood.controllers;
 
-import com.example.quickFood.models.users.User;
+import com.example.quickFood.models.User;
 import com.example.quickFood.services.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -1,6 +1,5 @@
 package com.example.quickFood.filters;
 
-import com.example.quickFood.services.impl.EmployeeServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import com.example.quickFood.services.impl.JwtServiceImpl;
 import com.example.quickFood.services.impl.UserServiceImpl;
@@ -27,16 +26,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   
   private final JwtServiceImpl jwtService;
   private final UserServiceImpl userService;
-  private final EmployeeServiceImpl employeeService;
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-      System.out.println("JWT Filter");
       final String authHeader = request.getHeader("Authorization");
       final String jwt;
       final String username;
       if (StringUtils.isEmpty(authHeader) || !StringUtils.startsWith(authHeader, "Bearer ")) {
-          System.out.println("No JWT");
           filterChain.doFilter(request, response);
           return;
       }
@@ -45,9 +41,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       username = jwtService.extractUserName(jwt);
       if (StringUtils.isNotEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
           UserDetails userDetails = userService.userDetailsService().loadUserByUsername(username);
-          if (userDetails == null) {
-              userDetails = employeeService.userDetailsService().loadUserByUsername(username);
-          }
           if (userDetails != null && jwtService.isTokenValid(jwt, userDetails)) {
             log.debug("User - {}", userDetails);
             SecurityContext context = SecurityContextHolder.createEmptyContext();

@@ -1,4 +1,4 @@
-package com.example.quickFood.models.users;
+package com.example.quickFood.models;
 
 import com.example.quickFood.enums.Role;
 import jakarta.persistence.*;
@@ -20,7 +20,7 @@ import java.util.List;
 @ToString
 public class User implements UserDetails {
     @Id
-    protected String email;
+    protected String id;
     protected String name;
     protected String password;
     @Enumerated(EnumType.STRING)
@@ -39,7 +39,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return id;
     }
 
     @Override

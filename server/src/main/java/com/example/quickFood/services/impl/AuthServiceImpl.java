@@ -1,9 +1,7 @@
 package com.example.quickFood.services.impl;
 
 import com.example.quickFood.dto.*;
-import com.example.quickFood.models.employees.Employee;
-import com.example.quickFood.models.users.User;
-import com.example.quickFood.repositories.EmployeeRepository;
+import com.example.quickFood.models.User;
 import com.example.quickFood.repositories.UserRepository;
 import com.example.quickFood.services.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +22,6 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private final UserServiceImpl userService;
     @Autowired
-    private final EmployeeRepository employeeRepository;
-    @Autowired
-    private final EmployeeServiceImpl employeeService;
-    @Autowired
     private final PasswordEncoder passwordEncoder;
     @Autowired
     private final JwtServiceImpl jwtService;
@@ -39,14 +33,14 @@ public class AuthServiceImpl implements AuthService {
         String hashedPassword = passwordEncoder.encode(request.getPassword());
 
         User user = User.builder()
-                .email(request.getEmail())
+                .id(request.getId())
                 .password(hashedPassword)
                 .name(request.getName())
                 .build();
 
         request.setPassword(hashedPassword);
 
-        if (userRepository.findByEmail(request.getEmail()).isEmpty()) {
+        if (userRepository.findById(request.getId()).isEmpty()) {
             userService.addUser(request);
             String jwt = jwtService.generateToken(user);
 
@@ -56,7 +50,7 @@ public class AuthServiceImpl implements AuthService {
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(JwtAuthenticationResponse.builder()
-                            .error("Duplicate email")
+                            .error("Duplicate id")
                             .build());
         }
     }
@@ -66,9 +60,9 @@ public class AuthServiceImpl implements AuthService {
     public ResponseEntity<JwtAuthenticationResponse> userLogin(LoginDto request) {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-            var user = userRepository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
+                    new UsernamePasswordAuthenticationToken(request.getId(), request.getPassword()));
+            var user = userRepository.findById(request.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid id or password."));
             var jwt = jwtService.generateToken(user);
             return ResponseEntity.ok(JwtAuthenticationResponse.builder().token(jwt).build());
         } catch (Exception ex) {
@@ -76,55 +70,6 @@ public class AuthServiceImpl implements AuthService {
                     .body(JwtAuthenticationResponse.builder()
                         .error("Invalid credentials")
                         .build());
-        }
-    }
-
-    @Override
-    public ResponseEntity<JwtAuthenticationResponse> employeeSignup(EmployeeSignup request) {
-        String hashedPassword = passwordEncoder.encode(request.getPassword());
-
-        Employee employee = Employee.builder()
-                .id(request.getId())
-                .password(hashedPassword)
-                .name(request.getName())
-                .build();
-
-        request.setPassword(hashedPassword);
-
-        if (employeeRepository.findById(request.getId()).isEmpty()) {
-            employeeService.addEmployee(request);
-            String jwt = jwtService.generateToken(employee);
-
-            return ResponseEntity.ok(JwtAuthenticationResponse.builder()
-                    .token(jwt)
-                    .build());
-        } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(JwtAuthenticationResponse.builder()
-                            .error("Duplicate employee Id")
-                            .build());
-        }
-    }
-
-    @Override
-    public ResponseEntity<JwtAuthenticationResponse> employeeLogin(EmployeeLogin request) {
-        try {
-            System.out.println("employee login try");
-            System.out.println(request.getId());
-            System.out.println(request.getPassword());
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getId(), request.getPassword()));
-            System.out.println("employee login try 2");
-            var employee = employeeRepository.findById(request.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid id or password."));
-            var jwt = jwtService.generateToken(employee);
-            return ResponseEntity.ok(JwtAuthenticationResponse.builder().token(jwt).build());
-        } catch (Exception ex) {
-            System.out.println("employee login catch");
-            return  ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(JwtAuthenticationResponse.builder()
-                            .error("Invalid credentials")
-                            .build());
         }
     }
 

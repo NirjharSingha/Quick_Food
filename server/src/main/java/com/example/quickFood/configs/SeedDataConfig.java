@@ -1,10 +1,8 @@
 package com.example.quickFood.configs;
 
 import com.example.quickFood.enums.Role;
-import com.example.quickFood.models.employees.Employee;
-import com.example.quickFood.repositories.EmployeeRepository;
+import com.example.quickFood.models.User;
 import com.example.quickFood.repositories.UserRepository;
-import com.example.quickFood.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -18,16 +16,15 @@ import java.sql.Timestamp;
 @Slf4j
 public class SeedDataConfig implements CommandLineRunner {
 
-    private final EmployeeRepository employeeRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserService userService;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
 
-      if (employeeRepository.count() == 0) {
+      if (userRepository.count() == 0) {
 
-        Employee admin = Employee
+        User admin = User
                       .builder()
                       .name("admin")
                       .id("ADMIN")
@@ -36,7 +33,7 @@ public class SeedDataConfig implements CommandLineRunner {
                       .regDate(new Timestamp(System.currentTimeMillis()))
                       .build();
 
-        employeeRepository.save(admin);
+        userRepository.save(admin);
         log.debug("created ADMIN user - {}", admin);
       }
     }

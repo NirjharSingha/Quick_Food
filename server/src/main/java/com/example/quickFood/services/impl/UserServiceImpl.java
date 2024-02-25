@@ -1,8 +1,7 @@
 package com.example.quickFood.services.impl;
 
 import com.example.quickFood.dto.SignupDto;
-import com.example.quickFood.enums.Role;
-import com.example.quickFood.models.users.User;
+import com.example.quickFood.models.User;
 import com.example.quickFood.repositories.UserRepository;
 import com.example.quickFood.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ public class UserServiceImpl implements UserService {
         return new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String username) {
-                return userRepository.findByEmail(username)
+                return userRepository.findById(username)
                         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
             }
         };
@@ -31,10 +30,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUser(SignupDto signupDto) {
-        if (userRepository.findByEmail(signupDto.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already exists");
+        if (userRepository.findById(signupDto.getId()).isPresent()) {
+            throw new RuntimeException("Id already exists");
         }
-        User user = new User(signupDto.getEmail(), signupDto.getName(), signupDto.getPassword(), Role.CUSTOMER, null, null, new Timestamp(System.currentTimeMillis()), null);
+        User user = new User(signupDto.getId(), signupDto.getName(), signupDto.getPassword(), signupDto.getRole(), null, null, new Timestamp(System.currentTimeMillis()), null);
         userRepository.save(user);
     }
 

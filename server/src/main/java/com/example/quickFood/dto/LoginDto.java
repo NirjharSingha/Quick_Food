@@ -9,6 +9,6 @@ import lombok.*;
 @Getter
 @Setter
 public class LoginDto {
-  private String email;
+  private String id;
   private String password;
 }

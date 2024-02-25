@@ -18,24 +18,13 @@ public class AuthController {
     @Autowired
     private final AuthServiceImpl authenticationService;
 
-    @PostMapping("/signup/user")
+    @PostMapping("/signup")
     public ResponseEntity<JwtAuthenticationResponse> userSignup(@RequestBody SignupDto request) {
         return authenticationService.userSignup(request);
     }
 
-    @PostMapping("/login/user")
+    @PostMapping("/login")
     public ResponseEntity<JwtAuthenticationResponse> userLogin(@RequestBody LoginDto request) {
         return authenticationService.userLogin(request);
-    }
-
-    @PostMapping("/signup/employee")
-    public ResponseEntity<JwtAuthenticationResponse> employeeSignup(@RequestBody EmployeeSignup request) {
-        return authenticationService.employeeSignup(request);
-    }
-
-    @PostMapping("/login/employee")
-    public ResponseEntity<JwtAuthenticationResponse> employeeLogin(@RequestBody EmployeeLogin request) {
-        System.out.println("employee login");
-        return authenticationService.employeeLogin(request);
     }
 }
