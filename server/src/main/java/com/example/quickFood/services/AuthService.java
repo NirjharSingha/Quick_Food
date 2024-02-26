@@ -6,4 +6,5 @@ import org.springframework.http.ResponseEntity;
 public interface AuthService {
     ResponseEntity<JwtAuthenticationResponse> userSignup(SignupDto request);
     ResponseEntity<JwtAuthenticationResponse> userLogin(LoginDto request);
+    ResponseEntity<JwtAuthenticationResponse> googleAuth(GoogleAuth request);
 }

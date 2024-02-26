@@ -4,17 +4,14 @@ import React from "react";
 import Searchbar from "./Searchbar";
 import { useGlobals } from "../contexts/Globals";
 import { useEffect, useState } from "react";
-import { RxHamburgerMenu, RxCross1 } from "react-icons/rx";
-import Drawer from "./Drawer";
 import Login from "./Login";
 import SignUp from "./SignUp";
 import FavIcon from "@/public/favicon.ico";
 import Image from "next/image";
-import Profile from "./Profile";
 import { Dropdown } from "./Dropdown";
 
 const NavBar = () => {
-  const { windowWidth, setWindowWidth } = useGlobals();
+  const { windowWidth, setWindowWidth, setIsLoggedIn } = useGlobals();
   useEffect(() => {
     setWindowWidth(window.innerWidth);
     const handleResize = () => {
@@ -27,19 +24,24 @@ const NavBar = () => {
     };
   }, []);
 
-  const [showDrawer, setShowDrawer] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
+  const [isUserLogin, setIsUserLogin] = useState(false);
+
+  useEffect(() => {}, []);
 
   return (
     <>
       {showLogin && (
-        <Login setShowLogin={setShowLogin} setShowSignUp={setShowSignUp} />
+        <Login
+          setShowLogin={setShowLogin}
+          setShowSignUp={setShowSignUp}
+          isUserLogin={isUserLogin}
+        />
       )}
       {showSignUp && (
         <SignUp setShowSignUp={setShowSignUp} setShowLogin={setShowLogin} />
       )}
-      {<Profile />}
       <div
         className="navbar h-[4rem] bg-base-100 sticky"
         style={{ backgroundColor: "#d6c5b7" }}
@@ -109,20 +111,11 @@ const NavBar = () => {
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
             </svg>
           </label>
-          {/* {!showDrawer && (
-            <RxHamburgerMenu
-              className="font-black text-xl ml-2 mr-8 cursor-pointer"
-              onClick={() => setShowDrawer(true)}
-            />
-          )}
-          {showDrawer && (
-            <RxCross1
-              className="font-black text-xl ml-2 mr-8 cursor-pointer"
-              onClick={() => setShowDrawer(false)}
-            />
-          )} */}
-          <Dropdown />
-          {showDrawer && <Drawer />}
+          <Dropdown
+            setShowLogin={setShowLogin}
+            setShowSignUp={setShowSignUp}
+            setIsUserLogin={setIsUserLogin}
+          />
         </div>
       </div>
     </>

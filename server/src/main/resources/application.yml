@@ -2,6 +2,8 @@ server:
     port: 8080
     error:
         include-message: always
+    tomcat:
+        max-swallow-size: 20MB
 
 spring:
     datasource:
@@ -17,5 +19,5 @@ spring:
 
 jwt:
     secret: LnHMPrP4BbL4oSnP5HKlGTiCYFUn0y1jP4qyFy4sgS48QfzWcS5NBZsP9KwFwBxQ
-    expiration: 3600000
+    expiration: 604800000
 

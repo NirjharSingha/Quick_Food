@@ -1,3 +1,5 @@
+"use client";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,9 +16,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { CiLogout } from "react-icons/ci";
 import { CiLogin } from "react-icons/ci";
-import { BsFillPersonFill } from "react-icons/bs";
+import { useGlobals } from "../contexts/Globals";
+import { MdDashboard } from "react-icons/md";
 
-export function Dropdown() {
+export function Dropdown({ setIsUserLogin, setShowLogin, setShowSignUp }) {
+  const { isLoggedIn } = useGlobals();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -40,37 +44,57 @@ export function Dropdown() {
       <DropdownMenuContent className="w-56 mt-1">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Login</DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent>
-                <DropdownMenuItem>User Login</DropdownMenuItem>
-                <DropdownMenuItem>Employee Login</DropdownMenuItem>
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub>
-          <DropdownMenuItem>
-            Sign up
-            <DropdownMenuShortcut>
-              <CiLogin className="mr-1 text-lg" />
-            </DropdownMenuShortcut>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          Profile
-          <DropdownMenuShortcut>
-            <BsFillPersonFill className="mr-1 text-lg" />
-          </DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          Log out
-          <DropdownMenuShortcut>
-            <CiLogout className="mr-1 text-lg" />
-          </DropdownMenuShortcut>
-        </DropdownMenuItem>
+        {!isLoggedIn && (
+          <DropdownMenuGroup>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>Login</DropdownMenuSubTrigger>
+              <DropdownMenuPortal>
+                <DropdownMenuSubContent>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setIsUserLogin(true);
+                      setShowLogin(true);
+                    }}
+                  >
+                    User Login
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setIsUserLogin(false);
+                      setShowLogin(true);
+                    }}
+                  >
+                    Employee Login
+                  </DropdownMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuPortal>
+            </DropdownMenuSub>
+            <DropdownMenuItem>
+              Sign up
+              <DropdownMenuShortcut>
+                <CiLogin className="mr-1 text-lg" />
+              </DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        )}
+        {isLoggedIn && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              Dashboard
+              <DropdownMenuShortcut>
+                <MdDashboard className="mr-1 text-lg" />
+              </DropdownMenuShortcut>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              Log out
+              <DropdownMenuShortcut>
+                <CiLogout className="mr-1 text-lg" />
+              </DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

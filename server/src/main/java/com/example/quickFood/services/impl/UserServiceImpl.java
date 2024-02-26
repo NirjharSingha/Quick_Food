@@ -1,6 +1,8 @@
 package com.example.quickFood.services.impl;
 
+import com.example.quickFood.dto.GoogleAuth;
 import com.example.quickFood.dto.SignupDto;
+import com.example.quickFood.enums.Role;
 import com.example.quickFood.models.User;
 import com.example.quickFood.repositories.UserRepository;
 import com.example.quickFood.services.UserService;
@@ -39,6 +41,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(User user) {
+        userRepository.save(user);
+    }
+
+    @Override
+    public void addOAuthUser(GoogleAuth googleAuth) {
+        User user = new User(googleAuth.getId(), googleAuth.getName(), null, Role.CUSTOMER, null, null, new Timestamp(System.currentTimeMillis()), null);
         userRepository.save(user);
     }
 

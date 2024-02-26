@@ -10,12 +10,15 @@ export function useGlobals() {
 
 const GlobalsProvider = ({ children }) => {
   const [windowWidth, setWindowWidth] = useState(2000);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
     <GlobalsContext.Provider
       value={{
         windowWidth,
         setWindowWidth,
+        isLoggedIn,
+        setIsLoggedIn,
       }}
     >
       {children}

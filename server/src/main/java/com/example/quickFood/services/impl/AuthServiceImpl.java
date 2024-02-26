@@ -73,4 +73,30 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
+    @Override
+    public ResponseEntity<JwtAuthenticationResponse> googleAuth(GoogleAuth request) {
+        try {
+            if (userRepository.findById(request.getId()).isEmpty()) {
+                User user = User.builder()
+                        .id(request.getId())
+                        .name(request.getName())
+                        .build();
+                userService.addOAuthUser(request);
+                var jwt = jwtService.generateToken(user);
+
+                return ResponseEntity.ok(JwtAuthenticationResponse.builder()
+                        .token(jwt)
+                        .build());
+            } else {
+                var user = userRepository.findById(request.getId())
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
+                var jwt = jwtService.generateToken(user);
+                return ResponseEntity.ok(JwtAuthenticationResponse.builder().token(jwt).build());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
