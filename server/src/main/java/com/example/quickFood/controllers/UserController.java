@@ -1,6 +1,6 @@
 package com.example.quickFood.controllers;
 
-import com.example.quickFood.models.User;
+import com.example.quickFood.dto.UpdateProfileDto;
 import com.example.quickFood.services.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,19 +16,16 @@ public class UserController {
     private UserServiceImpl userService;
 
     @PutMapping("/updateProfile")
-    public String updateUser(@RequestParam(value = "file", required = false) MultipartFile file, @ModelAttribute User user) {
-        System.out.println("Inside controller");
+    public void updateUser(@RequestParam(value = "file", required = false) MultipartFile file, @ModelAttribute UpdateProfileDto updateProfileDto) {
         try {
             if (file != null && !file.isEmpty()) {
-                user.setProfilePic(file.getBytes());
+                updateProfileDto.setProfilePic(file.getBytes());
             } else {
-                user.setProfilePic(new byte[0]);
+                updateProfileDto.setProfilePic(new byte[0]);
             }
-            userService.updateUser(user);
-            return "user updated successfully";
+            userService.updateUser(updateProfileDto);
         } catch (IOException e) {
             e.printStackTrace();
-            return "Failed to add user";
         }
     }
 }

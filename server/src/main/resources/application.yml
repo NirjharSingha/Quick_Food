@@ -3,7 +3,7 @@ server:
     error:
         include-message: always
     tomcat:
-        max-swallow-size: 20MB
+        max-swallow-size: 100MB
 
 spring:
     datasource:
@@ -16,6 +16,10 @@ spring:
             ddl-auto: update
         show-sql: true
         open-in-view: true
+    servlet:
+        multipart:
+            max-file-size: 100MB
+            max-request-size: 100MB
 
 jwt:
     secret: LnHMPrP4BbL4oSnP5HKlGTiCYFUn0y1jP4qyFy4sgS48QfzWcS5NBZsP9KwFwBxQ

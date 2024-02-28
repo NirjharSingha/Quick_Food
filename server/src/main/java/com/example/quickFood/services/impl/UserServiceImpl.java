@@ -2,11 +2,14 @@ package com.example.quickFood.services.impl;
 
 import com.example.quickFood.dto.GoogleAuth;
 import com.example.quickFood.dto.SignupDto;
+import com.example.quickFood.dto.UpdateProfileDto;
 import com.example.quickFood.enums.Role;
 import com.example.quickFood.models.User;
 import com.example.quickFood.repositories.UserRepository;
 import com.example.quickFood.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -40,8 +43,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUser(User user) {
-        userRepository.save(user);
+    public ResponseEntity<String> updateUser(UpdateProfileDto updateProfileDto) {
+        try {
+            User existingUser = userRepository.findById(updateProfileDto.getId()).orElseThrow(() -> new RuntimeException("User not found"));
+            if (existingUser != null) {
+                User user = new User(updateProfileDto.getId(), updateProfileDto.getName(), existingUser.getPassword(), existingUser.getRole(), updateProfileDto.getAddress(), updateProfileDto.getMobile(), existingUser.getRegDate(), updateProfileDto.getProfilePic());
+                userRepository.save(user);
+                return ResponseEntity.ok("User updated successfully");
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update user");
+        }
     }
 
     @Override

@@ -5,6 +5,8 @@ import { useState, useEffect, useRef } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { BsFillPersonFill } from "react-icons/bs";
 import axios from "axios";
+import { useGlobals } from "../contexts/Globals";
+import { jwtDecode } from "jwt-decode";
 
 // npm install @react-oauth/google
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -16,6 +18,7 @@ const Login = ({ setShowLogin, setShowSignUp, isUserLogin }) => {
   const [warning, setWarning] = useState("");
   const [id, setId] = useState("");
   const containerRef = useRef(null);
+  const { setIsLoggedIn, setToastMessage } = useGlobals();
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -36,10 +39,6 @@ const Login = ({ setShowLogin, setShowSignUp, isUserLogin }) => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (id === "" || password === "") {
-      setWarning("Please fill all the fields");
-      return;
-    }
 
     if (id.includes("@") && !isUserLogin) {
       setWarning("Invalid id");
@@ -50,15 +49,20 @@ const Login = ({ setShowLogin, setShowSignUp, isUserLogin }) => {
       id: id,
       password: password,
     };
+
+    console.log(postData);
+
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/login`,
         postData
       );
       if (response.status == 200) {
-        console.log(response.data);
-        // localStorage.setItem("token", response.data.token);
-        // navigate("/main");
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("isLoggedIn", true);
+        setIsLoggedIn(true);
+        setShowLogin(false);
+        setToastMessage("Logged in successfully");
       }
     } catch (error) {
       console.log(error);
@@ -77,9 +81,9 @@ const Login = ({ setShowLogin, setShowSignUp, isUserLogin }) => {
         postData
       );
       if (response.status == 200) {
-        console.log(response.data);
-        // localStorage.setItem("token", response.data.token);
-        // navigate("/main");
+        localStorage.setItem("token", response.data.token);
+        setIsLoggedIn(true);
+        setShowLogin(false);
       }
     } catch (error) {
       console.log(error);
@@ -91,6 +95,7 @@ const Login = ({ setShowLogin, setShowSignUp, isUserLogin }) => {
       className="p-7 bg-white z-50 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-xl mt-[2rem] min-w-[25rem]"
       style={{ boxShadow: "-3px 5px 5px rgba(0, 0, 0, 0.3)" }}
       ref={containerRef}
+      onSubmit={handleLogin}
     >
       <button
         type="button"
@@ -108,6 +113,7 @@ const Login = ({ setShowLogin, setShowSignUp, isUserLogin }) => {
         className="indent-2 rounded-b-none border-b-2 rounded-2xl w-full mb-6 outline-none p-1 font-sans cursor-pointer"
         placeholder={isUserLogin ? "Enter email" : "Enter employee id"}
         value={id}
+        required={true}
         onChange={(e) => {
           setWarning("");
           setId(e.target.value);
@@ -121,6 +127,7 @@ const Login = ({ setShowLogin, setShowSignUp, isUserLogin }) => {
           className="indent-2 rounded border-none outline-none cursor-pointer w-full font-sans"
           placeholder="Enter password"
           value={password}
+          required={true}
           onChange={(e) => {
             setWarning("");
             setPassword(e.target.value);
@@ -145,7 +152,6 @@ const Login = ({ setShowLogin, setShowSignUp, isUserLogin }) => {
       <button
         type="submit"
         className="w-full h-8 bg-gray-300 font-sans font-bold mt-2 rounded-2xl hover:bg-gray-500 mb-2"
-        onClick={handleLogin}
       >
         Log in
       </button>

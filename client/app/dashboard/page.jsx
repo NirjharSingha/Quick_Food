@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Profile from "../components/Profile";
 import FavIcon from "@/public/favicon.ico";
@@ -11,7 +13,7 @@ const page = () => {
     >
       <div className="w-[30%] max-w-[20rem] h-full bg-gray-300">
         <div
-          className="mx-auto m-4 rounded-lg bg-gray-500 pt-3 pb-3"
+          className="mx-auto m-4 rounded-lg bg-gray-400 pt-3 pb-3"
           style={{ width: "calc(100% - 2rem)" }}
         >
           <div className="flex justify-center items-center mb-3">
@@ -28,7 +30,7 @@ const page = () => {
               style={{ backgroundColor: "#1BC4BF" }}
             ></div>
           </div>
-          <p className="text-center text-slate-300 mt-2 text-sm font-sans truncate">
+          <p className="text-center text-slate-200 mt-2 text-sm font-sans truncate">
             {`Profile x% complete`}
           </p>
         </div>

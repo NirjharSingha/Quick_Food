@@ -9,26 +9,48 @@ import SignUp from "./SignUp";
 import FavIcon from "@/public/favicon.ico";
 import Image from "next/image";
 import { Dropdown } from "./Dropdown";
+import { useRouter } from "next/navigation";
+import Toast from "./Toast";
 
 const NavBar = () => {
-  const { windowWidth, setWindowWidth, setIsLoggedIn } = useGlobals();
+  const router = useRouter();
+  const {
+    windowWidth,
+    setWindowWidth,
+    setIsLoggedIn,
+    isLoggedIn,
+    toastMessage,
+    toastRef,
+  } = useGlobals();
+
   useEffect(() => {
     setWindowWidth(window.innerWidth);
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
     window.addEventListener("resize", handleResize);
+    setIsLoggedIn(localStorage.getItem("isLoggedIn"));
 
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
 
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/");
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (toastMessage !== "") {
+      toastRef && toastRef.current && toastRef.current.click();
+    }
+  }, [toastMessage]);
+
   const [showLogin, setShowLogin] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
   const [isUserLogin, setIsUserLogin] = useState(false);
-
-  useEffect(() => {}, []);
 
   return (
     <>
@@ -42,6 +64,9 @@ const NavBar = () => {
       {showSignUp && (
         <SignUp setShowSignUp={setShowSignUp} setShowLogin={setShowLogin} />
       )}
+      <div style={{ display: "none" }}>
+        <Toast />
+      </div>
       <div
         className="navbar h-[4rem] bg-base-100 sticky"
         style={{ backgroundColor: "#d6c5b7" }}

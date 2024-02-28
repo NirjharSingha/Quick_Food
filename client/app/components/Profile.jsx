@@ -2,16 +2,12 @@
 
 import React, { useRef, useEffect } from "react";
 import { useState } from "react";
-import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { BsFillPersonFill } from "react-icons/bs";
 import { MdEdit } from "react-icons/md";
 import Image from "next/image";
 import axios from "axios";
 
 const Profile = () => {
-  const [password, setPassword] = useState("");
-  const [showPass, setShowPass] = useState(false);
-  const [email, setEmail] = useState("user2@gmail.com");
   const [username, setUsername] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
   const [profilePic, setProfilePic] = useState(null);
@@ -52,21 +48,15 @@ const Profile = () => {
     };
   };
 
-  const handleRegSubmit = async (e) => {
+  const handleUpdateProfile = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData(); // Create a new FormData object
-
-    // Append the form data to the FormData object
+    const formData = new FormData();
+    formData.append("id", "oauth@gmail.com");
     formData.append("name", username);
-    formData.append("id", email);
-    formData.append("password", password);
     formData.append("address", address);
     formData.append("mobile", phoneNum);
     formData.append("file", profilePic);
-    formData.append("userType", "customer");
-    // const regDate = new Date().toISOString().replace("Z", "");
-    // formData.append("regDate", regDate);
 
     try {
       const response = await axios.put(
@@ -74,31 +64,16 @@ const Profile = () => {
         formData,
         {
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMUBnbWFpbC5jb20iLCJpYXQiOjE3MDg4NjI4NDksImV4cCI6MTcwODg2NjQ0OX0.31otpD6oOgg8NcSsGKZoyPngRuE_evgjJXatUpsxwFU`,
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJvYXV0aEBnbWFpbC5jb20iLCJpYXQiOjE3MDg5NzU1MTAsImV4cCI6MTcwOTU4MDMxMH0.JiLRa0XV5TcWUnT4v94hvNWvdnxKaZpHE9eEpkBBRBg`,
             "Content-Type": "multipart/form-data",
           },
         }
       );
-      // if (response.status == 201) {
-      //   localStorage.setItem("token", response.data.token);
-      //   navigate("/main");
-      // }
+      if (response.status == 201) {
+        setIsEdit(false);
+      }
     } catch (error) {
       console.log("Error:", error.response);
-      // if (error.response) {
-      //   const statusCode = error.response.status;
-      //   const errorMessage = error.response.data.error;
-      //   if (
-      //     statusCode == 409 &&
-      //     errorMessage === "Gmail address is already taken."
-      //   ) {
-      //     setWarning("Duplicate gmail address");
-      //   }
-      // } else if (error.request) {
-      //   console.error("Error:", error.request);
-      // } else {
-      //   console.error("Error:", error.message);
-      // }
     }
   };
 
@@ -106,7 +81,7 @@ const Profile = () => {
     <form
       className="p-5 bg-slate-100 h-full overflow-y-auto"
       encType="multipart/form-data"
-      onSubmit={handleRegSubmit}
+      onSubmit={handleUpdateProfile}
       ref={divRef}
     >
       <div className="max-w-[40rem] mx-auto h-full relative">
@@ -196,7 +171,7 @@ const Profile = () => {
           >
             {!isEdit && (
               <>
-                <p className="pl-1 font-sans font-bold mb-2 mr-3">Email:</p>
+                <p className="pl-1 font-sans font-bold mb-2 mr-3">Id:</p>
                 <div className="font-sans truncate mb-2 border-2 border-gray-200 pl-2 rounded-md">
                   {"aaaaa"}
                 </div>
@@ -208,12 +183,15 @@ const Profile = () => {
               isEdit ? "items-center" : "flex-col"
             }`}
           >
-            <p className="pl-1 font-sans font-bold mb-2 mr-3">Username:</p>
+            <p className="pl-1 font-sans font-bold mb-2 mr-3">
+              Username:{isEdit && <span className="text-red-500">*</span>}
+            </p>
             {isEdit ? (
               <input
                 type="text"
                 className="indent-2 rounded-b-none border-b-2 rounded-2xl w-full mb-4 outline-none p-1 font-sans cursor-pointer bg-slate-100"
                 placeholder="Enter username"
+                required={true}
                 value={username}
                 onChange={(e) => {
                   setUsername(e.target.value);
@@ -225,40 +203,6 @@ const Profile = () => {
               </div>
             )}
           </div>
-          {isEdit && (
-            <div className="flex items-center overflow-x-hidden w-full">
-              <p className="pl-1 font-sans font-bold mb-2 mr-3">Password:</p>
-              {isEdit ? (
-                <div className="p-1 flex items-center indent-2 rounded-2xl bg-slate-100 border-b-2 rounded-b-none mb-4 w-full">
-                  <input
-                    id="password"
-                    name="password"
-                    type={showPass ? "text" : "password"}
-                    className="indent-2 rounded border-none outline-none cursor-pointer w-full font-sans bg-slate-100"
-                    placeholder="Enter updated password"
-                    value={password}
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                    }}
-                  />
-                  {!showPass && (
-                    <AiFillEye
-                      className="w-8 h-5 cursor-pointer text-gray-700"
-                      onClick={() => setShowPass((prev) => !prev)}
-                    />
-                  )}
-                  {showPass && (
-                    <AiFillEyeInvisible
-                      className="w-8 h-5 cursor-pointer text-gray-700"
-                      onClick={() => setShowPass((prev) => !prev)}
-                    />
-                  )}
-                </div>
-              ) : (
-                <p className="font-sans truncate mb-2">. . . . . . . .</p>
-              )}
-            </div>
-          )}
           <div
             className={`flex overflow-x-hidden ${
               isEdit ? "items-center" : "flex-col"

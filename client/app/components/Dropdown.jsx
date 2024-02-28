@@ -18,9 +18,11 @@ import { CiLogout } from "react-icons/ci";
 import { CiLogin } from "react-icons/ci";
 import { useGlobals } from "../contexts/Globals";
 import { MdDashboard } from "react-icons/md";
+import { useRouter } from "next/navigation";
 
 export function Dropdown({ setIsUserLogin, setShowLogin, setShowSignUp }) {
-  const { isLoggedIn } = useGlobals();
+  const router = useRouter();
+  const { isLoggedIn, setIsLoggedIn } = useGlobals();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -69,7 +71,11 @@ export function Dropdown({ setIsUserLogin, setShowLogin, setShowSignUp }) {
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                setShowSignUp(true);
+              }}
+            >
               Sign up
               <DropdownMenuShortcut>
                 <CiLogin className="mr-1 text-lg" />
@@ -80,14 +86,25 @@ export function Dropdown({ setIsUserLogin, setShowLogin, setShowSignUp }) {
         {isLoggedIn && (
           <>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                router.push("/dashboard");
+              }}
+            >
               Dashboard
               <DropdownMenuShortcut>
                 <MdDashboard className="mr-1 text-lg" />
               </DropdownMenuShortcut>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("isLoggedIn");
+                setIsLoggedIn(false);
+                router.push("/");
+              }}
+            >
               Log out
               <DropdownMenuShortcut>
                 <CiLogout className="mr-1 text-lg" />

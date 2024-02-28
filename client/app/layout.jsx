@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import GlobalsProvider from "./contexts/Globals";
 import NavBar from "./components/NavBar";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,6 +18,7 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <GlobalsProvider>
           <div className="overflow-hidden">
+            <Toaster />
             <NavBar />
             {children}
           </div>
