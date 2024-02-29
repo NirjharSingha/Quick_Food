@@ -13,6 +13,7 @@ const GlobalsProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const toastRef = useRef(null);
   const [toastMessage, setToastMessage] = useState("");
+  const [profilePercentage, setProfilePercentage] = useState(0);
 
   return (
     <GlobalsContext.Provider
@@ -24,6 +25,8 @@ const GlobalsProvider = ({ children }) => {
         toastMessage,
         setToastMessage,
         toastRef,
+        profilePercentage,
+        setProfilePercentage,
       }}
     >
       {children}

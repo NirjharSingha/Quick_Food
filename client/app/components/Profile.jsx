@@ -6,8 +6,11 @@ import { BsFillPersonFill } from "react-icons/bs";
 import { MdEdit } from "react-icons/md";
 import Image from "next/image";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import { useGlobals } from "../contexts/Globals";
 
 const Profile = () => {
+  const [id, setId] = useState("");
   const [username, setUsername] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
   const [profilePic, setProfilePic] = useState(null);
@@ -15,8 +18,47 @@ const Profile = () => {
   const [address, setAddress] = useState("");
   const [isEdit, setIsEdit] = useState(false);
   const [isScrollable, setIsScrollable] = useState(false);
+  const [warning, setWarning] = useState("");
   const fileInputRef = useRef(null);
   const divRef = useRef(null);
+  const { setToastMessage, setProfilePercentage } = useGlobals();
+
+  useEffect(() => {
+    const getProfile = async () => {
+      const token = localStorage.getItem("token");
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/user/getUser?userId=${
+            token !== null ? jwtDecode(token).sub : ""
+          }`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.status === 200) {
+          setUsername(response.data.name);
+          setPhoneNum(
+            response.data.mobile !== null ? response.data.mobile : ""
+          );
+          setAddress(
+            response.data.address !== null ? response.data.address : ""
+          );
+          setId(response.data.id);
+        }
+      } catch (error) {
+        console.log(error);
+        if (error.response.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("isLoggedIn");
+          setIsLoggedIn(false);
+        }
+      }
+    };
+
+    getProfile();
+  }, []);
 
   useEffect(() => {
     const divElement = divRef.current;
@@ -37,9 +79,12 @@ const Profile = () => {
     };
   }, []);
 
+  useEffect(() => {}, []);
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setProfilePic(file);
+    setWarning("");
 
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -51,8 +96,13 @@ const Profile = () => {
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
 
+    if (username === "") {
+      setWarning("Username cannot be empty");
+      return;
+    }
+
     const formData = new FormData();
-    formData.append("id", "oauth@gmail.com");
+    formData.append("id", jwtDecode(localStorage.getItem("token")).sub);
     formData.append("name", username);
     formData.append("address", address);
     formData.append("mobile", phoneNum);
@@ -64,13 +114,27 @@ const Profile = () => {
         formData,
         {
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJvYXV0aEBnbWFpbC5jb20iLCJpYXQiOjE3MDg5NzU1MTAsImV4cCI6MTcwOTU4MDMxMH0.JiLRa0XV5TcWUnT4v94hvNWvdnxKaZpHE9eEpkBBRBg`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "multipart/form-data",
           },
         }
       );
-      if (response.status == 201) {
+      if (response.status == 200) {
+        setToastMessage("Profile updated successfully");
         setIsEdit(false);
+
+        let percentage = 40;
+        if (address !== "") {
+          percentage += 20;
+        }
+        if (phoneNum !== "") {
+          percentage += 20;
+        }
+        if (profilePic !== null) {
+          percentage += 20;
+        }
+
+        setProfilePercentage(percentage);
       }
     } catch (error) {
       console.log("Error:", error.response);
@@ -164,6 +228,11 @@ const Profile = () => {
         <div
           className={`overflow-x-hidden ${isEdit ? "mt-[120px]" : "mt-[70px]"}`}
         >
+          {isEdit && (
+            <p className="font-sans text-sm text-red-600 w-full text-center mt-2 mb-2">
+              {warning}
+            </p>
+          )}
           <div
             className={`flex overflow-x-hidden ${
               isEdit ? "items-center" : "flex-col"
@@ -173,7 +242,7 @@ const Profile = () => {
               <>
                 <p className="pl-1 font-sans font-bold mb-2 mr-3">Id:</p>
                 <div className="font-sans truncate mb-2 border-2 border-gray-200 pl-2 rounded-md">
-                  {"aaaaa"}
+                  {id}
                 </div>
               </>
             )}
@@ -195,11 +264,12 @@ const Profile = () => {
                 value={username}
                 onChange={(e) => {
                   setUsername(e.target.value);
+                  setWarning("");
                 }}
               />
             ) : (
               <div className="font-sans truncate mb-2 border-2 border-gray-200 pl-2 rounded-md">
-                {"aaaaa"}
+                {username}
               </div>
             )}
           </div>
@@ -217,11 +287,16 @@ const Profile = () => {
                 value={address}
                 onChange={(e) => {
                   setAddress(e.target.value);
+                  setWarning("");
                 }}
               />
             ) : (
-              <div className="font-sans truncate mb-2 border-2 border-gray-200 pl-2 rounded-md">
-                {"aaaaa"}
+              <div
+                className={`font-sans truncate mb-2 border-2 border-gray-200 pl-2 rounded-md ${
+                  address === "" ? "text-gray-500" : ""
+                }`}
+              >
+                {address !== "" ? address : "not filled"}
               </div>
             )}
           </div>
@@ -239,11 +314,16 @@ const Profile = () => {
                 value={phoneNum}
                 onChange={(e) => {
                   setPhoneNum(e.target.value);
+                  setWarning("");
                 }}
               />
             ) : (
-              <div className="font-sans truncate border-2 border-gray-200 pl-2 rounded-md">
-                {"aaaaa"}
+              <div
+                className={`font-sans truncate mb-2 border-2 border-gray-200 pl-2 rounded-md ${
+                  phoneNum === "" ? "text-gray-500" : ""
+                }`}
+              >
+                {phoneNum !== "" ? phoneNum : "not filled"}
               </div>
             )}
           </div>
@@ -255,7 +335,7 @@ const Profile = () => {
               if (!isEdit) {
                 setIsEdit(true);
               } else {
-                handleRegSubmit(e);
+                handleUpdateProfile(e);
               }
             }}
           >

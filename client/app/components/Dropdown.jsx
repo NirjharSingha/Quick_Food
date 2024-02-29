@@ -99,10 +99,9 @@ export function Dropdown({ setIsUserLogin, setShowLogin, setShowSignUp }) {
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
+                localStorage.setItem("isLoggedIn", false);
                 localStorage.removeItem("token");
-                localStorage.removeItem("isLoggedIn");
                 setIsLoggedIn(false);
-                router.push("/");
               }}
             >
               Log out

@@ -10,4 +10,6 @@ public interface UserService {
     void addUser(SignupDto user);
     ResponseEntity<String> updateUser(UpdateProfileDto updateProfileDto);
     void addOAuthUser(GoogleAuth user);
+    ResponseEntity<Integer> profilePercentage(String userId);
+    ResponseEntity<User> getUser(String userId);
 }

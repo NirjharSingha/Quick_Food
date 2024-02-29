@@ -18,7 +18,7 @@ const SignUp = ({ setShowLogin, setShowSignUp }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const containerRef = useRef(null);
-  const { setIsLoggedIn } = useGlobals();
+  const { setIsLoggedIn, setToastMessage } = useGlobals();
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -49,17 +49,20 @@ const SignUp = ({ setShowLogin, setShowSignUp }) => {
       id: id,
       name: username,
       password: password,
+      role: "CUSTOMER",
     };
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/signup`,
         postData
       );
+      console.log(response);
       if (response.status == 200) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("isLoggedIn", true);
         setIsLoggedIn(true);
-        setShowLogin(false);
+        setShowSignUp(false);
+        setToastMessage("Signed up successfully");
       }
     } catch (error) {
       console.log(error);

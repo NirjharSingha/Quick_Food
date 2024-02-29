@@ -65,4 +65,40 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Override
+    public ResponseEntity<Integer> profilePercentage(String userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        if (user != null) {
+            int percentage = 40;
+            if (user.getProfilePic() != null) {
+                percentage += 20;
+            }
+            if (user.getAddress() != null) {
+                percentage += 20;
+            }
+            if (user.getMobile() != null) {
+                percentage += 20;
+            }
+            return ResponseEntity.ok(percentage);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Override
+    public ResponseEntity<User> getUser(String userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        if (user != null) {
+            if (user.getAddress() == null) {
+                user.setAddress("");
+            }
+            if (user.getMobile() == null) {
+                user.setMobile("");
+            }
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

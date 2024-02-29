@@ -1,11 +1,49 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Profile from "../components/Profile";
 import FavIcon from "@/public/favicon.ico";
 import Image from "next/image";
+import axios from "axios";
+import { useGlobals } from "../contexts/Globals";
+import { jwtDecode } from "jwt-decode";
 
 const page = () => {
+  const { setIsLoggedIn, profilePercentage, setProfilePercentage } =
+    useGlobals();
+
+  useEffect(() => {
+    const profilePercentage = async () => {
+      const token = localStorage.getItem("token");
+      try {
+        const response = await axios.get(
+          `${
+            process.env.NEXT_PUBLIC_SERVER_URL
+          }/user/profilePercentage?userId=${
+            token !== null ? jwtDecode(token).sub : ""
+          }`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.status === 200) {
+          setProfilePercentage(response.data);
+        }
+      } catch (error) {
+        console.log(error);
+        if (error.response.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("isLoggedIn");
+          setIsLoggedIn(false);
+        }
+      }
+    };
+
+    profilePercentage();
+  }, []);
+
   return (
     <div
       className="w-screen overflow-x-hidden overflow-y-auto flex"
@@ -26,12 +64,16 @@ const page = () => {
           </div>
           <div className="w-[90%] mx-auto h-[0.5rem] rounded-xl bg-white">
             <div
-              className="h-full w-[60%] rounded-xl rounded-r-none"
+              className={`h-full w-[${profilePercentage}%] rounded-xl ${
+                profilePercentage !== 100 ? "rounded-r-none" : ""
+              }`}
               style={{ backgroundColor: "#1BC4BF" }}
             ></div>
           </div>
           <p className="text-center text-slate-200 mt-2 text-sm font-sans truncate">
-            {`Profile x% complete`}
+            {profilePercentage !== 0
+              ? `Profile ${profilePercentage}% complete`
+              : "Profile _% complete"}
           </p>
         </div>
       </div>
