@@ -47,6 +47,9 @@ public class UserServiceImpl implements UserService {
         try {
             User existingUser = userRepository.findById(updateProfileDto.getId()).orElseThrow(() -> new RuntimeException("User not found"));
             if (existingUser != null) {
+                if (updateProfileDto.getProfilePic() == null) {
+                    updateProfileDto.setProfilePic(existingUser.getProfilePic());
+                }
                 User user = new User(updateProfileDto.getId(), updateProfileDto.getName(), existingUser.getPassword(), existingUser.getRole(), updateProfileDto.getAddress(), updateProfileDto.getMobile(), existingUser.getRegDate(), updateProfileDto.getProfilePic());
                 userRepository.save(user);
                 return ResponseEntity.ok("User updated successfully");

@@ -46,6 +46,10 @@ const Profile = () => {
             response.data.address !== null ? response.data.address : ""
           );
           setId(response.data.id);
+          if (response.data.profilePic !== null) {
+            setImgStream(`data:image/jpeg;base64,${response.data.profilePic}`);
+            console.log(typeof response.data.profilePic);
+          }
         }
       } catch (error) {
         console.log(error);
@@ -78,8 +82,6 @@ const Profile = () => {
       divElement.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
-  useEffect(() => {}, []);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -130,7 +132,7 @@ const Profile = () => {
         if (phoneNum !== "") {
           percentage += 20;
         }
-        if (profilePic !== null) {
+        if (imgStream !== "") {
           percentage += 20;
         }
 
@@ -167,7 +169,7 @@ const Profile = () => {
             {imgStream === "" ? (
               <div className="w-[8.5rem] h-[8.5rem] bg-slate-200 mt-1 mb-2 rounded-full border-2 border-solid border-white" />
             ) : (
-              <Image
+              <img
                 src={imgStream}
                 alt="profile picture"
                 width={136}
@@ -188,30 +190,6 @@ const Profile = () => {
                     {imgStream === "" ? "No image chosen" : "Image chosen"}
                   </div>
                 </div>
-                {imgStream !== "" && (
-                  <div
-                    className="w-5 h-5 rounded-full bg-white border-2 border-solid border-gray-700 flex justify-center items-center ml-1 hover:text-white hover:bg-gray-700 cursor-pointer"
-                    onClick={() => {
-                      setImgStream("");
-                      setProfilePic({});
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-3 w-3"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </div>
-                )}
               </div>
             )}
             <input

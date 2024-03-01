@@ -19,11 +19,10 @@ public class UserController {
 
     @PutMapping("/updateProfile")
     public ResponseEntity<String> updateUser(@RequestParam(value = "file", required = false) MultipartFile file, @ModelAttribute UpdateProfileDto updateProfileDto) {
+        updateProfileDto.setProfilePic(null);
         try {
             if (file != null && !file.isEmpty()) {
                 updateProfileDto.setProfilePic(file.getBytes());
-            } else {
-                updateProfileDto.setProfilePic(null);
             }
             if (updateProfileDto.getMobile().equals("")) {
                 updateProfileDto.setMobile(null);
