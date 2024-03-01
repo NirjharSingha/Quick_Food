@@ -18,7 +18,8 @@ public class UserController {
     private UserServiceImpl userService;
 
     @PutMapping("/updateProfile")
-    public ResponseEntity<String> updateUser(@RequestParam(value = "file", required = false) MultipartFile file, @ModelAttribute UpdateProfileDto updateProfileDto) {
+    public ResponseEntity<String> updateUser(@RequestParam(value = "file", required = false) MultipartFile file,
+            @ModelAttribute UpdateProfileDto updateProfileDto) {
         updateProfileDto.setProfilePic(null);
         try {
             if (file != null && !file.isEmpty()) {
@@ -47,4 +48,3 @@ public class UserController {
         return userService.getUser(userId);
     }
 }
-

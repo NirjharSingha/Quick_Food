@@ -1,4 +1,5 @@
 package com.example.quickFood.dto;
+
 import lombok.*;
 
 @Data

@@ -32,6 +32,8 @@ public class SecurityConfig {
     private final UserServiceImpl userService;
     @Autowired
     private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private final AuthEntryPoint authEntryPoint;
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -49,16 +51,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable
-                )
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .authenticationProvider(authenticationProvider()).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                        .anyRequest().authenticated())
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint(authEntryPoint))
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

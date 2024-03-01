@@ -14,14 +14,8 @@ import Toast from "./Toast";
 
 const NavBar = () => {
   const router = useRouter();
-  const {
-    windowWidth,
-    setWindowWidth,
-    setIsLoggedIn,
-    isLoggedIn,
-    toastMessage,
-    toastRef,
-  } = useGlobals();
+  const { setWindowWidth, setIsLoggedIn, isLoggedIn, toastMessage, toastRef } =
+    useGlobals();
 
   useEffect(() => {
     setWindowWidth(window.innerWidth);

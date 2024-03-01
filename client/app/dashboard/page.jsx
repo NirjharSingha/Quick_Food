@@ -7,10 +7,17 @@ import Image from "next/image";
 import axios from "axios";
 import { useGlobals } from "../contexts/Globals";
 import { jwtDecode } from "jwt-decode";
+import { handleUnauthorized } from "@/app/utils/unauthorized";
+import { useRouter } from "next/navigation";
 
 const page = () => {
-  const { setIsLoggedIn, profilePercentage, setProfilePercentage } =
-    useGlobals();
+  const router = useRouter();
+  const {
+    setIsLoggedIn,
+    profilePercentage,
+    setProfilePercentage,
+    setToastMessage,
+  } = useGlobals();
 
   useEffect(() => {
     const profilePercentage = async () => {
@@ -34,9 +41,7 @@ const page = () => {
       } catch (error) {
         console.log(error);
         if (error.response.status === 401) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("isLoggedIn");
-          setIsLoggedIn(false);
+          handleUnauthorized(setIsLoggedIn, setToastMessage, router);
         }
       }
     };

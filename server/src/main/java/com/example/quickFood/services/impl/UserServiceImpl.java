@@ -38,19 +38,23 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findById(signupDto.getId()).isPresent()) {
             throw new RuntimeException("Id already exists");
         }
-        User user = new User(signupDto.getId(), signupDto.getName(), signupDto.getPassword(), signupDto.getRole(), null, null, new Timestamp(System.currentTimeMillis()), null);
+        User user = new User(signupDto.getId(), signupDto.getName(), signupDto.getPassword(), signupDto.getRole(), null,
+                null, new Timestamp(System.currentTimeMillis()), null);
         userRepository.save(user);
     }
 
     @Override
     public ResponseEntity<String> updateUser(UpdateProfileDto updateProfileDto) {
         try {
-            User existingUser = userRepository.findById(updateProfileDto.getId()).orElseThrow(() -> new RuntimeException("User not found"));
+            User existingUser = userRepository.findById(updateProfileDto.getId())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
             if (existingUser != null) {
                 if (updateProfileDto.getProfilePic() == null) {
                     updateProfileDto.setProfilePic(existingUser.getProfilePic());
                 }
-                User user = new User(updateProfileDto.getId(), updateProfileDto.getName(), existingUser.getPassword(), existingUser.getRole(), updateProfileDto.getAddress(), updateProfileDto.getMobile(), existingUser.getRegDate(), updateProfileDto.getProfilePic());
+                User user = new User(updateProfileDto.getId(), updateProfileDto.getName(), existingUser.getPassword(),
+                        existingUser.getRole(), updateProfileDto.getAddress(), updateProfileDto.getMobile(),
+                        existingUser.getRegDate(), updateProfileDto.getProfilePic());
                 userRepository.save(user);
                 return ResponseEntity.ok("User updated successfully");
             } else {
@@ -64,7 +68,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addOAuthUser(GoogleAuth googleAuth) {
-        User user = new User(googleAuth.getId(), googleAuth.getName(), null, Role.CUSTOMER, null, null, new Timestamp(System.currentTimeMillis()), null);
+        User user = new User(googleAuth.getId(), googleAuth.getName(), null, Role.CUSTOMER, null, null,
+                new Timestamp(System.currentTimeMillis()), null);
         userRepository.save(user);
     }
 

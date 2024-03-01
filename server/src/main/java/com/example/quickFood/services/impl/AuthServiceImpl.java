@@ -55,7 +55,6 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-
     @Override
     public ResponseEntity<JwtAuthenticationResponse> userLogin(LoginDto request) {
         try {
@@ -66,10 +65,10 @@ public class AuthServiceImpl implements AuthService {
             var jwt = jwtService.generateToken(user);
             return ResponseEntity.ok(JwtAuthenticationResponse.builder().token(jwt).build());
         } catch (Exception ex) {
-            return  ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(JwtAuthenticationResponse.builder()
-                        .error("Invalid credentials")
-                        .build());
+                            .error("Invalid credentials")
+                            .build());
         }
     }
 

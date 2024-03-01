@@ -8,8 +8,11 @@ import Image from "next/image";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useGlobals } from "../contexts/Globals";
+import { handleUnauthorized } from "@/app/utils/unauthorized";
+import { useRouter } from "next/navigation";
 
 const Profile = () => {
+  const router = useRouter();
   const [id, setId] = useState("");
   const [username, setUsername] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
@@ -21,7 +24,7 @@ const Profile = () => {
   const [warning, setWarning] = useState("");
   const fileInputRef = useRef(null);
   const divRef = useRef(null);
-  const { setToastMessage, setProfilePercentage } = useGlobals();
+  const { setToastMessage, setProfilePercentage, setIsLoggedIn } = useGlobals();
 
   useEffect(() => {
     const getProfile = async () => {
@@ -54,9 +57,7 @@ const Profile = () => {
       } catch (error) {
         console.log(error);
         if (error.response.status === 401) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("isLoggedIn");
-          setIsLoggedIn(false);
+          handleUnauthorized(setIsLoggedIn, setToastMessage, router);
         }
       }
     };
@@ -140,6 +141,9 @@ const Profile = () => {
       }
     } catch (error) {
       console.log("Error:", error.response);
+      if (error.response.status === 401) {
+        handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+      }
     }
   };
 
@@ -169,7 +173,7 @@ const Profile = () => {
             {imgStream === "" ? (
               <div className="w-[8.5rem] h-[8.5rem] bg-slate-200 mt-1 mb-2 rounded-full border-2 border-solid border-white" />
             ) : (
-              <img
+              <Image
                 src={imgStream}
                 alt="profile picture"
                 width={136}
