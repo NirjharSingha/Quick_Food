@@ -1,5 +1,6 @@
 package com.example.quickFood.controllers;
 
+import com.example.quickFood.dto.LoginDto;
 import com.example.quickFood.dto.UpdateProfileDto;
 import com.example.quickFood.models.User;
 import com.example.quickFood.services.impl.UserServiceImpl;
@@ -36,6 +37,11 @@ public class UserController {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Failed to update user");
         }
+    }
+
+    @PutMapping("/updatePassword")
+    public ResponseEntity<String> updatePassword(@RequestBody LoginDto loginDto) {
+        return userService.updatePassword(loginDto);
     }
 
     @GetMapping("/profilePercentage")

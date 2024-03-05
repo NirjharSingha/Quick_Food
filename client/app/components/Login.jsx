@@ -50,8 +50,6 @@ const Login = ({ setShowLogin, setShowSignUp, isUserLogin }) => {
       password: password,
     };
 
-    console.log(postData);
-
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/login`,

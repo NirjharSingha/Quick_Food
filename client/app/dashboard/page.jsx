@@ -9,6 +9,8 @@ import { useGlobals } from "../contexts/Globals";
 import { jwtDecode } from "jwt-decode";
 import { handleUnauthorized } from "@/app/utils/unauthorized";
 import { useRouter } from "next/navigation";
+import { BsFillPersonFill } from "react-icons/bs";
+import Password from "../components/Password";
 
 const page = () => {
   const router = useRouter();
@@ -54,7 +56,7 @@ const page = () => {
       className="w-screen overflow-x-hidden overflow-y-auto flex"
       style={{ height: "calc(100svh - 4rem)" }}
     >
-      <div className="w-[30%] max-w-[20rem] h-full bg-gray-300">
+      <div className="w-[30%] max-w-[20rem] h-full bg-gray-200">
         <div
           className="mx-auto m-4 rounded-lg bg-gray-400 pt-3 pb-3"
           style={{ width: "calc(100% - 2rem)" }}
@@ -81,6 +83,11 @@ const page = () => {
               : "Profile _% complete"}
           </p>
         </div>
+        <div className="flex font-sans text-gray-700 p-3 rounded-lg bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center">
+          <BsFillPersonFill className="text-2xl mr-2" />
+          <p className="font-bold">Personal info</p>
+        </div>
+        <Password />
       </div>
       <div className="h-full flex-grow">
         <Profile />
