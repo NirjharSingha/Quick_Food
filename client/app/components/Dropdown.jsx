@@ -17,7 +17,7 @@ import {
 import { CiLogout } from "react-icons/ci";
 import { CiLogin } from "react-icons/ci";
 import { useGlobals } from "../contexts/Globals";
-import { MdDashboard } from "react-icons/md";
+import { MdAccountBox } from "react-icons/md";
 import { useRouter } from "next/navigation";
 
 export function Dropdown({ setIsUserLogin, setShowLogin, setShowSignUp }) {
@@ -44,7 +44,7 @@ export function Dropdown({ setIsUserLogin, setShowLogin, setShowSignUp }) {
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 mt-1">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>Dropdown</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {!isLoggedIn && (
           <DropdownMenuGroup>
@@ -88,12 +88,12 @@ export function Dropdown({ setIsUserLogin, setShowLogin, setShowSignUp }) {
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
-                router.push("/dashboard");
+                router.push("/myAccount");
               }}
             >
-              Dashboard
+              My Account
               <DropdownMenuShortcut>
-                <MdDashboard className="mr-1 text-lg" />
+                <MdAccountBox className="mr-1 text-lg" />
               </DropdownMenuShortcut>
             </DropdownMenuItem>
             <DropdownMenuSeparator />

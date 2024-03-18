@@ -11,11 +11,18 @@ import Image from "next/image";
 import { Dropdown } from "./Dropdown";
 import { useRouter } from "next/navigation";
 import Toast from "./Toast";
+import Link from "next/link";
 
 const NavBar = () => {
   const router = useRouter();
-  const { setWindowWidth, setIsLoggedIn, isLoggedIn, toastMessage, toastRef } =
-    useGlobals();
+  const {
+    windowWidth,
+    setWindowWidth,
+    setIsLoggedIn,
+    isLoggedIn,
+    toastMessage,
+    toastRef,
+  } = useGlobals();
 
   useEffect(() => {
     setWindowWidth(window.innerWidth);
@@ -71,9 +78,24 @@ const NavBar = () => {
           </div>
           <Searchbar />
         </div>
-        <div className="navbar-center">
-          <a className="btn btn-ghost text-xl font-sans">QuickFood</a>
-        </div>
+        {!isLoggedIn && (
+          <div className="navbar-center">
+            <a className="btn btn-ghost text-xl font-sans">QuickFood</a>
+          </div>
+        )}
+        {isLoggedIn && (
+          <div className="navbar-center flex justify-between gap-6 font-semibold font-sans text-gray-700 items-center">
+            <Link href="/" className="cursor-pointer hover:underline">
+              Home
+            </Link>
+            <Link href="/" className="cursor-pointer hover:underline">
+              Order Food
+            </Link>
+            <Link href="/" className="cursor-pointer hover:underline">
+              Your Restaurants
+            </Link>
+          </div>
+        )}
         <div className="navbar-end">
           <button className="btn btn-ghost btn-circle">
             <div className="indicator">

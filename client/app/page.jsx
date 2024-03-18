@@ -64,9 +64,9 @@ export default function Home() {
             even outside the city. <br /> We ensure the quality of food and
             service.
           </p>
-          <Image src={FoodItems} alt="logo" className="" />
+          <Image placeholder="blur" src={FoodItems} alt="logo" className="" />
         </div>
-        <Image src={FoodDelivery} alt="logo" className="" />
+        <Image placeholder="blur" src={FoodDelivery} alt="logo" className="" />
       </div>
       <p className="bg-orange-50 p-4 w-full text-center text-gray-700 font-bold font-serif text-4xl mt-4">
         How We Serve You
@@ -77,6 +77,7 @@ export default function Home() {
             src={Service_1}
             alt="logo"
             className="h-[35vh] w-auto m-auto"
+            placeholder="blur"
           />
           <p className="bg-orange-50 p-4 w-full text-center text-gray-700 font-bold font-serif text-lg mt-4">
             Automated Packaging
@@ -87,6 +88,7 @@ export default function Home() {
             src={Service_3}
             alt="logo"
             className="h-[35vh] w-auto m-auto"
+            placeholder="blur"
           />
           <p className="bg-orange-50 p-4 w-full text-center text-gray-700 font-bold font-serif text-lg mt-4">
             Packed with Love
@@ -97,6 +99,7 @@ export default function Home() {
             src={Service_2}
             alt="logo"
             className="h-[35vh] w-auto m-auto"
+            placeholder="blur"
           />
           <p className="bg-orange-50 p-4 w-full text-center text-gray-700 font-bold font-serif text-lg mt-4">
             Serve hot Appetite
@@ -113,6 +116,7 @@ export default function Home() {
               src={item}
               alt="Pizza"
               className="h-[40vh] w-[32vw] ml-[0.5vw] mr-[0.5vw]"
+              placeholder="blur"
             />
           </div>
         ))}
