@@ -149,7 +149,7 @@ const Profile = () => {
 
   return (
     <form
-      className="p-5 bg-slate-100 h-full overflow-y-auto"
+      className="p-5 bg-slate-100 h-full overflow-y-auto w-full"
       encType="multipart/form-data"
       onSubmit={handleUpdateProfile}
       ref={divRef}
@@ -222,7 +222,7 @@ const Profile = () => {
           >
             {!isEdit && (
               <>
-                <p className="pl-1 font-sans font-bold mb-2 mr-3">Id:</p>
+                <p className="pl-1 font-sans font-bold mb-2 mr-3">ID:</p>
                 <div className="font-sans truncate mb-2 border-2 border-gray-200 pl-2 rounded-md">
                   {id}
                 </div>
@@ -287,7 +287,7 @@ const Profile = () => {
               isEdit ? "items-center" : "flex-col"
             }`}
           >
-            <p className="pl-1 font-sans font-bold mr-3">Mobile:</p>
+            <p className="pl-1 font-sans font-bold mr-3">Contact number:</p>
             {isEdit ? (
               <input
                 type="number"
