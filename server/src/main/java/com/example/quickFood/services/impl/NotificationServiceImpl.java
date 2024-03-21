@@ -38,7 +38,6 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public ResponseEntity<String> addNotification(String userId, String message) {
-        System.out.println("inside addNotification");
         try {
             Optional<User> optionalUser = userRepository.findById(userId);
 

@@ -2,21 +2,23 @@
 
 import React, { useRef, useEffect } from "react";
 import { useState } from "react";
-import { BsFillPersonFill } from "react-icons/bs";
+import { SiHomeassistantcommunitystore } from "react-icons/si";
 import { MdEdit } from "react-icons/md";
 import Image from "next/image";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
 import { useGlobals } from "../contexts/Globals";
 import { handleUnauthorized } from "@/app/utils/unauthorized";
 import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
 
-const ResInfo = () => {
+const ResInfo = ({ resId }) => {
   const router = useRouter();
-  const [id, setId] = useState("");
+  const [id, setId] = useState(
+    resId !== undefined && resId !== null ? resId : ""
+  );
   const [resName, setResName] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
-  const [pic, setPic] = useState(null);
+  const [image, setImage] = useState(null);
   const [imgStream, setImgStream] = useState("");
   const [address, setAddress] = useState("");
   const [isEdit, setIsEdit] = useState(false);
@@ -24,7 +26,7 @@ const ResInfo = () => {
   const [warning, setWarning] = useState("");
   const fileInputRef = useRef(null);
   const divRef = useRef(null);
-  const { setToastMessage, setProfilePercentage, setIsLoggedIn } = useGlobals();
+  const { setToastMessage, setIsLoggedIn } = useGlobals();
   const [isAddRes, setIsAddRes] = useState(true);
 
   useEffect(() => {
@@ -32,9 +34,7 @@ const ResInfo = () => {
       const token = localStorage.getItem("token");
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/user/getUser?userId=${
-            token !== null ? jwtDecode(token).sub : ""
-          }`,
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/restaurant/getRestaurantById?id=${resId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -49,9 +49,8 @@ const ResInfo = () => {
           setAddress(
             response.data.address !== null ? response.data.address : ""
           );
-          setId(response.data.id);
-          if (response.data.profilePic !== null) {
-            setImgStream(`data:image/jpeg;base64,${response.data.pic}`);
+          if (response.data.image !== null) {
+            setImgStream(`data:image/jpeg;base64,${response.data.image}`);
           }
         }
       } catch (error) {
@@ -96,7 +95,7 @@ const ResInfo = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setPic(file);
+    setImage(file);
     setWarning("");
 
     const reader = new FileReader();
@@ -106,8 +105,13 @@ const ResInfo = () => {
     };
   };
 
-  const handleUpdateProfile = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (id === "") {
+      setWarning("ID cannot be empty");
+      return;
+    }
 
     if (resName === "") {
       setWarning("Name cannot be empty");
@@ -115,39 +119,44 @@ const ResInfo = () => {
     }
 
     const formData = new FormData();
-    formData.append("id", jwtDecode(localStorage.getItem("token")).sub);
+    formData.append("id", id);
     formData.append("name", resName);
     formData.append("address", address);
     formData.append("mobile", phoneNum);
-    formData.append("file", pic);
+    formData.append("file", image);
+    formData.append("owner", jwtDecode(localStorage.getItem("token")).sub);
 
     try {
-      const response = await axios.put(
-        `http://localhost:8080/user/updateProfile`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "multipart/form-data",
-          },
+      if (isAddRes) {
+        const response = await axios.post(
+          `http://localhost:8080/restaurant/addRestaurant`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        if (response.status == 200) {
+          setToastMessage("Restaurant added successfully");
+          router.push("/yourRes");
         }
-      );
-      if (response.status == 200) {
-        setToastMessage("Profile updated successfully");
-        setIsEdit(false);
-
-        let percentage = 40;
-        if (address !== "") {
-          percentage += 20;
+      } else {
+        const response = await axios.put(
+          `http://localhost:8080/restaurant/updateRestaurant`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        if (response.status == 200) {
+          setToastMessage("Restaurant updated successfully");
+          setIsEdit(false);
         }
-        if (phoneNum !== "") {
-          percentage += 20;
-        }
-        if (imgStream !== "") {
-          percentage += 20;
-        }
-
-        setProfilePercentage(percentage);
       }
     } catch (error) {
       console.log("Error:", error.response);
@@ -161,7 +170,7 @@ const ResInfo = () => {
     <form
       className="p-5 bg-slate-100 h-full overflow-y-auto w-full"
       encType="multipart/form-data"
-      onSubmit={handleUpdateProfile}
+      onSubmit={handleSubmit}
       ref={divRef}
     >
       <div className="max-w-[40rem] mx-auto h-full relative">
@@ -174,7 +183,7 @@ const ResInfo = () => {
           }}
         >
           <div className="flex justify-center items-center absolute top-2 left-1/2 transform -translate-x-1/2 mb-3">
-            <BsFillPersonFill className="mr-2 text-3xl text-gray-700" />
+            <SiHomeassistantcommunitystore className="mr-2 text-3xl text-gray-700" />
             <p className="font-serif text-2xl font-bold text-gray-700">
               Restaurant
             </p>
@@ -191,27 +200,26 @@ const ResInfo = () => {
                 className="bg-slate-200 min-w-[8.5rem] min-h-[8.5rem] max-w-[8.5rem] max-h-[8.5rem] mt-1 mb-3 rounded-full border-2 border-solid border-white object-cover"
               />
             )}
-            {isEdit ||
-              (isAddRes && (
-                <div className="w-[65%] flex justify-center items-center mb-4 mt-3">
-                  <div
-                    onClick={() => fileInputRef.current.click()}
-                    className="file-input file-input-bordered file-input-xs w-full max-w-[15rem] flex cursor-pointer"
-                  >
-                    <div className="w-[40%] h-full bg-slate-600 text-white flex justify-center items-center">
-                      Choose image
-                    </div>
-                    <div className="w-[60%] h-full text-gray-700 flex justify-center items-center">
-                      {imgStream === "" ? "No image chosen" : "Image chosen"}
-                    </div>
+            {(isEdit || isAddRes) && (
+              <div className="w-[65%] flex justify-center items-center mb-4 mt-3">
+                <div
+                  onClick={() => fileInputRef.current.click()}
+                  className="file-input file-input-bordered file-input-xs w-full max-w-[15rem] flex cursor-pointer"
+                >
+                  <div className="w-[40%] h-full bg-slate-600 text-white flex justify-center items-center">
+                    Choose image
+                  </div>
+                  <div className="w-[60%] h-full text-gray-700 flex justify-center items-center">
+                    {imgStream === "" ? "No image chosen" : "Image chosen"}
                   </div>
                 </div>
-              ))}
+              </div>
+            )}
             <input
               className="hidden"
               type="file"
-              id="profilePic"
-              name="profilePic"
+              id="profileimage"
+              name="profileimage"
               accept="image/*"
               ref={fileInputRef}
               onChange={handleFileChange}
@@ -348,7 +356,7 @@ const ResInfo = () => {
               if (!isAddRes && !isEdit) {
                 setIsEdit(true);
               } else {
-                handleUpdateProfile(e);
+                handleSubmit(e);
               }
             }}
           >
