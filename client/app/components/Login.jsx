@@ -75,13 +75,15 @@ const Login = ({ setShowLogin, setShowSignUp, isUserLogin }) => {
     };
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/auth/googleAuth`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/googleAuth`,
         postData
       );
       if (response.status == 200) {
         localStorage.setItem("token", response.data.token);
+        localStorage.setItem("isLoggedIn", true);
         setIsLoggedIn(true);
         setShowLogin(false);
+        setToastMessage("Logged in successfully");
       }
     } catch (error) {
       console.log(error);

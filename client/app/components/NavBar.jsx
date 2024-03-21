@@ -91,7 +91,7 @@ const NavBar = () => {
             <Link href="/" className="cursor-pointer hover:underline">
               Order Food
             </Link>
-            <Link href="/" className="cursor-pointer hover:underline">
+            <Link href="/yourRes" className="cursor-pointer hover:underline">
               Your Restaurants
             </Link>
           </div>

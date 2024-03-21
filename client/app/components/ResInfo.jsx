@@ -11,12 +11,12 @@ import { useGlobals } from "../contexts/Globals";
 import { handleUnauthorized } from "@/app/utils/unauthorized";
 import { useRouter } from "next/navigation";
 
-const Profile = () => {
+const ResInfo = () => {
   const router = useRouter();
   const [id, setId] = useState("");
-  const [username, setUsername] = useState("");
+  const [resName, setResName] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
-  const [profilePic, setProfilePic] = useState(null);
+  const [pic, setPic] = useState(null);
   const [imgStream, setImgStream] = useState("");
   const [address, setAddress] = useState("");
   const [isEdit, setIsEdit] = useState(false);
@@ -25,9 +25,10 @@ const Profile = () => {
   const fileInputRef = useRef(null);
   const divRef = useRef(null);
   const { setToastMessage, setProfilePercentage, setIsLoggedIn } = useGlobals();
+  const [isAddRes, setIsAddRes] = useState(true);
 
   useEffect(() => {
-    const getProfile = async () => {
+    const getResInfo = async () => {
       const token = localStorage.getItem("token");
       try {
         const response = await axios.get(
@@ -41,7 +42,7 @@ const Profile = () => {
           }
         );
         if (response.status === 200) {
-          setUsername(response.data.name);
+          setResName(response.data.name);
           setPhoneNum(
             response.data.mobile !== null ? response.data.mobile : ""
           );
@@ -50,8 +51,7 @@ const Profile = () => {
           );
           setId(response.data.id);
           if (response.data.profilePic !== null) {
-            setImgStream(`data:image/jpeg;base64,${response.data.profilePic}`);
-            console.log(typeof response.data.profilePic);
+            setImgStream(`data:image/jpeg;base64,${response.data.pic}`);
           }
         }
       } catch (error) {
@@ -62,7 +62,17 @@ const Profile = () => {
       }
     };
 
-    getProfile();
+    setIsAddRes(
+      window.location.href ===
+        `${process.env.NEXT_PUBLIC_CLIENT_URL}/yourRes/addNewRes`
+    );
+
+    if (
+      window.location.href !==
+      `${process.env.NEXT_PUBLIC_CLIENT_URL}/yourRes/addNewRes`
+    ) {
+      getResInfo();
+    }
   }, []);
 
   useEffect(() => {
@@ -86,7 +96,7 @@ const Profile = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setProfilePic(file);
+    setPic(file);
     setWarning("");
 
     const reader = new FileReader();
@@ -99,17 +109,17 @@ const Profile = () => {
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
 
-    if (username === "") {
-      setWarning("Username cannot be empty");
+    if (resName === "") {
+      setWarning("Name cannot be empty");
       return;
     }
 
     const formData = new FormData();
     formData.append("id", jwtDecode(localStorage.getItem("token")).sub);
-    formData.append("name", username);
+    formData.append("name", resName);
     formData.append("address", address);
     formData.append("mobile", phoneNum);
-    formData.append("file", profilePic);
+    formData.append("file", pic);
 
     try {
       const response = await axios.put(
@@ -166,7 +176,7 @@ const Profile = () => {
           <div className="flex justify-center items-center absolute top-2 left-1/2 transform -translate-x-1/2 mb-3">
             <BsFillPersonFill className="mr-2 text-3xl text-gray-700" />
             <p className="font-serif text-2xl font-bold text-gray-700">
-              Profile
+              Restaurant
             </p>
           </div>
           <div className="w-full flex absolute top-[68px] justify-center items-center flex-col mb-2">
@@ -175,27 +185,28 @@ const Profile = () => {
             ) : (
               <Image
                 src={imgStream}
-                alt="profile picture"
+                alt="restaurant image"
                 width={136}
                 height={136}
                 className="bg-slate-200 min-w-[8.5rem] min-h-[8.5rem] max-w-[8.5rem] max-h-[8.5rem] mt-1 mb-3 rounded-full border-2 border-solid border-white object-cover"
               />
             )}
-            {isEdit && (
-              <div className="w-[65%] flex justify-center items-center mb-4 mt-3">
-                <div
-                  onClick={() => fileInputRef.current.click()}
-                  className="file-input file-input-bordered file-input-xs w-full max-w-[15rem] flex cursor-pointer"
-                >
-                  <div className="w-[40%] h-full bg-slate-600 text-white flex justify-center items-center">
-                    Choose image
-                  </div>
-                  <div className="w-[60%] h-full text-gray-700 flex justify-center items-center">
-                    {imgStream === "" ? "No image chosen" : "Image chosen"}
+            {isEdit ||
+              (isAddRes && (
+                <div className="w-[65%] flex justify-center items-center mb-4 mt-3">
+                  <div
+                    onClick={() => fileInputRef.current.click()}
+                    className="file-input file-input-bordered file-input-xs w-full max-w-[15rem] flex cursor-pointer"
+                  >
+                    <div className="w-[40%] h-full bg-slate-600 text-white flex justify-center items-center">
+                      Choose image
+                    </div>
+                    <div className="w-[60%] h-full text-gray-700 flex justify-center items-center">
+                      {imgStream === "" ? "No image chosen" : "Image chosen"}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              ))}
             <input
               className="hidden"
               type="file"
@@ -208,60 +219,80 @@ const Profile = () => {
           </div>
         </div>
         <div
-          className={`overflow-x-hidden ${isEdit ? "mt-[120px]" : "mt-[70px]"}`}
+          className={`overflow-x-hidden ${
+            isEdit || isAddRes ? "mt-[120px]" : "mt-[70px]"
+          }`}
         >
-          {isEdit && (
-            <p className="font-sans text-sm text-red-600 w-full text-center mt-2 mb-2">
-              {warning}
-            </p>
-          )}
+          {isEdit ||
+            (isAddRes && (
+              <p className="font-sans text-sm text-red-600 w-full text-center mt-2 mb-2">
+                {warning}
+              </p>
+            ))}
           <div
             className={`flex overflow-x-hidden ${
-              isEdit ? "items-center" : "flex-col"
-            }`}
-          >
-            {!isEdit && (
-              <>
-                <p className="pl-1 font-sans font-bold mb-2 mr-3">ID:</p>
-                <div className="font-sans truncate mb-2 border-2 border-gray-200 pl-2 rounded-md">
-                  {id}
-                </div>
-              </>
-            )}
-          </div>
-          <div
-            className={`flex overflow-x-hidden ${
-              isEdit ? "items-center" : "flex-col"
+              isEdit || isAddRes ? "items-center" : "flex-col"
             }`}
           >
             <p className="pl-1 font-sans font-bold mb-2 mr-3">
-              Username:{isEdit && <span className="text-red-500">*</span>}
+              ID:
+              {(isEdit || isAddRes) && <span className="text-red-500">*</span>}
             </p>
-            {isEdit ? (
+            {isEdit || isAddRes ? (
               <input
                 type="text"
-                className="indent-2 rounded-b-none border-b-2 rounded-2xl w-full mb-4 outline-none p-1 font-sans cursor-pointer bg-slate-100"
-                placeholder="Enter username"
+                className={`indent-2 rounded-b-none border-b-2 rounded-2xl w-full mb-4 outline-none p-1 font-sans ${
+                  isAddRes ? "cursor-pointer" : "cursor-not-allowed"
+                } bg-slate-100`}
+                placeholder="Enter restaurant ID"
                 required={true}
-                value={username}
+                value={id}
                 onChange={(e) => {
-                  setUsername(e.target.value);
+                  setId(e.target.value);
                   setWarning("");
                 }}
+                readOnly={!isAddRes}
               />
             ) : (
               <div className="font-sans truncate mb-2 border-2 border-gray-200 pl-2 rounded-md">
-                {username}
+                {id}
               </div>
             )}
           </div>
           <div
             className={`flex overflow-x-hidden ${
-              isEdit ? "items-center" : "flex-col"
+              isEdit || isAddRes ? "items-center" : "flex-col"
+            }`}
+          >
+            <p className="pl-1 font-sans font-bold mb-2 mr-3">
+              Name:
+              {(isEdit || isAddRes) && <span className="text-red-500">*</span>}
+            </p>
+            {isEdit || isAddRes ? (
+              <input
+                type="text"
+                className="indent-2 rounded-b-none border-b-2 rounded-2xl w-full mb-4 outline-none p-1 font-sans cursor-pointer bg-slate-100"
+                placeholder="Enter resName"
+                required={true}
+                value={resName}
+                onChange={(e) => {
+                  setResName(e.target.value);
+                  setWarning("");
+                }}
+              />
+            ) : (
+              <div className="font-sans truncate mb-2 border-2 border-gray-200 pl-2 rounded-md">
+                {resName}
+              </div>
+            )}
+          </div>
+          <div
+            className={`flex overflow-x-hidden ${
+              isEdit || isAddRes ? "items-center" : "flex-col"
             }`}
           >
             <p className="pl-1 font-sans font-bold mb-2 mr-3">Address:</p>
-            {isEdit ? (
+            {isEdit || isAddRes ? (
               <input
                 type="text"
                 className="indent-2 rounded-b-none border-b-2 rounded-2xl w-full mb-4 outline-none p-1 font-sans cursor-pointer bg-slate-100 mr-1"
@@ -284,11 +315,11 @@ const Profile = () => {
           </div>
           <div
             className={`flex overflow-x-hidden ${
-              isEdit ? "items-center" : "flex-col"
+              isEdit || isAddRes ? "items-center" : "flex-col"
             }`}
           >
-            <p className="pl-1 font-sans font-bold mr-3">Contact number:</p>
-            {isEdit ? (
+            <p className="pl-1 font-sans font-bold mr-3">Mobile:</p>
+            {isEdit || isAddRes ? (
               <input
                 type="number"
                 className="indent-2 rounded-b-none border-b-2 rounded-2xl w-full mb-4 outline-none p-1 font-sans cursor-pointer bg-slate-100"
@@ -314,20 +345,20 @@ const Profile = () => {
               isScrollable ? "mb-5" : "absolute bottom-0"
             }`}
             onClick={(e) => {
-              if (!isEdit) {
+              if (!isAddRes && !isEdit) {
                 setIsEdit(true);
               } else {
                 handleUpdateProfile(e);
               }
             }}
           >
-            {!isEdit ? (
+            {!isEdit && !isAddRes ? (
               <>
                 <MdEdit className="mr-1 text-lg" />
                 Edit
               </>
             ) : (
-              "Apply"
+              "Submit"
             )}
           </div>
         </div>
@@ -336,4 +367,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default ResInfo;

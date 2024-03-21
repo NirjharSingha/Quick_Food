@@ -87,7 +87,7 @@ public class NotificationServiceImpl implements NotificationService {
             return ResponseEntity.badRequest().body("Failed to delete notification.");
         }
     }
-    
+
     @Transactional
     @Override
     public ResponseEntity<String> deleteByUserId(String userId) {

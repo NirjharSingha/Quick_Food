@@ -8,6 +8,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { useGlobals } from "../contexts/Globals";
+import { jwtDecode } from "jwt-decode";
 
 const SignUp = ({ setShowLogin, setShowSignUp }) => {
   const [password, setPassword] = useState("");
@@ -77,7 +78,7 @@ const SignUp = ({ setShowLogin, setShowSignUp }) => {
     };
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/auth/googleAuth`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/googleAuth`,
         postData
       );
       if (response.status == 200) {
@@ -85,6 +86,7 @@ const SignUp = ({ setShowLogin, setShowSignUp }) => {
         localStorage.setItem("isLoggedIn", true);
         setIsLoggedIn(true);
         setShowSignUp(false);
+        setToastMessage("Signed up successfully");
       }
     } catch (error) {
       console.log(error);

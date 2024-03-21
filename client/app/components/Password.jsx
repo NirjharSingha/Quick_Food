@@ -38,7 +38,7 @@ const Password = () => {
           ref={buttonRef}
         >
           <RiLockPasswordFill className="text-2xl mr-2" />
-          <p className="font-bold">Update Password</p>
+          <p className="font-bold truncate">Update Password</p>
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[450px]">

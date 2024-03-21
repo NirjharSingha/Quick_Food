@@ -1,14 +1,13 @@
 "use client";
 
 import React, { useEffect } from "react";
-import FavIcon from "@/public/favicon.ico";
-import Image from "next/image";
 import axios from "axios";
 import { useGlobals } from "@/app/contexts/Globals";
 import { jwtDecode } from "jwt-decode";
 import { handleUnauthorized } from "@/app/utils/unauthorized";
 import { useRouter } from "next/navigation";
 import { BsFillPersonFill } from "react-icons/bs";
+import { IoNotifications } from "react-icons/io5";
 import Password from "@/app/components/Password";
 
 export default function RootLayout({ children }) {
@@ -50,6 +49,14 @@ export default function RootLayout({ children }) {
     profilePercentage();
   }, []);
 
+  const navigateToMyAccount = () => {
+    router.push("/myAccount");
+  };
+
+  const navigateToNotifications = () => {
+    router.push("/myAccount/notifications");
+  };
+
   return (
     <div
       className="w-screen overflow-x-hidden overflow-y-auto flex"
@@ -61,11 +68,11 @@ export default function RootLayout({ children }) {
           style={{ width: "calc(100% - 2rem)" }}
         >
           <div className="flex justify-center items-center mb-3">
-            <div className="bg-yellow-50 p-[0.35rem] flex justify-center items-center mr-2 rounded-full border-2 border-solid border-white w-[2.3rem] h-[2.3rem]">
-              <Image src={FavIcon} alt="logo" width={30} />
+            <div className="bg-blue-50 p-[0.35rem] flex justify-center items-center mr-2 rounded-full border-2 border-solid border-white w-[2.3rem] h-[2.3rem]">
+              <BsFillPersonFill className="text-xl text-blue-400" />
             </div>
             <p className="text-center text-white text-xl font-bold font-sans">
-              Quick Food
+              My Account
             </p>
           </div>
           <div className="w-[90%] mx-auto h-[0.5rem] rounded-xl bg-white">
@@ -82,13 +89,19 @@ export default function RootLayout({ children }) {
               : "Profile _% complete"}
           </p>
         </div>
-        <div className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center">
+        <div
+          className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center"
+          onClick={navigateToMyAccount}
+        >
           <BsFillPersonFill className="text-2xl mr-2" />
-          <p className="font-bold">Personal info</p>
+          <p className="font-bold truncate">Personal info</p>
         </div>
-        <div className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center">
-          <BsFillPersonFill className="text-2xl mr-2" />
-          <p className="font-bold">Personal info</p>
+        <div
+          className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center"
+          onClick={navigateToNotifications}
+        >
+          <IoNotifications className="text-2xl mr-2" />
+          <p className="font-bold truncate">Notifications</p>
         </div>
         <Password />
       </div>
