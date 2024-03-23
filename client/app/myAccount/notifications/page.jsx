@@ -84,7 +84,7 @@ export default function CardDemo({ className, ...props }) {
           {notifications.map((notification, index) => (
             <div
               key={index}
-              className="mb-4 grid grid-cols-[25px_1fr_25px] items-start pb-2 last:mb-0 shadow-md bg-base-400 rounded-md p-2"
+              className="mb-4 grid grid-cols-[25px_1fr_25px] items-start pb-2 last:mb-0 shadow-md bg-base-100 rounded-md p-2"
             >
               <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500 my-auto" />
               <div className="space-y-1">

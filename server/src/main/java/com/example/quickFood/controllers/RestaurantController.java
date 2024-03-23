@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/restaurant")
@@ -50,12 +51,17 @@ public class RestaurantController {
             return restaurantService.updateRestaurant(restaurantDto);
         } catch (IOException e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Failed to add restaurant");
+            return ResponseEntity.status(500).body("Failed to update restaurant");
         }
     }
 
     @GetMapping("/getRestaurantById")
     public ResponseEntity<RestaurantDto> getRestaurantById(@RequestParam String id) {
         return restaurantService.getRestaurantById(id);
+    }
+
+    @GetMapping("/getRestaurantByOwner")
+    public ResponseEntity<List<RestaurantDto>> getRestaurantByOwner(@RequestParam String owner) {
+        return restaurantService.getRestaurantByOwner(owner);
     }
 }

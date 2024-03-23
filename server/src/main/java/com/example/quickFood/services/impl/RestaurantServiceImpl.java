@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -73,8 +75,23 @@ public class RestaurantServiceImpl implements RestaurantService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } else {
             Restaurant restaurant = restaurantRepository.findById(id).get();
-            RestaurantDto restaurantDto = new RestaurantDto(restaurant.getId(), restaurant.getName(), restaurant.getUser().getId(), restaurant.getAddress(), restaurant.getMobile(), restaurant.getImage());
+            RestaurantDto restaurantDto = new RestaurantDto(restaurant.getId(), restaurant.getName(), restaurant.getOwner().getId(), restaurant.getAddress(), restaurant.getMobile(), restaurant.getImage());
             return ResponseEntity.ok(restaurantDto);
+        }
+    }
+
+    @Override
+    public ResponseEntity<List<RestaurantDto>> getRestaurantByOwner(String owner) {
+        if (restaurantRepository.findByOwnerId(owner).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } else {
+            List<Restaurant> restaurants = restaurantRepository.findByOwnerId(owner);
+            List<RestaurantDto> restaurantDtoList = new ArrayList<>();
+            for (Restaurant restaurant : restaurants) {
+                RestaurantDto restaurantDto = new RestaurantDto(restaurant.getId(), restaurant.getName(), restaurant.getOwner().getId(), restaurant.getAddress(), restaurant.getMobile(), restaurant.getImage());
+                restaurantDtoList.add(restaurantDto);
+            }
+            return ResponseEntity.ok(restaurantDtoList);
         }
     }
 }

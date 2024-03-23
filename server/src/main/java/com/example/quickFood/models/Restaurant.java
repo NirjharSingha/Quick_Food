@@ -19,7 +19,7 @@ public class Restaurant {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner") // Foreign key mapping
-    private User user;
+    private User owner;
 
     private String address;
     private String mobile;

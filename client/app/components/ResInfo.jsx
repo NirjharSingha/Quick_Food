@@ -162,6 +162,8 @@ const ResInfo = ({ resId }) => {
       console.log("Error:", error.response);
       if (error.response.status === 401) {
         handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+      } else if (error.response.status === 409) {
+        setWarning("ID already exists");
       }
     }
   };
@@ -231,12 +233,11 @@ const ResInfo = ({ resId }) => {
             isEdit || isAddRes ? "mt-[120px]" : "mt-[70px]"
           }`}
         >
-          {isEdit ||
-            (isAddRes && (
-              <p className="font-sans text-sm text-red-600 w-full text-center mt-2 mb-2">
-                {warning}
-              </p>
-            ))}
+          {(isEdit || isAddRes) && (
+            <p className="font-sans text-sm text-red-600 w-full text-center mt-2 mb-2">
+              {warning}
+            </p>
+          )}
           <div
             className={`flex overflow-x-hidden ${
               isEdit || isAddRes ? "items-center" : "flex-col"
