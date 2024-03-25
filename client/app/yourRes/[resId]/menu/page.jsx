@@ -47,7 +47,7 @@ const page = () => {
     <div className="p-4 w-full grid grid-cols-3 gap-x-2 gap-y-4 overflow-y-auto">
       {showMessage && (
         <p className="text-md col-span-3 font-serif text-gray-700 w-full h-full flex justify-center items-center">
-          No Restaurants Found
+          No Menu Items Found
         </p>
       )}
       {restaurants.length !== 0 &&

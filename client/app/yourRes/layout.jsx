@@ -6,9 +6,12 @@ import { TbSeparatorVertical } from "react-icons/tb";
 import { FaHome } from "react-icons/fa";
 import { IoMdAddCircle } from "react-icons/io";
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { BiSolidFoodMenu } from "react-icons/bi";
 
 export default function RootLayout({ children }) {
   const router = useRouter();
+  const pathname = usePathname();
 
   const navigateYourRestaurants = () => {
     router.push("/yourRes");
@@ -45,20 +48,48 @@ export default function RootLayout({ children }) {
             Manage your restaurants here
           </p>
         </div>
-        <div
-          className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center"
-          onClick={navigateYourRestaurants}
-        >
-          <FaHome className="text-2xl mr-2" />
-          <p className="font-bold truncate">Your Restaurants</p>
-        </div>
-        <div
-          className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center"
-          onClick={navigateAddNewRestaurant}
-        >
-          <IoMdAddCircle className="text-2xl mr-2" />
-          <p className="font-bold truncate">Add New Restaurant</p>
-        </div>
+        {pathname === "/yourRes" || pathname === "/yourRes/addNewRes" ? (
+          <>
+            <div
+              className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center"
+              onClick={navigateYourRestaurants}
+            >
+              <FaHome className="text-2xl mr-2" />
+              <p className="font-bold truncate">Your Restaurants</p>
+            </div>
+            <div
+              className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center"
+              onClick={navigateAddNewRestaurant}
+            >
+              <IoMdAddCircle className="text-2xl mr-2" />
+              <p className="font-bold truncate">Add New Restaurant</p>
+            </div>
+          </>
+        ) : (
+          <>
+            <div
+              className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center"
+              onClick={navigateYourRestaurants}
+            >
+              <FaHome className="text-2xl mr-2" />
+              <p className="font-bold truncate">Restaurant Info</p>
+            </div>
+            <div
+              className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center"
+              onClick={navigateYourRestaurants}
+            >
+              <BiSolidFoodMenu className="text-2xl mr-2" />
+              <p className="font-bold truncate">Menu Items</p>
+            </div>
+            <div
+              className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center"
+              onClick={navigateYourRestaurants}
+            >
+              <IoMdAddCircle className="text-2xl mr-2" />
+              <p className="font-bold truncate">Add New Menu</p>
+            </div>
+          </>
+        )}
       </div>
       <div
         className="overflow-x-hidden overflow-y-auto flex w-full"
