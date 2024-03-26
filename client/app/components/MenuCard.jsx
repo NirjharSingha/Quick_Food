@@ -5,6 +5,7 @@ import Image from "next/image";
 import Menu from "@/public/Menu.jpg";
 import { FaStar } from "react-icons/fa";
 import { GrEdit } from "react-icons/gr";
+import MenuDialog from "./MenuDialog";
 
 const MenuCard = ({ menu }) => {
   const handleClick = () => {};
@@ -38,9 +39,10 @@ const MenuCard = ({ menu }) => {
         Price {menu.price ? `${menu.price} Tk` : "Not Available"}
       </p>
       <div className="flex justify-between items-center mt-1">
-        <div className="mt-1 font-bold text-blue-500 hover:bg-gray-300 p-1 rounded-full text-lg ml-3 mb-2 hover:p-2 hover:text-sm cursor-pointer">
+        {/* <div className="mt-1 font-bold text-blue-500 hover:bg-gray-300 p-1 rounded-full text-lg ml-3 mb-2 hover:p-2 hover:text-sm cursor-pointer">
           <GrEdit />
-        </div>
+        </div> */}
+        <MenuDialog isAdd={false} menu={menu} />
         <div className="mt-1 flex gap-1 w-[3.7rem] justify-center items-center font-bold text-white bg-green-700 rounded-sm text-sm pt-1 pb-1 mr-3 mb-2">
           4.5 <FaStar />
         </div>

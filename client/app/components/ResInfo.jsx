@@ -108,13 +108,8 @@ const ResInfo = ({ resId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (id === "") {
-      setWarning("ID cannot be empty");
-      return;
-    }
-
-    if (resName === "") {
-      setWarning("Name cannot be empty");
+    if (id === "" || resName === "" || phoneNum === "" || address === "") {
+      setWarning("Please fill all the fields");
       return;
     }
 
@@ -300,7 +295,10 @@ const ResInfo = ({ resId }) => {
               isEdit || isAddRes ? "items-center" : "flex-col"
             }`}
           >
-            <p className="pl-1 font-sans font-bold mb-2 mr-3">Address:</p>
+            <p className="pl-1 font-sans font-bold mb-2 mr-3">
+              Address:
+              {(isEdit || isAddRes) && <span className="text-red-500">*</span>}
+            </p>
             {isEdit || isAddRes ? (
               <input
                 type="text"
@@ -327,7 +325,10 @@ const ResInfo = ({ resId }) => {
               isEdit || isAddRes ? "items-center" : "flex-col"
             }`}
           >
-            <p className="pl-1 font-sans font-bold mr-3">Mobile:</p>
+            <p className="pl-1 font-sans font-bold mr-3">
+              Mobile:
+              {(isEdit || isAddRes) && <span className="text-red-500">*</span>}
+            </p>
             {isEdit || isAddRes ? (
               <input
                 type="number"

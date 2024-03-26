@@ -8,6 +8,7 @@ import { IoMdAddCircle } from "react-icons/io";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { BiSolidFoodMenu } from "react-icons/bi";
+import MenuDialog from "../components/MenuDialog";
 
 export default function RootLayout({ children }) {
   const router = useRouter();
@@ -81,13 +82,14 @@ export default function RootLayout({ children }) {
               <BiSolidFoodMenu className="text-2xl mr-2" />
               <p className="font-bold truncate">Menu Items</p>
             </div>
-            <div
+            {/* <div
               className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center"
               onClick={navigateYourRestaurants}
             >
               <IoMdAddCircle className="text-2xl mr-2" />
               <p className="font-bold truncate">Add New Menu</p>
-            </div>
+            </div> */}
+            <MenuDialog isAdd={true} />
           </>
         )}
       </div>

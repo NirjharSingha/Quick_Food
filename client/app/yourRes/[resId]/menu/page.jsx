@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import RestaurantCard from "../components/RestaurantCard";
+import RestaurantCard from "@/app/components/RestaurantCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
@@ -9,13 +9,15 @@ import { handleUnauthorized } from "@/app/utils/unauthorized";
 import { useGlobals } from "@/app/contexts/Globals";
 import { useRouter } from "next/navigation";
 
-const page = () => {
+const page = ({ params }) => {
+  const { resId } = params;
   const { setToastMessage, setIsLoggedIn } = useGlobals();
   const router = useRouter();
   const [restaurants, setRestaurants] = useState([]);
   const [showMessage, setShowMessage] = useState(false);
 
   useEffect(() => {
+    console.log("resId", resId);
     const getRestaurants = async () => {
       const owner = jwtDecode(localStorage.getItem("token")).sub;
       try {
