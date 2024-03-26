@@ -1,5 +1,6 @@
 package com.example.quickFood.models;
 
+import com.example.quickFood.enums.Category;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,7 +27,9 @@ public class Menu {
     private Restaurant restaurant;
 
     private double price;
-    private String category;
+
+    @Enumerated(EnumType.STRING)
+    private Category category;
 
     @Lob
     @Column(name = "image", columnDefinition = "LONGBLOB")

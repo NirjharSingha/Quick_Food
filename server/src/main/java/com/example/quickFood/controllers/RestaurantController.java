@@ -23,12 +23,7 @@ public class RestaurantController {
             if (file != null && !file.isEmpty()) {
                 restaurantDto.setImage(file.getBytes());
             }
-            if (restaurantDto.getMobile().equals("")) {
-                restaurantDto.setMobile(null);
-            }
-            if (restaurantDto.getAddress().equals("")) {
-                restaurantDto.setAddress(null);
-            }
+
             return restaurantService.addRestaurant(restaurantDto);
         } catch (IOException e) {
             e.printStackTrace();
@@ -42,12 +37,7 @@ public class RestaurantController {
             if (file != null && !file.isEmpty()) {
                 restaurantDto.setImage(file.getBytes());
             }
-            if (restaurantDto.getMobile().equals("")) {
-                restaurantDto.setMobile(null);
-            }
-            if (restaurantDto.getAddress().equals("")) {
-                restaurantDto.setAddress(null);
-            }
+
             return restaurantService.updateRestaurant(restaurantDto);
         } catch (IOException e) {
             e.printStackTrace();
