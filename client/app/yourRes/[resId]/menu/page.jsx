@@ -1,28 +1,24 @@
 "use client";
 
 import React from "react";
-import RestaurantCard from "@/app/components/RestaurantCard";
+import MenuCard from "@/app/components/MenuCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
 import { handleUnauthorized } from "@/app/utils/unauthorized";
 import { useGlobals } from "@/app/contexts/Globals";
 import { useRouter } from "next/navigation";
 
-const page = ({ params }) => {
-  const { resId } = params;
-  const { setToastMessage, setIsLoggedIn } = useGlobals();
+const page = () => {
+  const { setToastMessage, setIsLoggedIn, menu, setMenu } = useGlobals();
   const router = useRouter();
-  const [restaurants, setRestaurants] = useState([]);
   const [showMessage, setShowMessage] = useState(false);
 
   useEffect(() => {
-    console.log("resId", resId);
-    const getRestaurants = async () => {
-      const owner = jwtDecode(localStorage.getItem("token")).sub;
+    const getMenu = async () => {
+      const resId = localStorage.getItem("restaurantId");
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/restaurant/getRestaurantByOwner?owner=${owner}`,
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/menu/getMenuByResId?resId=${resId}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -30,19 +26,21 @@ const page = ({ params }) => {
           }
         );
         if (response.status == 200) {
-          setRestaurants(response.data);
+          setMenu(response.data);
           if (response.data.length === 0) {
             setShowMessage(true);
+          } else {
+            setShowMessage(false);
           }
         }
       } catch (error) {
-        console.log("Error:", error.response);
+        console.log("Error:", error);
         if (error.response.status === 401) {
           handleUnauthorized(setIsLoggedIn, setToastMessage, router);
         }
       }
     };
-    getRestaurants();
+    getMenu();
   }, []);
 
   return (
@@ -52,10 +50,10 @@ const page = ({ params }) => {
           No Menu Items Found
         </p>
       )}
-      {restaurants.length !== 0 &&
-        restaurants.map((restaurant) => (
-          <div key={restaurant.id} className="w-full flex justify-center">
-            <RestaurantCard restaurant={restaurant} />
+      {menu.length !== 0 &&
+        menu.map((menuItem) => (
+          <div key={menuItem.id} className="w-full flex justify-center">
+            <MenuCard menu={menuItem} />
           </div>
         ))}
     </div>

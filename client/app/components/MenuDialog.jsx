@@ -16,21 +16,23 @@ import axios from "axios";
 import { handleUnauthorized } from "@/app/utils/unauthorized";
 import { useGlobals } from "@/app/contexts/Globals";
 import { useRouter } from "next/navigation";
-import { jwtDecode } from "jwt-decode";
-import { RiLockPasswordFill } from "react-icons/ri";
 import { GrEdit } from "react-icons/gr";
 import { IoMdAddCircle } from "react-icons/io";
 
 const MenuDialog = ({ isAdd, menu }) => {
   const buttonRef = useRef(null);
   const router = useRouter();
-  const { setIsLoggedIn, setToastMessage } = useGlobals();
-  const [name, setName] = useState("");
-  const [category, setCategory] = useState("");
+  const { setIsLoggedIn, setToastMessage, setMenu } = useGlobals();
+  const [name, setName] = useState(isAdd ? "" : menu.name);
+  const [category, setCategory] = useState(isAdd ? "" : menu.category);
   const [warning, setWarning] = useState("");
-  const [price, setPrice] = useState("");
-  const [quantity, setQuantity] = useState(0);
+  const [price, setPrice] = useState(isAdd ? "" : menu.price);
+  const [quantity, setQuantity] = useState(isAdd ? 0 : menu.quantity);
   const [image, setImage] = useState(null);
+
+  const isValidQuantity = (quantity) => {
+    return /^[0-9]+$/.test(quantity);
+  };
 
   return (
     <Dialog>
@@ -39,6 +41,14 @@ const MenuDialog = ({ isAdd, menu }) => {
           <div
             className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center"
             ref={buttonRef}
+            onClick={() => {
+              setWarning("");
+              setName("");
+              setCategory("");
+              setPrice("");
+              setQuantity(0);
+              setImage(null);
+            }}
           >
             <IoMdAddCircle className="text-2xl mr-2" />
             <p className="font-bold truncate">Add New Menu</p>
@@ -47,6 +57,14 @@ const MenuDialog = ({ isAdd, menu }) => {
           <div
             className="mt-1 font-bold text-blue-500 hover:bg-gray-300 p-1 rounded-full text-lg ml-3 mb-2 hover:p-2 hover:text-sm cursor-pointer"
             ref={buttonRef}
+            onClick={() => {
+              setWarning("");
+              setName(menu.name);
+              setCategory(menu.category);
+              setPrice(menu.price);
+              setQuantity(menu.quantity);
+              setImage(null);
+            }}
           >
             <GrEdit />
           </div>
@@ -100,9 +118,9 @@ const MenuDialog = ({ isAdd, menu }) => {
                 Select category
               </option>
               <option value="VEG">Veg</option>
-              <option value="NON-VEG">Non-Veg</option>
+              <option value="NON_VEG">Non-Veg</option>
               <option value="VEGAN">Vegan</option>
-              <option value="drink">Drink</option>
+              <option value="DRINK">Drink</option>
             </select>
           </div>
         </div>
@@ -134,6 +152,7 @@ const MenuDialog = ({ isAdd, menu }) => {
             <input
               id="quantity"
               type="number"
+              step="1"
               name="quantity"
               className="indent-2 rounded outline-none cursor-pointer font-sans"
               placeholder="Enter quantity"
@@ -173,26 +192,77 @@ const MenuDialog = ({ isAdd, menu }) => {
                 setWarning("Please fill the required fields");
                 return;
               }
-              const data = {
-                id: jwtDecode(localStorage.getItem("token")).sub,
-                password: newPass,
-              };
+
+              if (price.toString().includes("-")) {
+                setWarning("Price must be a positive value");
+                return;
+              }
+
+              if (!isValidQuantity(quantity)) {
+                setWarning("Quantity must be a positive integer");
+                return;
+              }
+
+              const data = new FormData();
+              if (!isAdd) {
+                data.append("id", menu.id);
+              }
+              data.append("name", name);
+              data.append("category", category);
+              data.append("price", price);
+              data.append("quantity", quantity);
+              data.append("file", image);
+              data.append("restaurantId", localStorage.getItem("restaurantId"));
+
               try {
-                const response = await axios.put(
-                  `http://localhost:8080/user/updatePassword`,
-                  data,
-                  {
-                    headers: {
-                      Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
+                if (isAdd) {
+                  const response = await axios.post(
+                    `${process.env.NEXT_PUBLIC_SERVER_URL}/menu/addMenu`,
+                    data,
+                    {
+                      headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                          "token"
+                        )}`,
+                        "Content-Type": "multipart/form-data",
+                      },
+                    }
+                  );
+                  if (response.status == 200) {
+                    setToastMessage("Menu added successfully");
+                    setMenu((prev) => [...prev, response.data]);
+                    buttonRef && buttonRef.current && buttonRef.current.click();
                   }
-                );
-                if (response.status == 200) {
-                  setToastMessage("Password updated successfully");
-                  buttonRef && buttonRef.current && buttonRef.current.click();
+                } else {
+                  const response = await axios.put(
+                    `${process.env.NEXT_PUBLIC_SERVER_URL}/menu/updateMenu`,
+                    data,
+                    {
+                      headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                          "token"
+                        )}`,
+                        "Content-Type": "multipart/form-data",
+                      },
+                    }
+                  );
+                  if (response.status == 200) {
+                    setToastMessage("Menu updated successfully");
+                    setMenu((prev) => {
+                      const index = prev.findIndex(
+                        (item) => item.id === menu.id
+                      );
+                      prev[index] = response.data;
+                      return prev;
+                    });
+                    buttonRef && buttonRef.current && buttonRef.current.click();
+                  }
                 }
               } catch (error) {
-                console.log("Error:", error.response);
+                console.log("Error:", error);
+                if (error.response.status === 400) {
+                  setWarning("Duplicate Menu name");
+                }
                 if (error.response.status === 401) {
                   handleUnauthorized(setIsLoggedIn, setToastMessage, router);
                 }

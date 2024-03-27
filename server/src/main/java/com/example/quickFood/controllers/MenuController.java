@@ -18,7 +18,7 @@ public class MenuController {
     private MenuServiceImpl menuService;
 
     @PostMapping("/addMenu")
-    public ResponseEntity<String> addMenu(@RequestParam(value = "file", required = false) MultipartFile file, @ModelAttribute MenuDto menuDto) {
+    public ResponseEntity<MenuDto> addMenu(@RequestParam(value = "file", required = false) MultipartFile file, @ModelAttribute MenuDto menuDto) {
         try {
             if (file != null && !file.isEmpty()) {
                 menuDto.setImage(file.getBytes());
@@ -27,12 +27,12 @@ public class MenuController {
             return menuService.addMenu(menuDto);
         } catch (IOException e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Failed to add menu");
+            return ResponseEntity.status(500).build();
         }
     }
 
     @PutMapping("/updateMenu")
-    public ResponseEntity<String> updateMenu(@RequestParam(value = "file", required = false) MultipartFile file, @ModelAttribute MenuDto menuDto) {
+    public ResponseEntity<MenuDto> updateMenu(@RequestParam(value = "file", required = false) MultipartFile file, @ModelAttribute MenuDto menuDto) {
         try {
             if (file != null && !file.isEmpty()) {
                 menuDto.setImage(file.getBytes());
@@ -41,7 +41,7 @@ public class MenuController {
             return menuService.updateMenu(menuDto);
         } catch (IOException e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Failed to update menu");
+            return ResponseEntity.status(500).build();
         }
     }
 

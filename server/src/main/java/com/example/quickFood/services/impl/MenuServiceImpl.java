@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +27,7 @@ public class MenuServiceImpl implements MenuService {
     private RestaurantRepository restaurantRepository;
 
     @Override
-    public ResponseEntity<String> addMenu(MenuDto menuDto) {
+    public ResponseEntity<MenuDto> addMenu(MenuDto menuDto) {
         Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(menuDto.getRestaurantId());
         if (optionalRestaurant.isPresent()) {
             Restaurant restaurant = optionalRestaurant.get();
@@ -39,15 +41,25 @@ public class MenuServiceImpl implements MenuService {
                     .image(menuDto.getImage())
                     .build();
 
-            menuRepository.save(menu);
-            return ResponseEntity.ok("Menu added successfully");
+            try {
+                Menu savedMenu = menuRepository.save(menu);
+                int id = savedMenu.getId();
+                System.out.println("Menu ID: " + id);
+                menuDto.setId(id);
+
+                return ResponseEntity.ok(menuDto);
+            } catch (DataIntegrityViolationException e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .build();
+            }
         } else {
-            return ResponseEntity.badRequest().body("Restaurant not found");
+            return ResponseEntity.badRequest().body(menuDto);
         }
     }
 
     @Override
-    public ResponseEntity<String> updateMenu(MenuDto menuDto) {
+    public ResponseEntity<MenuDto> updateMenu(MenuDto menuDto) {
         Optional<Menu> optionalMenu = menuRepository.findById(menuDto.getId());
         if (optionalMenu.isPresent()) {
             Menu menu = optionalMenu.get();
@@ -63,11 +75,21 @@ public class MenuServiceImpl implements MenuService {
             if (menuDto.getImage() != null) {
                 // Update the image only if it is not null
                 menu.setImage(menuDto.getImage());
+            } else {
+                // Otherwise, keep the existing image
+                menuDto.setImage(menu.getImage());
             }
-            menuRepository.save(menu);
-            return ResponseEntity.ok("Menu updated successfully");
+
+            try {
+                menuRepository.save(menu);
+                return ResponseEntity.ok(menuDto);
+            } catch (DataIntegrityViolationException e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .build();
+            }
         } else {
-            return ResponseEntity.badRequest().body("Menu not found");
+            return ResponseEntity.badRequest().body(menuDto);
         }
     }
 

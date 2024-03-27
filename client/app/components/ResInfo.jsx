@@ -124,7 +124,7 @@ const ResInfo = ({ resId }) => {
     try {
       if (isAddRes) {
         const response = await axios.post(
-          `http://localhost:8080/restaurant/addRestaurant`,
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/restaurant/addRestaurant`,
           formData,
           {
             headers: {
@@ -139,7 +139,7 @@ const ResInfo = ({ resId }) => {
         }
       } else {
         const response = await axios.put(
-          `http://localhost:8080/restaurant/updateRestaurant`,
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/restaurant/updateRestaurant`,
           formData,
           {
             headers: {
@@ -154,7 +154,7 @@ const ResInfo = ({ resId }) => {
         }
       }
     } catch (error) {
-      console.log("Error:", error.response);
+      console.log("Error:", error);
       if (error.response.status === 401) {
         handleUnauthorized(setIsLoggedIn, setToastMessage, router);
       } else if (error.response.status === 409) {

@@ -30,12 +30,21 @@ const Password = () => {
   const [showConfirmPass, setShowConfirmPass] = useState(false);
   const [warning, setWarning] = useState("");
 
+  const resetValue = () => {
+    setNewPass("");
+    setConfirmPass("");
+    setShowNewPass(false);
+    setShowConfirmPass(false);
+    setWarning("");
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
         <div
           className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center"
           ref={buttonRef}
+          onClick={resetValue}
         >
           <RiLockPasswordFill className="text-2xl mr-2" />
           <p className="font-bold truncate">Update Password</p>
@@ -135,7 +144,7 @@ const Password = () => {
               };
               try {
                 const response = await axios.put(
-                  `http://localhost:8080/user/updatePassword`,
+                  `${process.env.NEXT_PUBLIC_SERVER_URL}/user/updatePassword`,
                   data,
                   {
                     headers: {
@@ -148,7 +157,7 @@ const Password = () => {
                   buttonRef && buttonRef.current && buttonRef.current.click();
                 }
               } catch (error) {
-                console.log("Error:", error.response);
+                console.log("Error:", error);
                 if (error.response.status === 401) {
                   handleUnauthorized(setIsLoggedIn, setToastMessage, router);
                 }

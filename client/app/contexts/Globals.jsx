@@ -15,6 +15,7 @@ const GlobalsProvider = ({ children }) => {
   const [toastMessage, setToastMessage] = useState("");
   const [profilePercentage, setProfilePercentage] = useState(0);
   const [resInfoPercentage, setResInfoPercentage] = useState(0);
+  const [menu, setMenu] = useState([]);
 
   return (
     <GlobalsContext.Provider
@@ -30,6 +31,8 @@ const GlobalsProvider = ({ children }) => {
         setProfilePercentage,
         resInfoPercentage,
         setResInfoPercentage,
+        menu,
+        setMenu,
       }}
     >
       {children}

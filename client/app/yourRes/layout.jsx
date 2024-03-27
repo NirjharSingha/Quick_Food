@@ -22,6 +22,18 @@ export default function RootLayout({ children }) {
     router.push("/yourRes/addNewRes");
   };
 
+  const navigateResById = () => {
+    const restaurantId = localStorage.getItem("restaurantId");
+    const url = "/yourRes/" + restaurantId;
+    router.push(url);
+  };
+
+  const navigateMenu = () => {
+    const restaurantId = localStorage.getItem("restaurantId");
+    const url = "/yourRes/" + restaurantId + "/menu";
+    router.push(url);
+  };
+
   return (
     <div
       className="w-screen overflow-x-hidden overflow-y-auto flex"
@@ -70,26 +82,19 @@ export default function RootLayout({ children }) {
           <>
             <div
               className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center"
-              onClick={navigateYourRestaurants}
+              onClick={navigateResById}
             >
               <FaHome className="text-2xl mr-2" />
               <p className="font-bold truncate">Restaurant Info</p>
             </div>
             <div
               className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center"
-              onClick={navigateYourRestaurants}
+              onClick={navigateMenu}
             >
               <BiSolidFoodMenu className="text-2xl mr-2" />
               <p className="font-bold truncate">Menu Items</p>
             </div>
-            {/* <div
-              className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center"
-              onClick={navigateYourRestaurants}
-            >
-              <IoMdAddCircle className="text-2xl mr-2" />
-              <p className="font-bold truncate">Add New Menu</p>
-            </div> */}
-            <MenuDialog isAdd={true} />
+            <MenuDialog isAdd={true} menu={{}} />
           </>
         )}
       </div>

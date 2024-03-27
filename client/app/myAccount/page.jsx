@@ -113,7 +113,7 @@ const Page = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:8080/user/updateProfile`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/user/updateProfile`,
         formData,
         {
           headers: {
@@ -140,7 +140,7 @@ const Page = () => {
         setProfilePercentage(percentage);
       }
     } catch (error) {
-      console.log("Error:", error.response);
+      console.log("Error:", error);
       if (error.response.status === 401) {
         handleUnauthorized(setIsLoggedIn, setToastMessage, router);
       }

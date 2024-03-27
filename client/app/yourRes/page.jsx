@@ -34,7 +34,7 @@ const page = () => {
           }
         }
       } catch (error) {
-        console.log("Error:", error.response);
+        console.log("Error:", error);
         if (error.response.status === 401) {
           handleUnauthorized(setIsLoggedIn, setToastMessage, router);
         }
