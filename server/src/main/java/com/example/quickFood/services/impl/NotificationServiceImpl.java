@@ -21,6 +21,8 @@ import java.util.Optional;
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
+    private final FCMServiceImpl fcmService;
+
     @Override
     public ResponseEntity<List<NotificationDto>> getNotifications(String userId) {
         try {
@@ -81,7 +83,10 @@ public class NotificationServiceImpl implements NotificationService {
     public ResponseEntity<String> deleteByNotificationId(int notificationId) {
         try {
             notificationRepository.deleteById(notificationId);
+            fcmService.sendNotification("Notification deleted successfully.", "Notification deleted", "e794nnPof8BjGG1WcyQR5s:APA91bF4TfMk5waGodno8T9bZhjj_rxNs_01og8JB8O__C-7gCAQ4mYv9OdKOFn7aQLwpU_Q78TpPTI_HBe6ABHiFK5seShqzk1qus8FeV4GTpWfxEBAqCt_RctywNwIyzbytXCZthgF");
+
             return ResponseEntity.ok("Notification deleted successfully.");
+
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Failed to delete notification.");
         }

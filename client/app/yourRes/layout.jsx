@@ -64,14 +64,22 @@ export default function RootLayout({ children }) {
         {pathname === "/yourRes" || pathname === "/yourRes/addNewRes" ? (
           <>
             <div
-              className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center"
+              className={`flex font-sans text-gray-700 p-3 rounded-xl ${
+                pathname === "/yourRes"
+                  ? "bg-blue-400"
+                  : "bg-slate-300 hover:bg-slate-400"
+              } m-4 cursor-pointer items-center`}
               onClick={navigateYourRestaurants}
             >
               <FaHome className="text-2xl mr-2" />
               <p className="font-bold truncate">Your Restaurants</p>
             </div>
             <div
-              className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center"
+              className={`flex font-sans text-gray-700 p-3 rounded-xl ${
+                pathname === "/yourRes/addNewRes"
+                  ? "bg-blue-400"
+                  : "bg-slate-300 hover:bg-slate-400"
+              } m-4 cursor-pointer items-center`}
               onClick={navigateAddNewRestaurant}
             >
               <IoMdAddCircle className="text-2xl mr-2" />
@@ -81,14 +89,24 @@ export default function RootLayout({ children }) {
         ) : (
           <>
             <div
-              className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center"
+              className={`flex font-sans text-gray-700 p-3 rounded-xl ${
+                pathname !== "/yourRes" &&
+                pathname !== "/yourRes/addNewRes" &&
+                !pathname.includes("/menu")
+                  ? "bg-blue-400"
+                  : "bg-slate-300 hover:bg-slate-400"
+              } m-4 cursor-pointer items-center`}
               onClick={navigateResById}
             >
               <FaHome className="text-2xl mr-2" />
               <p className="font-bold truncate">Restaurant Info</p>
             </div>
             <div
-              className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center"
+              className={`flex font-sans text-gray-700 p-3 rounded-xl ${
+                pathname.includes("/menu")
+                  ? "bg-blue-400"
+                  : "bg-slate-300 hover:bg-slate-400"
+              } m-4 cursor-pointer items-center`}
               onClick={navigateMenu}
             >
               <BiSolidFoodMenu className="text-2xl mr-2" />

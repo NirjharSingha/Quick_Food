@@ -1,4 +1,4 @@
-package com.example.quickFood.configs;
+package com.example.quickFood.components;
 
 import com.example.quickFood.enums.Role;
 import com.example.quickFood.models.User;
@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class SeedDataConfig implements CommandLineRunner {
+public class SeedDataComponent implements CommandLineRunner {
 
   @Autowired
   private final UserRepository userRepository;

@@ -1,5 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
+import "./styles.css";
 import GlobalsProvider from "./contexts/Globals";
 import NavBar from "./components/NavBar";
 import { Toaster } from "@/components/ui/toaster";

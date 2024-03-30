@@ -1,5 +1,6 @@
 package com.example.quickFood.configs;
 
+import com.example.quickFood.components.AuthEntryPoint;
 import com.example.quickFood.filters.JwtAuthenticationFilter;
 import com.example.quickFood.services.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;

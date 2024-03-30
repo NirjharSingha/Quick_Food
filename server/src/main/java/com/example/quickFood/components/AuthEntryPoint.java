@@ -1,4 +1,4 @@
-package com.example.quickFood.configs;
+package com.example.quickFood.components;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -12,6 +12,12 @@ import { Dropdown } from "./Dropdown";
 import { useRouter } from "next/navigation";
 import Toast from "./Toast";
 import Link from "next/link";
+import {
+  requestForToken,
+  firebaseConfig,
+  onMessageListener,
+} from "../utils/firebase";
+import { initializeApp } from "firebase/app";
 
 const NavBar = () => {
   const router = useRouter();
@@ -23,6 +29,15 @@ const NavBar = () => {
     toastMessage,
     toastRef,
   } = useGlobals();
+
+  useEffect(() => {
+    initializeApp(firebaseConfig);
+    requestForToken();
+
+    onMessageListener().then((payload) => {
+      window.alert("Payload: " + JSON.stringify(payload));
+    });
+  }, []);
 
   useEffect(() => {
     setWindowWidth(window.innerWidth);

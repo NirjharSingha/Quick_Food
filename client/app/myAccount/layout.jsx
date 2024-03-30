@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useGlobals } from "@/app/contexts/Globals";
 import { jwtDecode } from "jwt-decode";
@@ -18,6 +18,7 @@ export default function RootLayout({ children }) {
     setProfilePercentage,
     setToastMessage,
   } = useGlobals();
+  const [selected, setSelected] = useState("Personal info");
 
   useEffect(() => {
     const profilePercentage = async () => {
@@ -51,10 +52,12 @@ export default function RootLayout({ children }) {
 
   const navigateToMyAccount = () => {
     router.push("/myAccount");
+    setSelected("Personal info");
   };
 
   const navigateToNotifications = () => {
     router.push("/myAccount/notifications");
+    setSelected("Notifications");
   };
 
   return (
@@ -90,14 +93,22 @@ export default function RootLayout({ children }) {
           </p>
         </div>
         <div
-          className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center"
+          className={`flex font-sans text-gray-700 p-3 rounded-xl ${
+            selected === "Personal info"
+              ? "bg-blue-400"
+              : "bg-slate-300 hover:bg-slate-400"
+          } m-4 cursor-pointer items-center`}
           onClick={navigateToMyAccount}
         >
           <BsFillPersonFill className="text-2xl mr-2" />
           <p className="font-bold truncate">Personal info</p>
         </div>
         <div
-          className="flex font-sans text-gray-700 p-3 rounded-xl bg-slate-300 hover:bg-slate-400 m-4 cursor-pointer items-center"
+          className={`flex font-sans text-gray-700 p-3 rounded-xl ${
+            selected === "Notifications"
+              ? "bg-blue-400"
+              : "bg-slate-300 hover:bg-slate-400"
+          } m-4 cursor-pointer items-center`}
           onClick={navigateToNotifications}
         >
           <IoNotifications className="text-2xl mr-2" />
