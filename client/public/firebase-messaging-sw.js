@@ -13,12 +13,12 @@ if ("serviceWorker" in navigator) {
 }
 
 firebase.initializeApp({
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  messagingSenderId: "743681292384",
+  apiKey: "AIzaSyAvybg3hKj0oHV60hdrD668Q8fxs7R1FMg",
+  authDomain: "quick-food-fcm.firebaseapp.com",
+  projectId: "quick-food-fcm",
+  storageBucket: "quick-food-fcm.appspot.com",
+  appId: "1:743681292384:web:b1a44dc7d1bfa4d0dd2b05",
 });
 
 const initMessaging = firebase.messaging();
