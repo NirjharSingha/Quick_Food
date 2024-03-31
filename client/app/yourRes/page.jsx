@@ -8,12 +8,14 @@ import { jwtDecode } from "jwt-decode";
 import { handleUnauthorized } from "@/app/utils/unauthorized";
 import { useGlobals } from "@/app/contexts/Globals";
 import { useRouter } from "next/navigation";
+import Loading from "../components/Loading";
 
 const page = () => {
   const { setToastMessage, setIsLoggedIn } = useGlobals();
   const router = useRouter();
   const [restaurants, setRestaurants] = useState([]);
   const [showMessage, setShowMessage] = useState(false);
+  const [showLoading, setShowLoading] = useState(true);
 
   useEffect(() => {
     const getRestaurants = async () => {
@@ -28,6 +30,7 @@ const page = () => {
           }
         );
         if (response.status == 200) {
+          setShowLoading(false);
           setRestaurants(response.data);
           if (response.data.length === 0) {
             setShowMessage(true);
@@ -56,6 +59,11 @@ const page = () => {
             <RestaurantCard restaurant={restaurant} />
           </div>
         ))}
+      {showLoading && (
+        <div className="col-span-3">
+          <Loading />
+        </div>
+      )}
     </div>
   );
 };

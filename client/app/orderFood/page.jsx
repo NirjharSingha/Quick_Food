@@ -7,6 +7,7 @@ import axios from "axios";
 import { handleUnauthorized } from "@/app/utils/unauthorized";
 import { useGlobals } from "@/app/contexts/Globals";
 import { useRouter } from "next/navigation";
+import Loading from "@/app/components/Loading";
 
 const page = () => {
   const { setToastMessage, setIsLoggedIn } = useGlobals();
@@ -16,6 +17,7 @@ const page = () => {
   const [prevScrollTop, setPrevScrollTop] = useState(0);
   const [sendRequest, setSendRequest] = useState(true);
   const divRef = useRef(null);
+  const [showLoading, setShowLoading] = useState(true);
 
   const handleScroll = (divRef, prevScrollTop, setPrevScrollTop, setPage) => {
     const currentScrollTop = divRef.current.scrollTop;
@@ -49,6 +51,7 @@ const page = () => {
   useEffect(() => {
     const getRestaurants = async () => {
       try {
+        setShowLoading(true);
         const response = await axios.get(
           `${
             process.env.NEXT_PUBLIC_SERVER_URL
@@ -60,6 +63,7 @@ const page = () => {
           }
         );
         if (response.status == 200) {
+          setShowLoading(false);
           setRestaurants((prev) => [...prev, ...response.data]);
           if (response.data.length < 7) {
             setSendRequest(false);
@@ -88,6 +92,11 @@ const page = () => {
             <RestaurantCard restaurant={restaurant} />
           </div>
         ))}
+      {showLoading && (
+        <div className="col-span-3">
+          <Loading />
+        </div>
+      )}
     </div>
   );
 };

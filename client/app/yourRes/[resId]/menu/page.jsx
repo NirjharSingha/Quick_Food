@@ -7,6 +7,7 @@ import axios from "axios";
 import { handleUnauthorized } from "@/app/utils/unauthorized";
 import { useGlobals } from "@/app/contexts/Globals";
 import { useRouter } from "next/navigation";
+import Loading from "@/app/components/Loading";
 
 const page = () => {
   const { setToastMessage, setIsLoggedIn, menu, setMenu, menuDivRef } =
@@ -15,6 +16,7 @@ const page = () => {
   const [page, setPage] = useState(0);
   const [prevScrollTop, setPrevScrollTop] = useState(0);
   const [sendRequest, setSendRequest] = useState(true);
+  const [showLoading, setShowLoading] = useState(true);
 
   const handleScroll = (divRef, prevScrollTop, setPrevScrollTop, setPage) => {
     const currentScrollTop = divRef.current.scrollTop;
@@ -49,6 +51,7 @@ const page = () => {
     const getMenu = async () => {
       const resId = localStorage.getItem("restaurantId");
       try {
+        setShowLoading(true);
         const response = await axios.get(
           `${
             process.env.NEXT_PUBLIC_SERVER_URL
@@ -60,6 +63,7 @@ const page = () => {
           }
         );
         if (response.status == 200) {
+          setShowLoading(false);
           const responseData = response.data;
           setMenu((prev) => {
             // Filter out elements from responseData that already exist in prev based on their IDs
@@ -97,6 +101,11 @@ const page = () => {
             <MenuCard menu={menuItem} />
           </div>
         ))}
+      {showLoading && (
+        <div className="col-span-3">
+          <Loading />
+        </div>
+      )}
     </div>
   );
 };
