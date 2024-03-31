@@ -8,7 +8,7 @@ import MenuDialog from "./MenuDialog";
 
 const MenuCard = ({ menu, setMenuList }) => {
   return (
-    <div className="w-[26vw] min-w-[18rem] max-w-[22rem] h-[18.5rem] rounded-lg shadow-md bg-base-100 border-2 border-gray-200 hover:border-gray-300 hover:shadow-lg">
+    <div className="w-[26vw] min-w-[18rem] max-w-[22rem] h-[20rem] rounded-lg shadow-md bg-base-100 border-2 border-gray-200 hover:border-gray-300 hover:shadow-lg">
       {menu.image ? (
         <img
           src={`data:image/jpeg;base64,${menu.image}`}
@@ -35,7 +35,11 @@ const MenuCard = ({ menu, setMenuList }) => {
           : "Category Not Available"}
       </p>
       <p className="text-sm text-gray-600 mt-1 pl-3 pr-3 truncate">
-        Price {menu.price ? `${menu.price} Tk` : "Not Available"}
+        Available quantity :{" "}
+        {menu.quantity > 0 ? menu.quantity : "Not Available"}
+      </p>
+      <p className="text-sm text-gray-600 mt-1 pl-3 pr-3 truncate">
+        Price : {menu.price ? `${menu.price} Tk` : "Not Available"}
       </p>
       <div className="flex justify-between items-center mt-1">
         <MenuDialog isAdd={false} menu={menu} setMenuList={setMenuList} />

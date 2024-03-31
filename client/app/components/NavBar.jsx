@@ -103,7 +103,7 @@ const NavBar = () => {
             <Link href="/" className="cursor-pointer hover:underline">
               Home
             </Link>
-            <Link href="/" className="cursor-pointer hover:underline">
+            <Link href="/orderFood" className="cursor-pointer hover:underline">
               Order Food
             </Link>
             <Link href="/yourRes" className="cursor-pointer hover:underline">

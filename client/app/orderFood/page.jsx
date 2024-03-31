@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import MenuCard from "@/app/components/MenuCard";
+import RestaurantCard from "@/app/components/RestaurantCard";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { handleUnauthorized } from "@/app/utils/unauthorized";
@@ -9,12 +9,13 @@ import { useGlobals } from "@/app/contexts/Globals";
 import { useRouter } from "next/navigation";
 
 const page = () => {
-  const { setToastMessage, setIsLoggedIn, menu, setMenu, menuDivRef } =
-    useGlobals();
+  const { setToastMessage, setIsLoggedIn } = useGlobals();
   const router = useRouter();
+  const [restaurants, setRestaurants] = useState([]);
   const [page, setPage] = useState(0);
   const [prevScrollTop, setPrevScrollTop] = useState(0);
   const [sendRequest, setSendRequest] = useState(true);
+  const divRef = useRef(null);
 
   const handleScroll = (divRef, prevScrollTop, setPrevScrollTop, setPage) => {
     const currentScrollTop = divRef.current.scrollTop;
@@ -32,11 +33,11 @@ const page = () => {
   };
 
   useEffect(() => {
-    const currentDivRef = menuDivRef.current;
+    const currentDivRef = divRef.current;
 
     if (currentDivRef) {
       const scrollHandler = () =>
-        handleScroll(menuDivRef, prevScrollTop, setPrevScrollTop, setPage);
+        handleScroll(divRef, prevScrollTop, setPrevScrollTop, setPage);
       currentDivRef.addEventListener("scroll", scrollHandler);
 
       return () => {
@@ -46,13 +47,12 @@ const page = () => {
   }, []);
 
   useEffect(() => {
-    const getMenu = async () => {
-      const resId = localStorage.getItem("restaurantId");
+    const getRestaurants = async () => {
       try {
         const response = await axios.get(
           `${
             process.env.NEXT_PUBLIC_SERVER_URL
-          }/menu/getMenuByResId?resId=${resId}&page=${page}&size=${7}`,
+          }/restaurant/getRestaurantsByPagination?size=${7}&page=${page}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -60,15 +60,7 @@ const page = () => {
           }
         );
         if (response.status == 200) {
-          const responseData = response.data;
-          setMenu((prev) => {
-            // Filter out elements from responseData that already exist in prev based on their IDs
-            const filteredData = responseData.filter(
-              (newItem) => !prev.some((prevItem) => prevItem.id === newItem.id)
-            );
-            // Merge the filtered data with the previous state
-            return [...prev, ...filteredData];
-          });
+          setRestaurants((prev) => [...prev, ...response.data]);
           if (response.data.length < 7) {
             setSendRequest(false);
           }
@@ -80,21 +72,20 @@ const page = () => {
         }
       }
     };
-
     if (sendRequest) {
-      getMenu();
+      getRestaurants();
     }
   }, [page]);
 
   return (
     <div
       className="p-4 w-full grid grid-cols-3 gap-x-2 gap-y-4 overflow-y-auto"
-      ref={menuDivRef}
+      ref={divRef}
     >
-      {menu.length !== 0 &&
-        menu.map((menuItem) => (
-          <div key={menuItem.id} className="w-full flex justify-center">
-            <MenuCard menu={menuItem} />
+      {restaurants.length !== 0 &&
+        restaurants.map((restaurant) => (
+          <div key={restaurant.id} className="w-full flex justify-center">
+            <RestaurantCard restaurant={restaurant} />
           </div>
         ))}
     </div>

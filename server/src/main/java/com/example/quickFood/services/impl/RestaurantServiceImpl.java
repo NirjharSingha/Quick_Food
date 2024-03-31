@@ -8,6 +8,8 @@ import com.example.quickFood.repositories.UserRepository;
 import com.example.quickFood.services.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -82,16 +84,23 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public ResponseEntity<List<RestaurantDto>> getRestaurantByOwner(String owner) {
-        if (restaurantRepository.findByOwnerId(owner).isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } else {
-            List<Restaurant> restaurants = restaurantRepository.findByOwnerId(owner);
-            List<RestaurantDto> restaurantDtoList = new ArrayList<>();
-            for (Restaurant restaurant : restaurants) {
-                RestaurantDto restaurantDto = new RestaurantDto(restaurant.getId(), restaurant.getName(), restaurant.getOwner().getId(), restaurant.getAddress(), restaurant.getMobile(), restaurant.getImage());
-                restaurantDtoList.add(restaurantDto);
-            }
-            return ResponseEntity.ok(restaurantDtoList);
+        List<Restaurant> restaurants = restaurantRepository.findByOwnerId(owner);
+        List<RestaurantDto> restaurantDtoList = new ArrayList<>();
+        for (Restaurant restaurant : restaurants) {
+            RestaurantDto restaurantDto = new RestaurantDto(restaurant.getId(), restaurant.getName(), restaurant.getOwner().getId(), restaurant.getAddress(), restaurant.getMobile(), restaurant.getImage());
+            restaurantDtoList.add(restaurantDto);
         }
+        return ResponseEntity.ok(restaurantDtoList);
+    }
+
+    @Override
+    public List<RestaurantDto> getRestaurantsByPagination(Pageable pageable) {
+        Page<Restaurant> restaurants = restaurantRepository.findAll(pageable);
+        List<RestaurantDto> restaurantDtoList = new ArrayList<>();
+        for (Restaurant restaurant : restaurants) {
+            RestaurantDto restaurantDto = new RestaurantDto(restaurant.getId(), restaurant.getName(), restaurant.getOwner().getId(), restaurant.getAddress(), restaurant.getMobile(), restaurant.getImage());
+            restaurantDtoList.add(restaurantDto);
+        }
+        return restaurantDtoList;
     }
 }

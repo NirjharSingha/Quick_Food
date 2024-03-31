@@ -83,7 +83,9 @@ public class NotificationServiceImpl implements NotificationService {
     public ResponseEntity<String> deleteByNotificationId(int notificationId) {
         try {
             notificationRepository.deleteById(notificationId);
+            System.out.println("before sendNotification");
             fcmService.sendNotification("Notification deleted successfully.", "Notification deleted", "e794nnPof8BjGG1WcyQR5s:APA91bF4TfMk5waGodno8T9bZhjj_rxNs_01og8JB8O__C-7gCAQ4mYv9OdKOFn7aQLwpU_Q78TpPTI_HBe6ABHiFK5seShqzk1qus8FeV4GTpWfxEBAqCt_RctywNwIyzbytXCZthgF");
+            System.out.println("after sendNotification");
 
             return ResponseEntity.ok("Notification deleted successfully.");
 

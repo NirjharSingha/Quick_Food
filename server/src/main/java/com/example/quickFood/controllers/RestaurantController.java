@@ -3,6 +3,8 @@ package com.example.quickFood.controllers;
 import com.example.quickFood.dto.RestaurantDto;
 import com.example.quickFood.services.impl.RestaurantServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,5 +55,12 @@ public class RestaurantController {
     @GetMapping("/getRestaurantByOwner")
     public ResponseEntity<List<RestaurantDto>> getRestaurantByOwner(@RequestParam String owner) {
         return restaurantService.getRestaurantByOwner(owner);
+    }
+
+    @GetMapping("/getRestaurantsByPagination")
+    public ResponseEntity<List<RestaurantDto>> getRestaurantsByPagination(@RequestParam int page, @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<RestaurantDto> restaurantPage = restaurantService.getRestaurantsByPagination(pageable);
+        return ResponseEntity.ok(restaurantPage);
     }
 }

@@ -3,6 +3,9 @@ package com.example.quickFood.controllers;
 import com.example.quickFood.dto.MenuDto;
 import com.example.quickFood.services.impl.MenuServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,7 +49,10 @@ public class MenuController {
     }
 
     @GetMapping("/getMenuByResId")
-    public ResponseEntity<List<MenuDto>> getMenuByResId(@RequestParam String resId) {
-        return menuService.getMenuByResId(resId);
+    public ResponseEntity<List<MenuDto>> getMenuByResId(@RequestParam String resId, @RequestParam int page, @RequestParam int size) {
+        System.out.println("request received");
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        List<MenuDto> menuDtoList = menuService.getMenuByResId(resId, pageable);
+        return ResponseEntity.ok(menuDtoList);
     }
 }

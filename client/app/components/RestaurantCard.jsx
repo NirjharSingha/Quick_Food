@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import Restaurant from "@/public/Restaurant.png";
+import Restaurant from "@/public/Restaurant.jpeg";
 import { FaStar } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 

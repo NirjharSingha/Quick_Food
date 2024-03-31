@@ -22,7 +22,7 @@ import { IoMdAddCircle } from "react-icons/io";
 const MenuDialog = ({ isAdd, menu }) => {
   const buttonRef = useRef(null);
   const router = useRouter();
-  const { setIsLoggedIn, setToastMessage, setMenu } = useGlobals();
+  const { setIsLoggedIn, setToastMessage, setMenu, menuDivRef } = useGlobals();
   const [name, setName] = useState(isAdd ? "" : menu.name);
   const [category, setCategory] = useState(isAdd ? "" : menu.category);
   const [warning, setWarning] = useState("");
@@ -230,7 +230,12 @@ const MenuDialog = ({ isAdd, menu }) => {
                   );
                   if (response.status == 200) {
                     setToastMessage("Menu added successfully");
-                    setMenu((prev) => [...prev, response.data]);
+                    setMenu((prev) => [response.data, ...prev]);
+
+                    if (menuDivRef.current) {
+                      menuDivRef.current.scrollTop = 0;
+                    }
+
                     buttonRef && buttonRef.current && buttonRef.current.click();
                   }
                 } else {
