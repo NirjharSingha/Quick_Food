@@ -64,7 +64,10 @@ export default function RootLayout({ children }) {
         </div>
         <div
           className={`flex font-sans text-gray-700 p-3 rounded-xl ${
-            pathname === "/orderFood"
+            pathname.includes("/orderFood") &&
+            !pathname.includes("/orderFood/cancelOrder") &&
+            !pathname.includes("/orderFood/submitRating") &&
+            !pathname.includes("/orderFood/cart")
               ? "bg-blue-400"
               : "bg-slate-300 hover:bg-slate-400"
           } m-4 cursor-pointer items-center`}
@@ -75,7 +78,7 @@ export default function RootLayout({ children }) {
         </div>
         <div
           className={`flex font-sans text-gray-700 p-3 rounded-xl ${
-            pathname === "/orderFood/cancelOrder"
+            pathname.includes("/orderFood/cancelOrder")
               ? "bg-blue-400"
               : "bg-slate-300 hover:bg-slate-400"
           } m-4 cursor-pointer items-center`}
@@ -86,7 +89,7 @@ export default function RootLayout({ children }) {
         </div>
         <div
           className={`flex font-sans text-gray-700 p-3 rounded-xl ${
-            pathname === "/orderFood/submitRating"
+            pathname.includes("/orderFood/submitRating")
               ? "bg-blue-400"
               : "bg-slate-300 hover:bg-slate-400"
           } m-4 cursor-pointer items-center`}
@@ -97,7 +100,7 @@ export default function RootLayout({ children }) {
         </div>
         <div
           className={`flex font-sans text-gray-700 p-3 rounded-xl ${
-            pathname === "/orderFood/cart"
+            pathname.includes("/orderFood/cart")
               ? "bg-blue-400"
               : "bg-slate-300 hover:bg-slate-400"
           } m-4 cursor-pointer items-center`}

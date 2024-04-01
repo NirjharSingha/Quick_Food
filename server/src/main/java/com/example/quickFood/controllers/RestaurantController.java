@@ -1,5 +1,6 @@
 package com.example.quickFood.controllers;
 
+import com.example.quickFood.dto.ResSearchDto;
 import com.example.quickFood.dto.RestaurantDto;
 import com.example.quickFood.services.impl.RestaurantServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,5 +63,10 @@ public class RestaurantController {
         Pageable pageable = PageRequest.of(page, size);
         List<RestaurantDto> restaurantPage = restaurantService.getRestaurantsByPagination(pageable);
         return ResponseEntity.ok(restaurantPage);
+    }
+
+    @GetMapping("/searchRestaurant")
+    public ResponseEntity<List<ResSearchDto>> searchRestaurant(@RequestParam String name) {
+        return ResponseEntity.ok(restaurantService.searchRestaurant(name.toLowerCase()));
     }
 }

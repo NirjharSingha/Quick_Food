@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Searchbar from "./Searchbar";
 import { useGlobals } from "../contexts/Globals";
 import { useEffect, useState } from "react";
 import Login from "./Login";
@@ -91,13 +90,13 @@ const NavBar = () => {
           <div className="bg-yellow-50 p-[0.35rem] flex justify-center items-center mr-2 rounded-full border-2 border-solid border-white">
             <Image src={FavIcon} alt="logo" width={30} />
           </div>
-          <Searchbar />
-        </div>
-        {!isLoggedIn && (
-          <div className="navbar-center">
-            <a className="btn btn-ghost text-xl font-sans">QuickFood</a>
+          <div className="flex-1">
+            <a className="btn btn-ghost text-xl text-gray-700 font-bold">
+              QuickFood
+            </a>
           </div>
-        )}
+        </div>
+        {!isLoggedIn && <></>}
         {isLoggedIn && (
           <div className="navbar-center flex justify-between gap-6 font-semibold font-sans text-gray-700 items-center">
             <Link href="/" className="cursor-pointer hover:underline">

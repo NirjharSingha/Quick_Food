@@ -25,7 +25,6 @@ public class MenuServiceImpl implements MenuService {
     @Autowired
     private MenuRepository menuRepository;
 
-    @Autowired
     private RestaurantRepository restaurantRepository;
 
     @Override

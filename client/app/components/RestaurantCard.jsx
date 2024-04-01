@@ -5,12 +5,18 @@ import Image from "next/image";
 import Restaurant from "@/public/Restaurant.jpeg";
 import { FaStar } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 const RestaurantCard = ({ restaurant }) => {
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleNavigate = () => {
-    router.push(`/yourRes/${restaurant.id}`);
+    if (pathname.includes("/yourRes")) {
+      router.push(`/yourRes/${restaurant.id}`);
+    } else if (pathname.includes("/orderFood")) {
+      router.push(`/orderFood/${restaurant.id}`);
+    }
   };
 
   return (

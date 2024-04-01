@@ -1,26 +1,24 @@
 "use client";
 
 import React from "react";
-import RestaurantCard from "@/app/components/RestaurantCard";
+import MenuCard from "@/app/components/MenuCard";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { handleUnauthorized } from "@/app/utils/unauthorized";
 import { useGlobals } from "@/app/contexts/Globals";
 import { useRouter } from "next/navigation";
 import Loading from "@/app/components/Loading";
-import Searchbar from "../components/Searchbar";
-import FavIcon from "@/public/favicon.ico";
-import Image from "next/image";
 
-const page = () => {
+const page = ({ params }) => {
+  const { resId } = params;
   const { setToastMessage, setIsLoggedIn } = useGlobals();
   const router = useRouter();
-  const [restaurants, setRestaurants] = useState([]);
   const [page, setPage] = useState(0);
   const [prevScrollTop, setPrevScrollTop] = useState(0);
   const [sendRequest, setSendRequest] = useState(true);
-  const divRef = useRef(null);
   const [showLoading, setShowLoading] = useState(true);
+  const [menu, setMenu] = useState([]);
+  const menuDivRef = useRef(null);
 
   const handleScroll = (divRef, prevScrollTop, setPrevScrollTop, setPage) => {
     const currentScrollTop = divRef.current.scrollTop;
@@ -38,11 +36,11 @@ const page = () => {
   };
 
   useEffect(() => {
-    const currentDivRef = divRef.current;
+    const currentDivRef = menuDivRef.current;
 
     if (currentDivRef) {
       const scrollHandler = () =>
-        handleScroll(divRef, prevScrollTop, setPrevScrollTop, setPage);
+        handleScroll(menuDivRef, prevScrollTop, setPrevScrollTop, setPage);
       currentDivRef.addEventListener("scroll", scrollHandler);
 
       return () => {
@@ -52,13 +50,13 @@ const page = () => {
   }, []);
 
   useEffect(() => {
-    const getRestaurants = async () => {
+    const getMenu = async () => {
       try {
         setShowLoading(true);
         const response = await axios.get(
           `${
             process.env.NEXT_PUBLIC_SERVER_URL
-          }/restaurant/getRestaurantsByPagination?size=${7}&page=${page}`,
+          }/menu/getMenuByResId?resId=${resId}&page=${page}&size=${7}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -67,7 +65,15 @@ const page = () => {
         );
         if (response.status == 200) {
           setShowLoading(false);
-          setRestaurants((prev) => [...prev, ...response.data]);
+          const responseData = response.data;
+          setMenu((prev) => {
+            // Filter out elements from responseData that already exist in prev based on their IDs
+            const filteredData = responseData.filter(
+              (newItem) => !prev.some((prevItem) => prevItem.id === newItem.id)
+            );
+            // Merge the filtered data with the previous state
+            return [...prev, ...filteredData];
+          });
           if (response.data.length < 7) {
             setSendRequest(false);
           }
@@ -79,32 +85,23 @@ const page = () => {
         }
       }
     };
+
     if (sendRequest) {
-      getRestaurants();
+      getMenu();
     }
   }, [page]);
 
   return (
-    <div className="w-full overflow-y-auto" ref={divRef}>
-      {
-        <div className="w-full flex items-center justify-between bg-gray-400 p-2 pl-4 pr-4 min-h-[4rem]">
-          <div className="flex items-center navbar-start">
-            <div className="bg-white p-[0.5rem] flex justify-center items-center mr-2 rounded-full border-[1px] border-solid border-gray-500">
-              <Image src={FavIcon} alt="logo" width={26} />
-            </div>
-            <p className="ml-1 text-xl text-white font-bold">QuickFood</p>
+    <div
+      className="p-4 w-full grid grid-cols-3 gap-x-2 gap-y-4 overflow-y-auto"
+      ref={menuDivRef}
+    >
+      {menu.length !== 0 &&
+        menu.map((menuItem) => (
+          <div key={menuItem.id} className="w-full flex justify-center">
+            <MenuCard menu={menuItem} />
           </div>
-          <Searchbar />
-        </div>
-      }
-      <div className="p-4 grid grid-cols-3 gap-x-2 gap-y-4">
-        {restaurants.length !== 0 &&
-          restaurants.map((restaurant) => (
-            <div key={restaurant.id} className="w-full flex justify-center">
-              <RestaurantCard restaurant={restaurant} />
-            </div>
-          ))}
-      </div>
+        ))}
       {showLoading && (
         <div className="col-span-3">
           <Loading />

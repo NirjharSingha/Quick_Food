@@ -1,5 +1,6 @@
 package com.example.quickFood.services.impl;
 
+import com.example.quickFood.dto.ResSearchDto;
 import com.example.quickFood.dto.RestaurantDto;
 import com.example.quickFood.models.Restaurant;
 import com.example.quickFood.models.User;
@@ -22,8 +23,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class RestaurantServiceImpl implements RestaurantService {
-    @Autowired
-    RestaurantRepository restaurantRepository;
+    private final RestaurantRepository restaurantRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -102,5 +102,10 @@ public class RestaurantServiceImpl implements RestaurantService {
             restaurantDtoList.add(restaurantDto);
         }
         return restaurantDtoList;
+    }
+
+    @Override
+    public List<ResSearchDto> searchRestaurant(String name) {
+        return restaurantRepository.searchRestaurant(name);
     }
 }
