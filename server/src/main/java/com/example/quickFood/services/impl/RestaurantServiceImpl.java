@@ -26,7 +26,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     private final RestaurantRepository restaurantRepository;
 
     @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public ResponseEntity<String> addRestaurant(RestaurantDto restaurantDto) {

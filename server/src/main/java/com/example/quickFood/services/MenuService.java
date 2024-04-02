@@ -12,4 +12,6 @@ public interface MenuService {
     ResponseEntity<MenuDto> updateMenu(MenuDto menuDto);
 
     List<MenuDto> getMenuByResId(String resId, Pageable pageable);
+
+    List<MenuDto> getFilteredMenu(String name, String resId, String category, String price,  String rating, Pageable pageable);
 }

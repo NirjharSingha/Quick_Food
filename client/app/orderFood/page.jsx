@@ -92,7 +92,9 @@ const page = () => {
             <div className="bg-white p-[0.5rem] flex justify-center items-center mr-2 rounded-full border-[1px] border-solid border-gray-500">
               <Image src={FavIcon} alt="logo" width={26} />
             </div>
-            <p className="ml-1 text-xl text-white font-bold">QuickFood</p>
+            <p className="ml-1 text-xl text-white font-bold">
+              Select Restaurant
+            </p>
           </div>
           <Searchbar />
         </div>

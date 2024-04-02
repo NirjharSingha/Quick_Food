@@ -55,4 +55,11 @@ public class MenuController {
         List<MenuDto> menuDtoList = menuService.getMenuByResId(resId, pageable);
         return ResponseEntity.ok(menuDtoList);
     }
+
+    @GetMapping("/getFilteredMenu")
+    public ResponseEntity<List<MenuDto>> getFilteredMenu(@RequestParam String name, @RequestParam String resId, @RequestParam String category, @RequestParam String price, @RequestParam String rating, @RequestParam int page, @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        List<MenuDto> menuDtoList = menuService.getFilteredMenu(name, resId, category, price, rating, pageable);
+        return ResponseEntity.ok(menuDtoList);
+    }
 }

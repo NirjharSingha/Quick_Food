@@ -25,7 +25,7 @@ import java.sql.Timestamp;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     @Autowired
     private final PasswordEncoder passwordEncoder;
 

@@ -7,11 +7,6 @@ import com.example.quickFood.repositories.MenuRepository;
 import com.example.quickFood.repositories.RestaurantRepository;
 import com.example.quickFood.services.MenuService;
 import lombok.RequiredArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,13 +14,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class MenuServiceImpl implements MenuService {
-    @Autowired
-    private MenuRepository menuRepository;
+    private final MenuRepository menuRepository;
 
-    private RestaurantRepository restaurantRepository;
+    private final RestaurantRepository restaurantRepository;
 
     @Override
     public ResponseEntity<MenuDto> addMenu(MenuDto menuDto) {
@@ -101,6 +99,17 @@ public class MenuServiceImpl implements MenuService {
 
         for (Menu menu : menuPage) {
             System.out.println(menu.getId());
+            MenuDto menuDto = new MenuDto(menu.getId(), menu.getRestaurant().getId(), menu.getName(), menu.getPrice(), menu.getCategory(), menu.getImage(), menu.getQuantity());
+            menuDtoList.add(menuDto);
+        }
+        return menuDtoList;
+    }
+
+    @Override
+    public List<MenuDto> getFilteredMenu(String name, String resId, String category, String price, String rating, Pageable pageable) {
+        Page<Menu> filteredMenu = menuRepository.filteredMenu(name, resId, price, category, rating, pageable);
+        List<MenuDto> menuDtoList = new ArrayList<>();
+        for (Menu menu : filteredMenu) {
             MenuDto menuDto = new MenuDto(menu.getId(), menu.getRestaurant().getId(), menu.getName(), menu.getPrice(), menu.getCategory(), menu.getImage(), menu.getQuantity());
             menuDtoList.add(menuDto);
         }
