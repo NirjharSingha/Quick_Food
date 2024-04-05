@@ -7,14 +7,16 @@ import { FaStar } from "react-icons/fa";
 import MenuDialog from "./MenuDialog";
 import { usePathname } from "next/navigation";
 import { IoAddCircle } from "react-icons/io5";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useGlobals } from "../contexts/Globals";
 import { FaCircleMinus } from "react-icons/fa6";
+import Alert from "./Alert";
 
 const MenuCard = ({ menu, setMenuList }) => {
   const pathname = usePathname();
   const [quantity, setQuantity] = useState(0);
   const { setCartCount } = useGlobals();
+  const cartAlertRef = useRef(null);
 
   useEffect(() => {
     if (pathname.includes("/orderFood")) {
@@ -39,6 +41,8 @@ const MenuCard = ({ menu, setMenuList }) => {
 
     if (cart.restaurantId !== menu.restaurantId) {
       // handle warning
+      cartAlertRef && cartAlertRef.current && cartAlertRef.current.click();
+      return;
     }
 
     // Check if the menu already exists in the cart
@@ -91,6 +95,29 @@ const MenuCard = ({ menu, setMenuList }) => {
         pathname.includes("/yourRes") ? "h-[20rem]" : "h-[18.6rem]"
       } rounded-lg shadow-md bg-base-100 border-2 border-gray-200 hover:border-gray-300 hover:shadow-lg`}
     >
+      <Alert
+        buttonRef={cartAlertRef}
+        title={"Food Selected From Different Restaurants!"}
+        message={
+          "You cannot order food from different restaurants at the same time. If you select this food item, the previous items will be removed from the cart. Do you want to continue?"
+        }
+        cancelHandler={() => {
+          cartAlertRef.current.click();
+        }}
+        continueHandler={() => {
+          const resId = pathname.split("/").pop();
+          let cart = {
+            restaurantId: resId,
+            selectedMenu: [
+              { selectedMenuId: menu.id, selectedMenuQuantity: 1 },
+            ],
+          };
+          localStorage.setItem("cart", JSON.stringify(cart));
+          setCartCount(1);
+          setQuantity(1);
+          cartAlertRef.current.click();
+        }}
+      />
       {menu.image ? (
         <img
           src={`data:image/jpeg;base64,${menu.image}`}
