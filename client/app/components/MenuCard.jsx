@@ -7,14 +7,90 @@ import { FaStar } from "react-icons/fa";
 import MenuDialog from "./MenuDialog";
 import { usePathname } from "next/navigation";
 import { IoAddCircle } from "react-icons/io5";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useGlobals } from "../contexts/Globals";
+import { FaCircleMinus } from "react-icons/fa6";
 
 const MenuCard = ({ menu, setMenuList }) => {
   const pathname = usePathname();
-  const [isAdded, setIsAdded] = useState(false);
+  const [quantity, setQuantity] = useState(0);
+  const { setCartCount } = useGlobals();
+
+  useEffect(() => {
+    if (pathname.includes("/orderFood")) {
+      let cart = JSON.parse(localStorage.getItem("cart"));
+      if (cart) {
+        cart.selectedMenu.forEach((item) => {
+          if (item.selectedMenuId === menu.id) {
+            setQuantity(item.selectedMenuQuantity);
+          }
+        });
+      }
+    }
+  }, []);
+
+  const addToCart = () => {
+    let cart = JSON.parse(localStorage.getItem("cart"));
+
+    // Ensure cart exists, if not create an empty one
+    if (!cart) {
+      cart = { restaurantId: menu.restaurantId, selectedMenu: [] };
+    }
+
+    if (cart.restaurantId !== menu.restaurantId) {
+      // handle warning
+    }
+
+    // Check if the menu already exists in the cart
+    const existingMenu = cart.selectedMenu.find(
+      (item) => item.selectedMenuId === menu.id
+    );
+
+    if (existingMenu) {
+      // If the menu exists, update its quantity
+      existingMenu.selectedMenuQuantity++;
+    } else {
+      // If the menu doesn't exist, push a new entry into the array
+      cart.selectedMenu.push({
+        selectedMenuId: menu.id,
+        selectedMenuQuantity: 1,
+      });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    setQuantity(1);
+    setCartCount((prev) => prev + 1);
+  };
+
+  const updateQuantity = (isAdd) => {
+    let cart = JSON.parse(localStorage.getItem("cart"));
+
+    cart.selectedMenu.forEach((item) => {
+      if (item.selectedMenuId === menu.id) {
+        if (isAdd) {
+          item.selectedMenuQuantity += 1;
+        } else {
+          item.selectedMenuQuantity -= 1;
+          if (item.selectedMenuQuantity === 0) {
+            cart.selectedMenu = cart.selectedMenu.filter(
+              (menu) => menu.selectedMenuId !== item.selectedMenuId
+            );
+            setCartCount((prev) => prev - 1);
+          }
+        }
+        setQuantity(item.selectedMenuQuantity);
+      }
+    });
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+  };
 
   return (
-    <div className="w-[26vw] min-w-[18rem] max-w-[22rem] h-[20rem] rounded-lg shadow-md bg-base-100 border-2 border-gray-200 hover:border-gray-300 hover:shadow-lg">
+    <div
+      className={`w-[26vw] min-w-[18rem] max-w-[22rem] ${
+        pathname.includes("/yourRes") ? "h-[20rem]" : "h-[18.6rem]"
+      } rounded-lg shadow-md bg-base-100 border-2 border-gray-200 hover:border-gray-300 hover:shadow-lg`}
+    >
       {menu.image ? (
         <img
           src={`data:image/jpeg;base64,${menu.image}`}
@@ -40,10 +116,12 @@ const MenuCard = ({ menu, setMenuList }) => {
             : menu.category
           : "Category Not Available"}
       </p>
-      <p className="text-sm text-gray-600 mt-1 pl-3 pr-3 truncate">
-        Available quantity :{" "}
-        {menu.quantity > 0 ? menu.quantity : "Not Available"}
-      </p>
+      {!pathname.includes("/orderFood") && (
+        <p className="text-sm text-gray-600 mt-1 pl-3 pr-3 truncate">
+          Available quantity :{" "}
+          {menu.quantity > 0 ? menu.quantity : "Not Available"}
+        </p>
+      )}
       <p className="text-sm text-gray-600 mt-1 pl-3 pr-3 truncate">
         Price : {menu.price ? `${menu.price} Tk` : "Not Available"}
       </p>
@@ -54,22 +132,32 @@ const MenuCard = ({ menu, setMenuList }) => {
         {pathname.includes("/orderFood") && (
           <div
             className={`mt-1 flex gap-1 w-[8rem] justify-center items-center font-bold border-2 border-solid rounded-sm text-sm pt-[2px] pb-[2px] ml-3 mb-2 ${
-              !isAdded
+              quantity === 0
                 ? "text-blue-500 border-blue-500 hover:bg-blue-500 hover:text-white cursor-pointer"
-                : "bg-blue-500 text-white cursor-not-allowed"
+                : "bg-white text-gray-700"
             }`}
             onClick={() => {
-              if (!isAdded) {
-                setIsAdded(true);
+              if (quantity === 0) {
+                addToCart();
               }
             }}
           >
-            {!isAdded ? (
+            {quantity === 0 ? (
               <>
                 <IoAddCircle className="text-xl" /> Add to Cart
               </>
             ) : (
-              <>Added to Cart</>
+              <div className="w-full flex items-center justify-around">
+                <FaCircleMinus
+                  className="text-xl text-gray-700 cursor-pointer"
+                  onClick={() => updateQuantity(false)}
+                />
+                <p className="text-gray-700">{quantity}</p>
+                <IoAddCircle
+                  className="text-2xl text-blue-500 cursor-pointer"
+                  onClick={() => updateQuantity(true)}
+                />
+              </div>
             )}
           </div>
         )}

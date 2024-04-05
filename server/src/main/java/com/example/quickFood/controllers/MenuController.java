@@ -62,4 +62,10 @@ public class MenuController {
         List<MenuDto> menuDtoList = menuService.getFilteredMenu(name, resId, category, price, rating, pageable);
         return ResponseEntity.ok(menuDtoList);
     }
+
+    @GetMapping("/getCartMenu")
+    public ResponseEntity<List<MenuDto>> getCartMenu(@RequestParam List<Integer> menuIds) {
+        List<MenuDto> menuDtoList = menuService.getCartMenu(menuIds);
+        return ResponseEntity.ok(menuDtoList);
+    }
 }

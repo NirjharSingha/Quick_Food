@@ -8,6 +8,9 @@ import { handleUnauthorized } from "@/app/utils/unauthorized";
 import { useGlobals } from "@/app/contexts/Globals";
 import { useRouter } from "next/navigation";
 import Loading from "@/app/components/Loading";
+import FavIcon from "@/public/favicon.ico";
+import Image from "next/image";
+import Filter from "@/app/components/Filter";
 
 const page = ({ params }) => {
   const { resId } = params;
@@ -19,6 +22,9 @@ const page = ({ params }) => {
   const [showLoading, setShowLoading] = useState(true);
   const [menu, setMenu] = useState([]);
   const menuDivRef = useRef(null);
+  const [nameFilter, setNameFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [priceFilter, setPriceFilter] = useState("");
 
   const handleScroll = (divRef, prevScrollTop, setPrevScrollTop, setPage) => {
     const currentScrollTop = divRef.current.scrollTop;
@@ -56,7 +62,7 @@ const page = ({ params }) => {
         const response = await axios.get(
           `${
             process.env.NEXT_PUBLIC_SERVER_URL
-          }/menu/getMenuByResId?resId=${resId}&page=${page}&size=${7}`,
+          }/menu/getFilteredMenu?name=${nameFilter}&resId=${resId}&category=${categoryFilter}&price=${priceFilter}&rating=${""}&page=${page}&size=${7}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -65,15 +71,20 @@ const page = ({ params }) => {
         );
         if (response.status == 200) {
           setShowLoading(false);
-          const responseData = response.data;
-          setMenu((prev) => {
-            // Filter out elements from responseData that already exist in prev based on their IDs
-            const filteredData = responseData.filter(
-              (newItem) => !prev.some((prevItem) => prevItem.id === newItem.id)
-            );
-            // Merge the filtered data with the previous state
-            return [...prev, ...filteredData];
-          });
+          if (page === 0) {
+            setMenu(response.data);
+          } else {
+            const responseData = response.data;
+            setMenu((prev) => {
+              // Filter out elements from responseData that already exist in prev based on their IDs
+              const filteredData = responseData.filter(
+                (newItem) =>
+                  !prev.some((prevItem) => prevItem.id === newItem.id)
+              );
+              // Merge the filtered data with the previous state
+              return [...prev, ...filteredData];
+            });
+          }
           if (response.data.length < 7) {
             setSendRequest(false);
           }
@@ -89,19 +100,41 @@ const page = ({ params }) => {
     if (sendRequest) {
       getMenu();
     }
-  }, [page]);
+  }, [page, sendRequest]);
+
+  useEffect(() => {
+    setSendRequest(true);
+    setPage(0);
+  }, [nameFilter, categoryFilter, priceFilter]);
 
   return (
-    <div
-      className="p-4 w-full grid grid-cols-3 gap-x-2 gap-y-4 overflow-y-auto"
-      ref={menuDivRef}
-    >
-      {menu.length !== 0 &&
-        menu.map((menuItem) => (
-          <div key={menuItem.id} className="w-full flex justify-center">
-            <MenuCard menu={menuItem} />
+    <div div className="w-full overflow-y-auto" ref={menuDivRef}>
+      {
+        <div className="w-full flex items-center justify-between bg-gray-400 p-2 pl-4 pr-4 min-h-[4rem]">
+          <div className="flex items-center navbar-start">
+            <div className="bg-white p-[0.5rem] flex justify-center items-center mr-2 rounded-full border-[1px] border-solid border-gray-500">
+              <Image src={FavIcon} alt="logo" width={26} />
+            </div>
+            <p className="ml-1 text-xl text-white font-bold">Select Food</p>
           </div>
-        ))}
+          <Filter
+            nameFilter={nameFilter}
+            setNameFilter={setNameFilter}
+            categoryFilter={categoryFilter}
+            setCategoryFilter={setCategoryFilter}
+            priceFilter={priceFilter}
+            setPriceFilter={setPriceFilter}
+          />
+        </div>
+      }
+      <div className="p-4 grid grid-cols-3 gap-x-2 gap-y-4">
+        {menu.length !== 0 &&
+          menu.map((menuItem) => (
+            <div key={menuItem.id} className="w-full flex justify-center">
+              <MenuCard menu={menuItem} />
+            </div>
+          ))}
+      </div>
       {showLoading && (
         <div className="col-span-3">
           <Loading />

@@ -14,4 +14,6 @@ public interface MenuService {
     List<MenuDto> getMenuByResId(String resId, Pageable pageable);
 
     List<MenuDto> getFilteredMenu(String name, String resId, String category, String price,  String rating, Pageable pageable);
+
+    List<MenuDto> getCartMenu(List<Integer> menuIds);
 }

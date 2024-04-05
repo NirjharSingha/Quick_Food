@@ -108,4 +108,9 @@ public class RestaurantServiceImpl implements RestaurantService {
     public List<ResSearchDto> searchRestaurant(String name) {
         return restaurantRepository.searchRestaurant(name);
     }
+
+    @Override
+    public String restaurantName(String resId) {
+        return restaurantRepository.restaurantName(resId);
+    }
 }

@@ -16,4 +16,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, String> 
 
     @Query("SELECT new com.example.quickFood.dto.ResSearchDto(r.id, r.name, r.image) FROM Restaurant r WHERE LOWER(r.name) LIKE %:name%")
     List<ResSearchDto> searchRestaurant(@Param("name") String name);
+
+    @Query("SELECT r.name FROM Restaurant r WHERE r.id = :id")
+    String restaurantName(@Param("id") String id);
 }

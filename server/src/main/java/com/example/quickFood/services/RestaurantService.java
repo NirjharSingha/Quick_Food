@@ -21,4 +21,6 @@ public interface RestaurantService {
     List<RestaurantDto> getRestaurantsByPagination(Pageable pageable);
 
     List<ResSearchDto> searchRestaurant(String name);
+
+    String restaurantName(String resId);
 }

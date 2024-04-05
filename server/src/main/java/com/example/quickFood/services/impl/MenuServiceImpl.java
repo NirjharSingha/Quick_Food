@@ -115,4 +115,15 @@ public class MenuServiceImpl implements MenuService {
         }
         return menuDtoList;
     }
+
+    @Override
+    public List<MenuDto> getCartMenu(List<Integer> menuIds) {
+        List<Menu> menuList = menuRepository.findAllByIdIn(menuIds);
+        List<MenuDto> menuDtoList = new ArrayList<>();
+        for (Menu menu : menuList) {
+            MenuDto menuDto = new MenuDto(menu.getId(), menu.getRestaurant().getId(), menu.getName(), menu.getPrice(), menu.getCategory(), menu.getImage(), menu.getQuantity());
+            menuDtoList.add(menuDto);
+        }
+        return menuDtoList;
+    }
 }

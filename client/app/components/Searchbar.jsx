@@ -9,12 +9,10 @@ import axios from "axios";
 
 const Searchbar = () => {
   const [fetchedData, setFetchedData] = useState([]);
-  const [filteredData, setFilteredData] = useState([1, 2, 3, 4, 5, 6, 7]);
+  const [filteredData, setFilteredData] = useState([]);
   const { windowWidth } = useGlobals();
   const [inputValue, setInputValue] = useState("");
-  const searchRef = useRef(null);
   const [showResult, setShowResult] = useState(false);
-  const [selectedItem, setSelectedItem] = useState({});
   const containerRef = useRef(null);
 
   const handleInputChange = async (value) => {

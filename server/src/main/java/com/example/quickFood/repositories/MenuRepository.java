@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface MenuRepository extends JpaRepository<Menu, Integer> {
-    List<Menu> findByRestaurantId(String restaurantId);
+    List<Menu> findAllByIdIn(List<Integer> ids);
 
     Page<Menu> findByRestaurantId(String restaurantId, Pageable pageable);
 
@@ -25,7 +25,7 @@ public interface MenuRepository extends JpaRepository<Menu, Integer> {
             "    quantity\n" +
             "FROM menu\n" +
             "WHERE (\n" +
-            "        LOWER(name) LIKE LOWER(%:nameParam%)\n" +
+            "        LOWER(name) LIKE LOWER(CONCAT('%', :nameParam, '%'))\n" +
             "        OR :nameParam = ''\n" +
             "    )\n" +
             "    AND (restaurant_id = :resIdParam)\n" +
@@ -38,13 +38,12 @@ public interface MenuRepository extends JpaRepository<Menu, Integer> {
             "        OR :categoryParam = ''\n" +
             "    )\n" +
             "    AND (\n" +
-            "            SELECT AVG(rating)\n" +
+            "           (SELECT AVG(rating)\n" +
             "            FROM reviews\n" +
             "            WHERE rating IS NOT NULL\n" +
             "                AND reviews.menu_id = menu.id\n" +
             "        ) >= CAST(:ratingParam AS DECIMAL(3, 2))\n" +
-            "        OR (\n" +
-            "        :ratingParam = ''\n" +
+            "        OR :ratingParam = ''\n" +
             "    )\n" +
             "    AND quantity > 0", nativeQuery = true)
     Page<Menu> filteredMenu(@Param("nameParam")String nameParam,

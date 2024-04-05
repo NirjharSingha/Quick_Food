@@ -69,4 +69,9 @@ public class RestaurantController {
     public ResponseEntity<List<ResSearchDto>> searchRestaurant(@RequestParam String name) {
         return ResponseEntity.ok(restaurantService.searchRestaurant(name.toLowerCase()));
     }
+
+    @GetMapping("/getRestaurantName")
+    public ResponseEntity<String> getRestaurantName(@RequestParam String resId) {
+        return ResponseEntity.ok(restaurantService.restaurantName(resId));
+    }
 }

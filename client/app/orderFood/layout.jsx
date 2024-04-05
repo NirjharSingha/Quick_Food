@@ -7,20 +7,28 @@ import { usePathname } from "next/navigation";
 import FoodBucket from "@/public/FoodBucket.jpg";
 import Image from "next/image";
 import { FaBowlFood } from "react-icons/fa6";
-import { MdCancel } from "react-icons/md";
 import { PiStarFill } from "react-icons/pi";
 import { FaShoppingCart } from "react-icons/fa";
+import { useGlobals } from "../contexts/Globals";
+import { useEffect } from "react";
 
 export default function RootLayout({ children }) {
   const router = useRouter();
   const pathname = usePathname();
+  const { cartCount, setCartCount } = useGlobals();
+
+  useEffect(() => {
+    let cart = JSON.parse(localStorage.getItem("cart"));
+
+    if (cart) {
+      if (cart.selectedMenu) {
+        setCartCount(cart.selectedMenu.length);
+      }
+    }
+  }, []);
 
   const navigateOrderNow = () => {
     router.push("/orderFood");
-  };
-
-  const navigateCancelOrder = () => {
-    router.push("/orderFood/cancelOrder");
   };
 
   const navigateSubmitRating = () => {
@@ -65,7 +73,6 @@ export default function RootLayout({ children }) {
         <div
           className={`flex font-sans text-gray-700 p-3 rounded-xl ${
             pathname.includes("/orderFood") &&
-            !pathname.includes("/orderFood/cancelOrder") &&
             !pathname.includes("/orderFood/submitRating") &&
             !pathname.includes("/orderFood/cart")
               ? "bg-blue-400"
@@ -75,17 +82,6 @@ export default function RootLayout({ children }) {
         >
           <FaBowlFood className="text-2xl mr-2" />
           <p className="font-bold truncate">Order Now</p>
-        </div>
-        <div
-          className={`flex font-sans text-gray-700 p-3 rounded-xl ${
-            pathname.includes("/orderFood/cancelOrder")
-              ? "bg-blue-400"
-              : "bg-slate-300 hover:bg-slate-400"
-          } m-4 cursor-pointer items-center`}
-          onClick={navigateCancelOrder}
-        >
-          <MdCancel className="text-2xl mr-2" />
-          <p className="font-bold truncate">Cancel Order</p>
         </div>
         <div
           className={`flex font-sans text-gray-700 p-3 rounded-xl ${
@@ -107,7 +103,9 @@ export default function RootLayout({ children }) {
           onClick={navigateCart}
         >
           <FaShoppingCart className="text-2xl mr-2" />
-          <p className="font-bold truncate">Cart</p>
+          <p className="font-bold truncate">
+            Cart {cartCount > 0 ? `(${cartCount})` : ""}
+          </p>
         </div>
       </div>
       <div

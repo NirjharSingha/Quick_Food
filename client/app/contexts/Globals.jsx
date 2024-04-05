@@ -16,6 +16,7 @@ const GlobalsProvider = ({ children }) => {
   const [profilePercentage, setProfilePercentage] = useState(0);
   const [resInfoPercentage, setResInfoPercentage] = useState(0);
   const [menu, setMenu] = useState([]);
+  const [cartCount, setCartCount] = useState(0);
   const menuDivRef = useRef(null);
 
   return (
@@ -35,6 +36,8 @@ const GlobalsProvider = ({ children }) => {
         menu,
         setMenu,
         menuDivRef,
+        cartCount,
+        setCartCount,
       }}
     >
       {children}
