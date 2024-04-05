@@ -65,16 +65,16 @@ export default function RootLayout({ children }) {
       className="w-screen overflow-x-hidden overflow-y-auto flex"
       style={{ height: "calc(100svh - 4rem)" }}
     >
-      <div className="w-[30%] max-w-[20rem] h-full bg-gray-200">
+      <div className="w-[30%] max-w-[20rem] h-full bg-gray-100 shadow-lg shadow-gray-500 mr-1">
         <div
-          className="mx-auto m-4 rounded-lg bg-gray-400 pt-3 pb-3"
+          className="mx-auto m-4 rounded-lg bg-gray-300 shadow-md shadow-gray-400 pt-3 pb-3"
           style={{ width: "calc(100% - 2rem)" }}
         >
           <div className="flex justify-center items-center mb-3">
-            <div className="bg-blue-50 p-[0.35rem] flex justify-center items-center mr-2 rounded-full border-2 border-solid border-white w-[2.3rem] h-[2.3rem]">
+            <div className="bg-blue-100 p-[0.35rem] flex justify-center items-center mr-2 rounded-full border-2 border-solid border-white w-[2.3rem] h-[2.3rem]">
               <BsFillPersonFill className="text-xl text-blue-400" />
             </div>
-            <p className="text-center text-white text-xl font-bold font-sans">
+            <p className="text-center text-gray-600 text-xl font-bold font-sans">
               My Account
             </p>
           </div>
@@ -86,17 +86,17 @@ export default function RootLayout({ children }) {
               style={{ backgroundColor: "#1BC4BF" }}
             ></div>
           </div>
-          <p className="text-center text-slate-200 mt-2 text-sm font-sans truncate">
+          <p className="text-center text-slate-500 mt-2 text-sm font-sans truncate">
             {profilePercentage !== 0
               ? `Profile ${profilePercentage}% complete`
               : "Profile _% complete"}
           </p>
         </div>
         <div
-          className={`flex font-sans text-gray-700 p-3 rounded-xl ${
+          className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
             selected === "Personal info"
               ? "bg-blue-400"
-              : "bg-slate-300 hover:bg-slate-400"
+              : "bg-slate-200 hover:bg-slate-300"
           } m-4 cursor-pointer items-center`}
           onClick={navigateToMyAccount}
         >
@@ -104,10 +104,10 @@ export default function RootLayout({ children }) {
           <p className="font-bold truncate">Personal info</p>
         </div>
         <div
-          className={`flex font-sans text-gray-700 p-3 rounded-xl ${
+          className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
             selected === "Notifications"
               ? "bg-blue-400"
-              : "bg-slate-300 hover:bg-slate-400"
+              : "bg-slate-200 hover:bg-slate-300"
           } m-4 cursor-pointer items-center`}
           onClick={navigateToNotifications}
         >

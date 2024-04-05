@@ -19,7 +19,7 @@ const SignUp = ({ setShowLogin, setShowSignUp }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const containerRef = useRef(null);
-  const { setIsLoggedIn, setToastMessage } = useGlobals();
+  const { setIsLoggedIn, setToastMessage, setRole } = useGlobals();
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -57,11 +57,12 @@ const SignUp = ({ setShowLogin, setShowSignUp }) => {
         `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/signup`,
         postData
       );
-      console.log(response);
       if (response.status == 200) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("isLoggedIn", true);
         setIsLoggedIn(true);
+        setRole(response.data.role);
+        localStorage.setItem("role", response.data.role);
         setShowSignUp(false);
         setToastMessage("Signed up successfully");
       }
@@ -85,6 +86,8 @@ const SignUp = ({ setShowLogin, setShowSignUp }) => {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("isLoggedIn", true);
         setIsLoggedIn(true);
+        setRole(response.data.role);
+        localStorage.setItem("role", response.data.role);
         setShowSignUp(false);
         setToastMessage("Signed up successfully");
       }

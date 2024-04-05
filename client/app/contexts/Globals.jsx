@@ -11,6 +11,7 @@ export function useGlobals() {
 const GlobalsProvider = ({ children }) => {
   const [windowWidth, setWindowWidth] = useState(2000);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [role, setRole] = useState("");
   const toastRef = useRef(null);
   const [toastMessage, setToastMessage] = useState("");
   const [profilePercentage, setProfilePercentage] = useState(0);
@@ -38,6 +39,8 @@ const GlobalsProvider = ({ children }) => {
         menuDivRef,
         cartCount,
         setCartCount,
+        role,
+        setRole,
       }}
     >
       {children}

@@ -17,17 +17,17 @@ public class AuthController {
     private final AuthServiceImpl authenticationService;
 
     @PostMapping("/signup")
-    public ResponseEntity<JwtAuthenticationResponse> userSignup(@RequestBody SignupDto request) {
+    public ResponseEntity<JwtAuthResponse> userSignup(@RequestBody SignupDto request) {
         return authenticationService.userSignup(request);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JwtAuthenticationResponse> userLogin(@RequestBody LoginDto request) {
+    public ResponseEntity<JwtAuthResponse> userLogin(@RequestBody LoginDto request) {
         return authenticationService.userLogin(request);
     }
 
     @PostMapping("/googleAuth")
-    public ResponseEntity<JwtAuthenticationResponse> googleAuth(@RequestBody GoogleAuth request) {
+    public ResponseEntity<JwtAuthResponse> googleAuth(@RequestBody GoogleAuth request) {
         return authenticationService.googleAuth(request);
     }
 

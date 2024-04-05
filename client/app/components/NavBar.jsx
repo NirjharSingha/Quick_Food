@@ -27,6 +27,8 @@ const NavBar = () => {
     isLoggedIn,
     toastMessage,
     toastRef,
+    role,
+    setRole,
   } = useGlobals();
 
   useEffect(() => {
@@ -45,6 +47,7 @@ const NavBar = () => {
     };
     window.addEventListener("resize", handleResize);
     setIsLoggedIn(localStorage.getItem("isLoggedIn"));
+    setRole(localStorage.getItem("role"));
 
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -102,12 +105,32 @@ const NavBar = () => {
             <Link href="/" className="cursor-pointer hover:underline">
               Home
             </Link>
-            <Link href="/orderFood" className="cursor-pointer hover:underline">
-              Order Food
-            </Link>
-            <Link href="/yourRes" className="cursor-pointer hover:underline">
-              Your Restaurants
-            </Link>
+            {isLoggedIn && role === "CUSTOMER" && (
+              <>
+                <Link
+                  href="/orderFood"
+                  className="cursor-pointer hover:underline"
+                >
+                  Order Food
+                </Link>
+                <Link
+                  href="/yourRes"
+                  className="cursor-pointer hover:underline"
+                >
+                  Your Restaurants
+                </Link>
+              </>
+            )}
+            {isLoggedIn && role === "RIDER" && (
+              <Link href="/delivery" className="cursor-pointer hover:underline">
+                Delivery
+              </Link>
+            )}
+            {isLoggedIn && role === "ADMIN" && (
+              <Link href="/delivery" className="cursor-pointer hover:underline">
+                Admin Dashboard
+              </Link>
+            )}
           </div>
         )}
         <div className="navbar-end">

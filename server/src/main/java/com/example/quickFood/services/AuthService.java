@@ -4,9 +4,9 @@ import com.example.quickFood.dto.*;
 import org.springframework.http.ResponseEntity;
 
 public interface AuthService {
-    ResponseEntity<JwtAuthenticationResponse> userSignup(SignupDto request);
+    ResponseEntity<JwtAuthResponse> userSignup(SignupDto request);
 
-    ResponseEntity<JwtAuthenticationResponse> userLogin(LoginDto request);
+    ResponseEntity<JwtAuthResponse> userLogin(LoginDto request);
 
-    ResponseEntity<JwtAuthenticationResponse> googleAuth(GoogleAuth request);
+    ResponseEntity<JwtAuthResponse> googleAuth(GoogleAuth request);
 }

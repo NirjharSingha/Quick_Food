@@ -18,7 +18,7 @@ const Login = ({ setShowLogin, setShowSignUp, isUserLogin }) => {
   const [warning, setWarning] = useState("");
   const [id, setId] = useState("");
   const containerRef = useRef(null);
-  const { setIsLoggedIn, setToastMessage } = useGlobals();
+  const { setIsLoggedIn, setToastMessage, setRole } = useGlobals();
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -59,6 +59,8 @@ const Login = ({ setShowLogin, setShowSignUp, isUserLogin }) => {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("isLoggedIn", true);
         setIsLoggedIn(true);
+        setRole(response.data.role);
+        localStorage.setItem("role", response.data.role);
         setShowLogin(false);
         setToastMessage("Logged in successfully");
       }
@@ -82,6 +84,8 @@ const Login = ({ setShowLogin, setShowSignUp, isUserLogin }) => {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("isLoggedIn", true);
         setIsLoggedIn(true);
+        setRole(response.data.role);
+        localStorage.setItem("role", response.data.role);
         setShowLogin(false);
         setToastMessage("Logged in successfully");
       }

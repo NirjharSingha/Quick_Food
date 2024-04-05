@@ -1,6 +1,7 @@
 package com.example.quickFood.services.impl;
 
 import com.example.quickFood.dto.*;
+import com.example.quickFood.enums.Role;
 import com.example.quickFood.models.User;
 import com.example.quickFood.repositories.UserRepository;
 import com.example.quickFood.services.AuthService;
@@ -28,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public ResponseEntity<JwtAuthenticationResponse> userSignup(SignupDto request) {
+    public ResponseEntity<JwtAuthResponse> userSignup(SignupDto request) {
         String hashedPassword = passwordEncoder.encode(request.getPassword());
 
         User user = User.builder()
@@ -43,36 +44,40 @@ public class AuthServiceImpl implements AuthService {
             userService.addUser(request);
             String jwt = jwtService.generateToken(user);
 
-            return ResponseEntity.ok(JwtAuthenticationResponse.builder()
+            return ResponseEntity.ok(JwtAuthResponse.builder()
                     .token(jwt)
+                    .role(Role.CUSTOMER)
                     .build());
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(JwtAuthenticationResponse.builder()
+                    .body(JwtAuthResponse.builder()
                             .error("Duplicate id")
                             .build());
         }
     }
 
     @Override
-    public ResponseEntity<JwtAuthenticationResponse> userLogin(LoginDto request) {
+    public ResponseEntity<JwtAuthResponse> userLogin(LoginDto request) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getId(), request.getPassword()));
             var user = userRepository.findById(request.getId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid id or password."));
             var jwt = jwtService.generateToken(user);
-            return ResponseEntity.ok(JwtAuthenticationResponse.builder().token(jwt).build());
+            return ResponseEntity.ok(JwtAuthResponse.builder()
+                    .token(jwt)
+                    .role(user.getRole())
+                    .build());
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(JwtAuthenticationResponse.builder()
+                    .body(JwtAuthResponse.builder()
                             .error("Invalid credentials")
                             .build());
         }
     }
 
     @Override
-    public ResponseEntity<JwtAuthenticationResponse> googleAuth(GoogleAuth request) {
+    public ResponseEntity<JwtAuthResponse> googleAuth(GoogleAuth request) {
         try {
             if (userRepository.findById(request.getId()).isEmpty()) {
                 User user = User.builder()
@@ -82,14 +87,18 @@ public class AuthServiceImpl implements AuthService {
                 userService.addOAuthUser(request);
                 var jwt = jwtService.generateToken(user);
 
-                return ResponseEntity.ok(JwtAuthenticationResponse.builder()
+                return ResponseEntity.ok(JwtAuthResponse.builder()
                         .token(jwt)
+                        .role(Role.CUSTOMER)
                         .build());
             } else {
                 var user = userRepository.findById(request.getId())
                         .orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
                 var jwt = jwtService.generateToken(user);
-                return ResponseEntity.ok(JwtAuthenticationResponse.builder().token(jwt).build());
+                return ResponseEntity.ok(JwtAuthResponse.builder()
+                        .token(jwt)
+                        .role(user.getRole())
+                        .build());
             }
         } catch (Exception e) {
             e.printStackTrace();
