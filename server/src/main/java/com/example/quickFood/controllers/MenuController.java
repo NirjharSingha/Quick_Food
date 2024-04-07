@@ -21,7 +21,8 @@ public class MenuController {
     private MenuServiceImpl menuService;
 
     @PostMapping("/addMenu")
-    public ResponseEntity<MenuDto> addMenu(@RequestParam(value = "file", required = false) MultipartFile file, @ModelAttribute MenuDto menuDto) {
+    public ResponseEntity<MenuDto> addMenu(@RequestParam(value = "file", required = false) MultipartFile file,
+            @ModelAttribute MenuDto menuDto) {
         try {
             if (file != null && !file.isEmpty()) {
                 menuDto.setImage(file.getBytes());
@@ -35,7 +36,8 @@ public class MenuController {
     }
 
     @PutMapping("/updateMenu")
-    public ResponseEntity<MenuDto> updateMenu(@RequestParam(value = "file", required = false) MultipartFile file, @ModelAttribute MenuDto menuDto) {
+    public ResponseEntity<MenuDto> updateMenu(@RequestParam(value = "file", required = false) MultipartFile file,
+            @ModelAttribute MenuDto menuDto) {
         try {
             if (file != null && !file.isEmpty()) {
                 menuDto.setImage(file.getBytes());
@@ -49,7 +51,8 @@ public class MenuController {
     }
 
     @GetMapping("/getMenuByResId")
-    public ResponseEntity<List<MenuDto>> getMenuByResId(@RequestParam String resId, @RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<List<MenuDto>> getMenuByResId(@RequestParam String resId, @RequestParam int page,
+            @RequestParam int size) {
         System.out.println("request received");
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         List<MenuDto> menuDtoList = menuService.getMenuByResId(resId, pageable);
@@ -57,7 +60,9 @@ public class MenuController {
     }
 
     @GetMapping("/getFilteredMenu")
-    public ResponseEntity<List<MenuDto>> getFilteredMenu(@RequestParam String name, @RequestParam String resId, @RequestParam String category, @RequestParam String price, @RequestParam String rating, @RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<List<MenuDto>> getFilteredMenu(@RequestParam String name, @RequestParam String resId,
+            @RequestParam String category, @RequestParam String price, @RequestParam String rating,
+            @RequestParam int page, @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         List<MenuDto> menuDtoList = menuService.getFilteredMenu(name, resId, category, price, rating, pageable);
         return ResponseEntity.ok(menuDtoList);

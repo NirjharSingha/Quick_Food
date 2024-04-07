@@ -9,9 +9,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MenuRepository extends JpaRepository<Menu, Integer> {
+    Optional<Menu> findById(int id);
+
     List<Menu> findAllByIdIn(List<Integer> ids);
 
     Page<Menu> findByRestaurantId(String restaurantId, Pageable pageable);
@@ -52,4 +55,8 @@ public interface MenuRepository extends JpaRepository<Menu, Integer> {
                             @Param("categoryParam")String categoryParam,
                             @Param("ratingParam")String ratingParam,
                             Pageable pageable);
+
+    @Query(value = "SELECT m.quantity FROM menu m WHERE m.id = :menuId", nativeQuery = true)
+    Integer findAvailableQuantity(@Param("menuId") Integer menuId);
+
 }

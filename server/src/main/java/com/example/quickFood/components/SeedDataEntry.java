@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class SeedDataComponent implements CommandLineRunner {
+public class SeedDataEntry implements CommandLineRunner {
 
   @Autowired
   private final UserRepository userRepository;

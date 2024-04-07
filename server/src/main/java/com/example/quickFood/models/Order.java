@@ -1,5 +1,6 @@
 package com.example.quickFood.models;
 
+import com.example.quickFood.enums.PaymentMethod;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,5 +34,9 @@ public class Order {
     private String deliveryAddress;
     private int deliveryTime;
     private double deliveryFee;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
+
     private Timestamp timestamp;
 }

@@ -1,6 +1,7 @@
 package com.example.quickFood.services;
 
 import com.example.quickFood.dto.MenuDto;
+import com.example.quickFood.dto.OrderQuantity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
@@ -16,4 +17,8 @@ public interface MenuService {
     List<MenuDto> getFilteredMenu(String name, String resId, String category, String price,  String rating, Pageable pageable);
 
     List<MenuDto> getCartMenu(List<Integer> menuIds);
+
+    Boolean validateOrderQuantity(List<OrderQuantity> gotOrderQuantity);
+
+    void updateQuantity(List<OrderQuantity> gotOrderQuantity);
 }

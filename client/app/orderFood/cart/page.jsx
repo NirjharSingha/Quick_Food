@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { handleUnauthorized } from "@/app/utils/unauthorized";
+import { jwtDecode } from "jwt-decode";
 
 const page = () => {
   const [showLoading, setShowLoading] = useState(false);
@@ -18,6 +19,52 @@ const page = () => {
   const [quantity, setQuantity] = useState([]);
   const [total, setTotal] = useState(0);
   const [restaurantName, setRestaurantName] = useState("");
+  const [showMessage, setShowMessage] = useState(false);
+
+  const handlePlaceOrder = async () => {
+    let dataToSend = [];
+    let cart = JSON.parse(localStorage.getItem("cart"));
+    const selectedMenu = cart.selectedMenu;
+
+    selectedMenu.forEach((menu) => {
+      dataToSend.push({
+        id: menu.selectedMenuId,
+        quantity: menu.selectedMenuQuantity,
+      });
+    });
+
+    const placeOrderData = {
+      userId: jwtDecode(localStorage.getItem("token")).sub,
+      restaurantId: cart.restaurantId,
+      deliveryAddress: "",
+      deliveryTime: 30,
+      paymentMethod: "COD",
+      price: total,
+      deliveryFee: total * 0.1,
+      orderQuantities: dataToSend,
+    };
+
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/order/placeOrder`,
+        placeOrderData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.status);
+      // if (response.status === 200) {
+      // }
+    } catch (error) {
+      console.log(error);
+      // if (error.response.status === 401) {
+      //   handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+      // }
+    }
+  };
 
   useEffect(() => {
     const getCart = async () => {
@@ -46,12 +93,16 @@ const page = () => {
               }
             );
             if (response.status === 200) {
-              setCart(response.data);
-              let tempTotal = 0;
-              response.data.forEach((menu, index) => {
-                tempTotal += menu.price * tempQuantity[index];
-              });
-              setTotal(tempTotal);
+              if (response.data.length === 0) {
+                setShowMessage(true);
+              } else {
+                setCart(response.data);
+                let tempTotal = 0;
+                response.data.forEach((menu, index) => {
+                  tempTotal += menu.price * tempQuantity[index];
+                });
+                setTotal(tempTotal);
+              }
             }
           } catch (error) {
             console.log(error);
@@ -80,7 +131,11 @@ const page = () => {
               handleUnauthorized(setIsLoggedIn, setToastMessage, router);
             }
           }
+        } else {
+          setShowMessage(true);
         }
+      } else {
+        setShowMessage(true);
       }
     };
 
@@ -88,28 +143,38 @@ const page = () => {
   }, []);
 
   return (
-    <div className="bg-slate-100 h-full w-full">
-      {showLoading && (
-        <div className="w-full h-full flex justify-center items-center">
-          <Loading />
+    <>
+      {showMessage && (
+        <p className="text-md col-span-3 font-serif text-gray-700 w-full h-full flex justify-center items-center">
+          No Items in Cart
+        </p>
+      )}
+      {!showMessage && (
+        <div className="bg-slate-100 h-full w-full">
+          {showLoading && (
+            <div className="w-full h-full flex justify-center items-center">
+              <Loading />
+            </div>
+          )}
+          {!showLoading && (
+            <div className="h-full">
+              <Cart
+                data={cart}
+                quantity={quantity}
+                total={total}
+                restaurantName={restaurantName}
+              />
+              <div
+                className={`w-full max-w-[42.5rem] mx-auto h-8 bg-gray-300 font-sans font-bold mt-5 mb-5 rounded-2xl hover:bg-gray-400 text-gray-700 flex justify-center items-center cursor-pointer`}
+                onClick={handlePlaceOrder}
+              >
+                Place Order
+              </div>
+            </div>
+          )}
         </div>
       )}
-      {!showLoading && (
-        <div className="h-full">
-          <Cart
-            data={cart}
-            quantity={quantity}
-            total={total}
-            restaurantName={restaurantName}
-          />
-          <div
-            className={`w-full max-w-[42.5rem] mx-auto h-8 bg-gray-300 font-sans font-bold mt-5 mb-5 rounded-2xl hover:bg-gray-400 text-gray-700 flex justify-center items-center cursor-pointer`}
-          >
-            Apply
-          </div>
-        </div>
-      )}
-    </div>
+    </>
   );
 };
 

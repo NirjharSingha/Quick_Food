@@ -17,6 +17,7 @@ import {
   onMessageListener,
 } from "../utils/firebase";
 import { initializeApp } from "firebase/app";
+import { usePathname } from "next/navigation";
 
 const NavBar = () => {
   const router = useRouter();
@@ -29,7 +30,9 @@ const NavBar = () => {
     toastRef,
     role,
     setRole,
+    setCartCount,
   } = useGlobals();
+  const pathname = usePathname();
 
   useEffect(() => {
     initializeApp(firebaseConfig);
@@ -110,6 +113,12 @@ const NavBar = () => {
                 <Link
                   href="/orderFood"
                   className="cursor-pointer hover:underline"
+                  onClick={() => {
+                    if (!pathname.includes("/orderFood")) {
+                      localStorage.removeItem("cart");
+                      setCartCount(0);
+                    }
+                  }}
                 >
                   Order Food
                 </Link>

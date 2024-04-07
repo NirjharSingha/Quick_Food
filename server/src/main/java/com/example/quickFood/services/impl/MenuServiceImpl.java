@@ -1,6 +1,7 @@
 package com.example.quickFood.services.impl;
 
 import com.example.quickFood.dto.MenuDto;
+import com.example.quickFood.dto.OrderQuantity;
 import com.example.quickFood.models.Menu;
 import com.example.quickFood.models.Restaurant;
 import com.example.quickFood.repositories.MenuRepository;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,5 +127,34 @@ public class MenuServiceImpl implements MenuService {
             menuDtoList.add(menuDto);
         }
         return menuDtoList;
+    }
+
+    @Override
+    @Transactional
+    public Boolean validateOrderQuantity(List<OrderQuantity> gotOrderQuantity) {
+        System.out.println("validateOrderQuantity");
+        List<Integer> menuIds = new ArrayList<>();
+        for (OrderQuantity orderQuantity : gotOrderQuantity) {
+            int availableQuantity = menuRepository.findAvailableQuantity(orderQuantity.getId());
+            if (availableQuantity < orderQuantity.getQuantity()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public void updateQuantity(List<OrderQuantity> gotOrderQuantity) {
+        for (int i = 0; i < gotOrderQuantity.size(); i++) {
+            int menuId = gotOrderQuantity.get(i).getId();
+            int quantity = gotOrderQuantity.get(i).getQuantity();
+            Menu menu = menuRepository.findById(menuId)
+                    .orElseThrow(() -> new IllegalArgumentException("Menu with ID " + menuId + " not found"));
+            int prevQuantity = menu.getQuantity();
+            int updatedQuantity = prevQuantity - quantity;
+            menu.setQuantity(updatedQuantity);
+            menuRepository.save(menu);
+        }
     }
 }

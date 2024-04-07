@@ -19,6 +19,7 @@ const Alert = ({
   message,
   cancelHandler,
   continueHandler,
+  flag = false,
 }) => {
   return (
     <AlertDialog>
@@ -33,9 +34,13 @@ const Alert = ({
           <AlertDialogDescription>{message}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={cancelHandler}>Cancel</AlertDialogCancel>
+          {!flag && (
+            <AlertDialogCancel onClick={cancelHandler}>
+              Cancel
+            </AlertDialogCancel>
+          )}
           <AlertDialogAction onClick={continueHandler}>
-            Continue
+            {flag ? "Close" : "Continue"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
