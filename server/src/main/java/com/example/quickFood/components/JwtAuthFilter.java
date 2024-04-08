@@ -1,4 +1,4 @@
-package com.example.quickFood.filters;
+package com.example.quickFood.components;
 
 import org.apache.commons.lang3.StringUtils;
 import com.example.quickFood.services.impl.JwtServiceImpl;
@@ -23,7 +23,7 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthFilter extends OncePerRequestFilter {
 
   @Autowired
   private final JwtServiceImpl jwtService;

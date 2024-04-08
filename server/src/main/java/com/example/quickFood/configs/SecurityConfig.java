@@ -1,7 +1,7 @@
 package com.example.quickFood.configs;
 
 import com.example.quickFood.components.AuthEntryPoint;
-import com.example.quickFood.filters.JwtAuthenticationFilter;
+import com.example.quickFood.components.JwtAuthFilter;
 import com.example.quickFood.services.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Autowired
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthFilter jwtAuthFilter;
     @Autowired
     private final UserServiceImpl userService;
     @Autowired
@@ -61,7 +61,7 @@ public class SecurityConfig {
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(authEntryPoint))
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
