@@ -38,5 +38,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
-    private Timestamp timestamp;
+    private Timestamp orderPlaced;
+    private Timestamp deliveryTaken;
+    private Timestamp deliveryCompleted;
 }

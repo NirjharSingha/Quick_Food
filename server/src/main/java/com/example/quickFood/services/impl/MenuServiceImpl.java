@@ -101,18 +101,21 @@ public class MenuServiceImpl implements MenuService {
 
         for (Menu menu : menuPage) {
             System.out.println(menu.getId());
-            MenuDto menuDto = new MenuDto(menu.getId(), menu.getRestaurant().getId(), menu.getName(), menu.getPrice(), menu.getCategory(), menu.getImage(), menu.getQuantity());
+            MenuDto menuDto = new MenuDto(menu.getId(), menu.getRestaurant().getId(), menu.getName(), menu.getPrice(),
+                    menu.getCategory(), menu.getImage(), menu.getQuantity());
             menuDtoList.add(menuDto);
         }
         return menuDtoList;
     }
 
     @Override
-    public List<MenuDto> getFilteredMenu(String name, String resId, String category, String price, String rating, Pageable pageable) {
+    public List<MenuDto> getFilteredMenu(String name, String resId, String category, String price, String rating,
+            Pageable pageable) {
         Page<Menu> filteredMenu = menuRepository.filteredMenu(name, resId, price, category, rating, pageable);
         List<MenuDto> menuDtoList = new ArrayList<>();
         for (Menu menu : filteredMenu) {
-            MenuDto menuDto = new MenuDto(menu.getId(), menu.getRestaurant().getId(), menu.getName(), menu.getPrice(), menu.getCategory(), menu.getImage(), menu.getQuantity());
+            MenuDto menuDto = new MenuDto(menu.getId(), menu.getRestaurant().getId(), menu.getName(), menu.getPrice(),
+                    menu.getCategory(), menu.getImage(), menu.getQuantity());
             menuDtoList.add(menuDto);
         }
         return menuDtoList;
@@ -123,7 +126,8 @@ public class MenuServiceImpl implements MenuService {
         List<Menu> menuList = menuRepository.findAllByIdIn(menuIds);
         List<MenuDto> menuDtoList = new ArrayList<>();
         for (Menu menu : menuList) {
-            MenuDto menuDto = new MenuDto(menu.getId(), menu.getRestaurant().getId(), menu.getName(), menu.getPrice(), menu.getCategory(), menu.getImage(), menu.getQuantity());
+            MenuDto menuDto = new MenuDto(menu.getId(), menu.getRestaurant().getId(), menu.getName(), menu.getPrice(),
+                    menu.getCategory(), menu.getImage(), menu.getQuantity());
             menuDtoList.add(menuDto);
         }
         return menuDtoList;
@@ -132,8 +136,6 @@ public class MenuServiceImpl implements MenuService {
     @Override
     @Transactional
     public Boolean validateOrderQuantity(List<OrderQuantity> gotOrderQuantity) {
-        System.out.println("validateOrderQuantity");
-        List<Integer> menuIds = new ArrayList<>();
         for (OrderQuantity orderQuantity : gotOrderQuantity) {
             int availableQuantity = menuRepository.findAvailableQuantity(orderQuantity.getId());
             if (availableQuantity < orderQuantity.getQuantity()) {

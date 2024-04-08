@@ -35,9 +35,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderDetailsRepository orderDetailsRepository;
 
     @Autowired
-    private final OrderStatusRepository orderStatusRepository;
-
-    @Autowired
     private final MenuRepository menuRepository;
 
     @Autowired
@@ -45,11 +42,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderCard> getOrderCard(String userId) {
-        List<Order> orders = orderRepository.findByUserId(userId);
+        List<Integer> orderIds = orderRepository.findOrdersToReview(userId);
         List<OrderCard> orderCards = new ArrayList<>();
 
-        for (Order order : orders) {
-            OrderCard orderCard = new OrderCard(order.getId(), order.getRestaurant().getName(), order.getRestaurant().getImage(), order.getPrice(), order.getTimestamp());
+        for (int orderId : orderIds) {
+            Order order = orderRepository.findById(orderId).get();
+            OrderCard orderCard = new OrderCard(order.getId(), order.getRestaurant().getName(),
+                    order.getRestaurant().getImage(), order.getPrice(), order.getOrderPlaced());
             orderCards.add(orderCard);
         }
         return orderCards;
@@ -59,11 +58,11 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public ResponseEntity<String> placeOrder(PlaceOrder placeOrder) {
         if (!menuService.validateOrderQuantity(placeOrder.getOrderQuantities())) {
-            return ResponseEntity.badRequest().body("Invalid order quantity");
+            return ResponseEntity.badRequest().body("Food items out of stock");
         }
         String availableRider = riderStatusRepository.findAvailableRider();
         if (availableRider == null) {
-            return ResponseEntity.badRequest().body("No rider available");
+            return ResponseEntity.badRequest().body("No available rider");
         }
         User user = userRepository.findById(placeOrder.getUserId()).get();
         User rider = userRepository.findById(availableRider).get();
@@ -78,7 +77,7 @@ public class OrderServiceImpl implements OrderService {
                 .deliveryFee(placeOrder.getDeliveryFee())
                 .deliveryTime(placeOrder.getDeliveryTime())
                 .paymentMethod(placeOrder.getPaymentMethod())
-                .timestamp(new Timestamp(System.currentTimeMillis()))
+                .orderPlaced(new Timestamp(System.currentTimeMillis()))
                 .build();
 
         Order savedOrder = orderRepository.save(order);
@@ -87,11 +86,6 @@ public class OrderServiceImpl implements OrderService {
         riderStatusRepository.save(riderStatus);
 
         menuService.updateQuantity(placeOrder.getOrderQuantities());
-
-        OrderStatus orderStatus = OrderStatus.builder()
-                .order(savedOrder)
-                .build();
-        orderStatusRepository.save(orderStatus);
 
         for (OrderQuantity orderQuantity : placeOrder.getOrderQuantities()) {
             OrderDetails orderDetails = OrderDetails.builder()

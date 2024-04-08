@@ -49,12 +49,12 @@ public interface MenuRepository extends JpaRepository<Menu, Integer> {
             "        OR :ratingParam = ''\n" +
             "    )\n" +
             "    AND quantity > 0", nativeQuery = true)
-    Page<Menu> filteredMenu(@Param("nameParam")String nameParam,
-                            @Param("resIdParam")String resIdParam,
-                            @Param("priceParam")String priceParam,
-                            @Param("categoryParam")String categoryParam,
-                            @Param("ratingParam")String ratingParam,
-                            Pageable pageable);
+    Page<Menu> filteredMenu(@Param("nameParam") String nameParam,
+            @Param("resIdParam") String resIdParam,
+            @Param("priceParam") String priceParam,
+            @Param("categoryParam") String categoryParam,
+            @Param("ratingParam") String ratingParam,
+            Pageable pageable);
 
     @Query(value = "SELECT m.quantity FROM menu m WHERE m.id = :menuId", nativeQuery = true)
     Integer findAvailableQuantity(@Param("menuId") Integer menuId);

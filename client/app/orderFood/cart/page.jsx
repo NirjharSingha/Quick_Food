@@ -5,21 +5,24 @@ import Loading from "@/app/components/Loading";
 import { useState } from "react";
 import Cart from "@/app/components/Cart";
 import { useGlobals } from "@/app/contexts/Globals";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { handleUnauthorized } from "@/app/utils/unauthorized";
 import { jwtDecode } from "jwt-decode";
+import Alert from "@/app/components/Alert";
 
 const page = () => {
   const [showLoading, setShowLoading] = useState(false);
-  const { setToastMessage, setIsLoggedIn } = useGlobals();
+  const { setToastMessage, setIsLoggedIn, setCartCount } = useGlobals();
   const router = useRouter();
   const [cart, setCart] = useState([]);
   const [quantity, setQuantity] = useState([]);
   const [total, setTotal] = useState(0);
   const [restaurantName, setRestaurantName] = useState("");
   const [showMessage, setShowMessage] = useState(false);
+  const alertRef = useRef(null);
+  const [alertTitle, setAlertTitle] = useState("");
 
   const handlePlaceOrder = async () => {
     let dataToSend = [];
@@ -55,14 +58,20 @@ const page = () => {
           },
         }
       );
-      console.log(response.status);
-      // if (response.status === 200) {
-      // }
+      if (response.status === 200) {
+        localStorage.removeItem("cart");
+        setCartCount(0);
+        router.push("/orderFood");
+        setToastMessage("Order Placed Successfully");
+      }
     } catch (error) {
-      console.log(error);
-      // if (error.response.status === 401) {
-      //   handleUnauthorized(setIsLoggedIn, setToastMessage, router);
-      // }
+      if (error.response.status === 400) {
+        setAlertTitle(error.response.data);
+        alertRef.current.click();
+      }
+      if (error.response.status === 401) {
+        handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+      }
     }
   };
 
@@ -149,6 +158,18 @@ const page = () => {
           No Items in Cart
         </p>
       )}
+      <Alert
+        buttonRef={alertRef}
+        title={alertTitle}
+        message={`Sorry, we are unable to place your order because of ${alertTitle.toLowerCase()}. Please try again later.`}
+        continueHandler={() => {
+          localStorage.removeItem("cart");
+          setCartCount(0);
+          alertRef.current.click();
+          router.push(`/orderFood`);
+        }}
+        flag={true}
+      />
       {!showMessage && (
         <div className="bg-slate-100 h-full w-full">
           {showLoading && (
