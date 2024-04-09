@@ -10,13 +10,45 @@ import { IoAddCircle } from "react-icons/io5";
 import { useState, useEffect, useRef } from "react";
 import { useGlobals } from "../contexts/Globals";
 import { FaCircleMinus } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
 import Alert from "./Alert";
+import axios from "axios";
+import { handleUnauthorized } from "@/app/utils/unauthorized";
 
 const MenuCard = ({ menu, setMenuList }) => {
   const pathname = usePathname();
   const [quantity, setQuantity] = useState(0);
   const { setCartCount } = useGlobals();
   const cartAlertRef = useRef(null);
+  const { setToastMessage, setIsLoggedIn } = useGlobals();
+  const [rating, setRating] = useState(0);
+  const router = useRouter();
+
+  useEffect(() => {
+    const getRating = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/review/menuRating?menuId=${menu.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.status === 200) {
+          console.log(response.data);
+          setRating(response.data);
+        }
+      } catch (error) {
+        console.log(error);
+        if (error.response.status === 401) {
+          handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+        }
+      }
+    };
+    getRating();
+  }, []);
 
   useEffect(() => {
     if (pathname.includes("/orderFood")) {
@@ -188,8 +220,14 @@ const MenuCard = ({ menu, setMenuList }) => {
             )}
           </div>
         )}
-        <div className="mt-1 flex gap-1 w-[3.7rem] justify-center items-center font-bold text-white bg-green-700 rounded-sm text-sm pt-1 pb-1 mr-3 mb-2">
-          4.5 <FaStar />
+        <div className="mt-1 flex gap-1 w-[5rem] justify-center items-center font-bold text-white bg-green-700 rounded-sm text-sm pt-1 pb-1 mr-3 mb-2">
+          {rating === "" ? (
+            <p className="text-[0.75rem] truncate">No Rating</p>
+          ) : (
+            <>
+              {rating.toFixed(2)} <FaStar />
+            </>
+          )}
         </div>
       </div>
     </div>

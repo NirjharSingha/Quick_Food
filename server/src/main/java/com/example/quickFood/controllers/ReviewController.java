@@ -25,4 +25,14 @@ public class ReviewController {
     public ResponseEntity<String> submitReview(@RequestParam int orderId, @RequestBody List<RatingDto> rating) {
         return reviewService.submitReview(orderId, rating);
     }
+
+    @GetMapping("/restaurantRating")
+    public ResponseEntity<Double> getRestaurantRating(@RequestParam String restaurantId) {
+        return reviewService.getRestaurantRating(restaurantId);
+    }
+
+    @GetMapping("/menuRating")
+    public ResponseEntity<Double> getMenuRating(@RequestParam int menuId) {
+        return reviewService.getMenuRating(menuId);
+    }
 }

@@ -73,4 +73,14 @@ public class ReviewServiceImpl implements ReviewService {
         }
         return ResponseEntity.ok("Review submitted successfully");
     }
+
+    @Override
+    public ResponseEntity<Double> getRestaurantRating(String restaurantId) {
+        return ResponseEntity.ok(reviewRepository.getRestaurantRating(restaurantId));
+    }
+
+    @Override
+    public ResponseEntity<Double> getMenuRating(int menuId) {
+        return ResponseEntity.ok(reviewRepository.getMenuRating(menuId));
+    }
 }

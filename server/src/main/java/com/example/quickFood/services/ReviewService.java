@@ -10,4 +10,8 @@ public interface ReviewService {
     ResponseEntity<RatingPage> getReviewPage(int orderId);
 
     ResponseEntity<String> submitReview(int orderId, List<RatingDto> rating);
+
+    ResponseEntity<Double> getRestaurantRating(String restaurantId);
+
+    ResponseEntity<Double> getMenuRating(int menuId);
 }

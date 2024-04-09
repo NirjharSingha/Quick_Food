@@ -74,7 +74,10 @@ const page = () => {
         </div>
       )}
       {showMessage && (
-        <p className="text-md col-span-3 font-serif text-gray-700 w-full text-center m-auto">
+        <p
+          className="text-md col-span-3 font-serif text-gray-700 w-full text-center flex justify-center items-center"
+          style={{ height: "calc(100svh - 10rem)" }}
+        >
           No Orders To Give Rating
         </p>
       )}

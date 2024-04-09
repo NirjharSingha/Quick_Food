@@ -21,12 +21,23 @@ const Filter = ({
   setCategoryFilter,
   priceFilter,
   setPriceFilter,
+  ratingFilter,
+  setRatingFilter,
 }) => {
   const buttonRef = useRef(null);
   const [name, setName] = useState(nameFilter);
   const [category, setCategory] = useState(categoryFilter);
   const [price, setPrice] = useState(priceFilter);
+  const [rating, setRating] = useState(ratingFilter);
   const [warning, setWarning] = useState("");
+
+  function isValidPositiveNumber(str) {
+    // Regular expression to match a valid positive number format (including decimal numbers)
+    const positiveNumberPattern = /^\d+(\.\d+)?$/;
+
+    // Test if the string matches the positive number pattern
+    return positiveNumberPattern.test(str);
+  }
 
   return (
     <Dialog>
@@ -38,6 +49,7 @@ const Filter = ({
             setName(nameFilter);
             setCategory(categoryFilter);
             setPrice(priceFilter);
+            setRating(ratingFilter);
           }}
         >
           <p className="font-bold text-sm font-sans text-gray-700">
@@ -58,7 +70,7 @@ const Filter = ({
         </p>
         <div className="grid grid-cols-3 mb-3 items-center">
           <Label htmlFor="accountId" className="text-left text-sm truncate">
-            Name : <span className="text-red-500">*</span>
+            Name :
           </Label>
           <div className="flex items-center indent-2 rounded-2xl border-b-2 rounded-b-none col-span-2">
             <input
@@ -78,7 +90,7 @@ const Filter = ({
         </div>
         <div className="grid grid-cols-3 mb-3 items-center">
           <Label htmlFor="accountId" className="text-left text-sm truncate">
-            Category : <span className="text-red-500">*</span>
+            Category :
           </Label>
           <div className="flex items-center indent-2 rounded-2xl border-b-2 rounded-b-none col-span-2">
             <select
@@ -101,7 +113,7 @@ const Filter = ({
         </div>
         <div className="grid grid-cols-3 mb-3 items-center">
           <Label htmlFor="accountId" className="text-left text-sm truncate">
-            Price : <span className="text-red-500">*</span>
+            Price :
           </Label>
           <div className="flex items-center indent-2 rounded-2xl border-b-2 rounded-b-none col-span-2">
             <input
@@ -119,6 +131,26 @@ const Filter = ({
             />
           </div>
         </div>
+        <div className="grid grid-cols-3 mb-3 items-center">
+          <Label htmlFor="accountId" className="text-left text-sm truncate">
+            Rating :
+          </Label>
+          <div className="flex items-center indent-2 rounded-2xl border-b-2 rounded-b-none col-span-2">
+            <input
+              id="rating"
+              type="number"
+              name="rating"
+              className="indent-2 rounded outline-none cursor-pointer font-sans"
+              placeholder="Minimum Rating"
+              value={rating}
+              required={true}
+              onChange={(e) => {
+                setWarning("");
+                setRating(e.target.value);
+              }}
+            />
+          </div>
+        </div>
         <DialogFooter>
           <Button
             className="w-[6rem] font-bold"
@@ -127,9 +159,18 @@ const Filter = ({
                 setWarning("Price must be a positive value");
                 return;
               }
+              if (!isValidPositiveNumber(rating.toString()) && rating !== "") {
+                setWarning("Invalid rating value");
+                return;
+              }
+              if (parseFloat(rating) > 5) {
+                setWarning("Rating must be less than or equal to 5");
+                return;
+              }
               setNameFilter(name);
               setCategoryFilter(category);
               setPriceFilter(price);
+              setRatingFilter(rating);
 
               buttonRef && buttonRef.current && buttonRef.current.click();
             }}

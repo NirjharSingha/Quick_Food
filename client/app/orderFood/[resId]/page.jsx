@@ -25,6 +25,7 @@ const page = ({ params }) => {
   const [nameFilter, setNameFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [priceFilter, setPriceFilter] = useState("");
+  const [ratingFilter, setRatingFilter] = useState("");
 
   const handleScroll = (divRef, prevScrollTop, setPrevScrollTop, setPage) => {
     const currentScrollTop = divRef.current.scrollTop;
@@ -62,7 +63,7 @@ const page = ({ params }) => {
         const response = await axios.get(
           `${
             process.env.NEXT_PUBLIC_SERVER_URL
-          }/menu/getFilteredMenu?name=${nameFilter}&resId=${resId}&category=${categoryFilter}&price=${priceFilter}&rating=${""}&page=${page}&size=${7}`,
+          }/menu/getFilteredMenu?name=${nameFilter}&resId=${resId}&category=${categoryFilter}&price=${priceFilter}&rating=${ratingFilter}&page=${page}&size=${7}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -105,7 +106,7 @@ const page = ({ params }) => {
   useEffect(() => {
     setSendRequest(true);
     setPage(0);
-  }, [nameFilter, categoryFilter, priceFilter]);
+  }, [nameFilter, categoryFilter, priceFilter, ratingFilter]);
 
   return (
     <div div className="w-full overflow-y-auto" ref={menuDivRef}>
@@ -124,6 +125,8 @@ const page = ({ params }) => {
             setCategoryFilter={setCategoryFilter}
             priceFilter={priceFilter}
             setPriceFilter={setPriceFilter}
+            ratingFilter={ratingFilter}
+            setRatingFilter={setRatingFilter}
           />
         </div>
       }
