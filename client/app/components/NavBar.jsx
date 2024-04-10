@@ -18,6 +18,7 @@ import {
 } from "../utils/firebase";
 import { initializeApp } from "firebase/app";
 import { usePathname } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
 
 const NavBar = () => {
   const router = useRouter();
@@ -31,16 +32,42 @@ const NavBar = () => {
     role,
     setRole,
     setCartCount,
+    stompClient,
+    setStompClient,
   } = useGlobals();
   const pathname = usePathname();
 
   useEffect(() => {
-    initializeApp(firebaseConfig);
-    requestForToken();
+    // Only execute this code in the browser environment
+    if (typeof window !== "undefined") {
+      import("sockjs-client").then(({ default: SockJS }) => {
+        import("stompjs").then(({ over }) => {
+          const socket = new SockJS(`${process.env.NEXT_PUBLIC_SERVER_URL}/ws`);
+          const stompClient = over(socket);
+          stompClient.connect({}, function () {
+            const userId = jwtDecode(localStorage.getItem("token")).sub;
+            stompClient.subscribe(
+              "/user/" + userId + "/notifications",
+              function (notification) {
+                console.log("Received notification:", notification.body);
+                // Handle received notification
+                alert("Received notification: " + notification.body);
+              }
+            );
+          });
+          setStompClient(stompClient);
+        });
+      });
+    }
+  }, []);
 
-    onMessageListener().then((payload) => {
-      window.alert("Payload: " + JSON.stringify(payload));
-    });
+  useEffect(() => {
+    // Initialize Firebase
+    // initializeApp(firebaseConfig);
+    // requestForToken();
+    // onMessageListener().then((payload) => {
+    //   window.alert("Payload: " + JSON.stringify(payload));
+    // });
   }, []);
 
   useEffect(() => {
@@ -143,7 +170,18 @@ const NavBar = () => {
           </div>
         )}
         <div className="navbar-end">
-          <button className="btn btn-ghost btn-circle">
+          <button
+            className="btn btn-ghost btn-circle"
+            onClick={() => {
+              if (stompClient) {
+                stompClient.send(
+                  "/app/sendNotification/" + "user2@gmail.com",
+                  {},
+                  JSON.stringify("Hello")
+                );
+              }
+            }}
+          >
             <div className="indicator">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

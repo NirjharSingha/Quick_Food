@@ -19,6 +19,7 @@ const GlobalsProvider = ({ children }) => {
   const [menu, setMenu] = useState([]);
   const [cartCount, setCartCount] = useState(0);
   const menuDivRef = useRef(null);
+  const [stompClient, setStompClient] = useState(null);
 
   return (
     <GlobalsContext.Provider
@@ -41,6 +42,8 @@ const GlobalsProvider = ({ children }) => {
         setCartCount,
         role,
         setRole,
+        stompClient,
+        setStompClient,
       }}
     >
       {children}

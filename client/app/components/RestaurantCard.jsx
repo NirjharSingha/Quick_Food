@@ -38,7 +38,6 @@ const RestaurantCard = ({ restaurant }) => {
           }
         );
         if (response.status === 200) {
-          console.log(response.data);
           setRating(response.data);
         }
       } catch (error) {
