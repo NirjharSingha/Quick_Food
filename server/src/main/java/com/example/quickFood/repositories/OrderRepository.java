@@ -15,4 +15,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     @Query("SELECT o.id FROM Order o LEFT JOIN Review r ON o.id = r.order.id WHERE o.user.id = :userId AND o.deliveryCompleted IS NOT NULL AND r.id IS NULL")
     List<Integer> findOrdersToReview(@Param("userId") String userId);
+
+    @Query("SELECT o.id FROM Order o WHERE o.restaurant.id = :restaurantId AND o.deliveryTaken IS NULL")
+    List<Integer> findPendingOrderOfRestaurant(@Param("restaurantId") String restaurantId);
 }

@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { BiSolidFoodMenu } from "react-icons/bi";
 import MenuDialog from "../components/MenuDialog";
+import { MdPending } from "react-icons/md";
 
 export default function RootLayout({ children }) {
   const router = useRouter();
@@ -31,6 +32,12 @@ export default function RootLayout({ children }) {
   const navigateMenu = () => {
     const restaurantId = localStorage.getItem("restaurantId");
     const url = "/yourRes/" + restaurantId + "/menu";
+    router.push(url);
+  };
+
+  const navigatePendingOrders = () => {
+    const restaurantId = localStorage.getItem("restaurantId");
+    const url = "/yourRes/" + restaurantId + "/pendingOrders";
     router.push(url);
   };
 
@@ -92,7 +99,8 @@ export default function RootLayout({ children }) {
               className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
                 pathname !== "/yourRes" &&
                 pathname !== "/yourRes/addNewRes" &&
-                !pathname.includes("/menu")
+                !pathname.includes("/menu") &&
+                !pathname.includes("/pendingOrders")
                   ? "bg-blue-400"
                   : "bg-slate-200 hover:bg-slate-300"
               } m-4 cursor-pointer items-center`}
@@ -113,6 +121,17 @@ export default function RootLayout({ children }) {
               <p className="font-bold truncate">Menu Items</p>
             </div>
             <MenuDialog isAdd={true} menu={{}} />
+            <div
+              className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
+                pathname.includes("/pendingOrders")
+                  ? "bg-blue-400"
+                  : "bg-slate-200 hover:bg-slate-300"
+              } m-4 cursor-pointer items-center`}
+              onClick={navigatePendingOrders}
+            >
+              <MdPending className="text-2xl mr-2" />
+              <p className="font-bold truncate">Pending Orders</p>
+            </div>
           </>
         )}
       </div>

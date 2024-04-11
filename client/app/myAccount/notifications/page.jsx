@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect } from "react";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { cn } from "@/lib/utils";
@@ -11,65 +13,57 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useState } from "react";
+import axios from "axios";
+import { handleUnauthorized } from "@/app/utils/unauthorized";
+import { useRouter } from "next/navigation";
+import { useGlobals } from "@/app/contexts/Globals";
+import { jwtDecode } from "jwt-decode";
 
-const notifications = [
-  {
-    title: "Your call has been confirmed.",
-    description: "1 hour ago",
-  },
-  {
-    title: "You have a new message!",
-    description: "1 hour ago",
-  },
-  {
-    title: "Your subscription is expiring soon!",
-    description: "2 hours ago",
-  },
-  {
-    title: "Your call has been confirmed.",
-    description: "1 hour ago",
-  },
-  {
-    title: "You have a new message!",
-    description: "1 hour ago",
-  },
-  {
-    title: "Your subscription is expiring soon!",
-    description: "2 hours ago",
-  },
-  {
-    title: "Your call has been confirmed.",
-    description: "1 hour ago",
-  },
-  {
-    title: "You have a new message!",
-    description: "1 hour ago",
-  },
-  {
-    title: "Your subscription is expiring soon!",
-    description: "2 hours ago",
-  },
-  {
-    title:
-      "Your call has been confirmed. hggggggggggggggg ggggggggggggggggggggggg gggggggggggggggggg ggggggggggggggggggggggggggggggggg gggggggggggggggggggggggggggggg gggggggggggggggggggggggggggggg",
-    description: "1 hour ago",
-  },
-  {
-    title: "You have a new message!",
-    description: "1 hour ago",
-  },
-  {
-    title: "Your subscription is expiring soon!",
-    description: "2 hours ago",
-  },
-];
+const page = ({ className, ...props }) => {
+  const [notifications, setNotifications] = useState([]);
+  const { setToastMessage, setIsLoggedIn } = useGlobals();
+  const router = useRouter();
+  const [unreadCount, setUnreadCount] = useState(0);
 
-export default function CardDemo({ className, ...props }) {
+  useEffect(() => {
+    const getNotifications = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const userId = jwtDecode(token).sub;
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/notification/getNotifications?userId=${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.status === 200) {
+          setNotifications(response.data);
+          let count = 0;
+          response.data.map((data) => {
+            if (!data.isSeen) {
+              count++;
+            }
+          });
+          setUnreadCount(count);
+        }
+      } catch (error) {
+        console.log(error);
+        if (error.response.status === 401) {
+          handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+        }
+      }
+    };
+    getNotifications();
+  }, []);
+
   return (
-    <div className="w-full flex justify-center">
+    <div className="w-full flex justify-center relative">
       <Card
         className={cn(
-          "w-full max-w-[50rem] h-full overflow-y-auto rounded-none border-none shadow-none bg-transparent",
+          "w-full max-w-[50rem] rounded-none border-none shadow-none bg-transparent",
           className
         )}
         {...props}
@@ -78,9 +72,18 @@ export default function CardDemo({ className, ...props }) {
           <CardTitle className="flex gap-2 text-lg items-center">
             <IoNotificationsOutline className="text-xl" /> Notifications
           </CardTitle>
-          <CardDescription>You have 3 unread messages.</CardDescription>
+          <CardDescription>
+            {unreadCount === 0
+              ? "No unread notification"
+              : `You have ${unreadCount} unread ${
+                  unreadCount === 1 ? "notification" : "notifications"
+                }`}
+          </CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-3">
+        <CardContent
+          className="grid gap-3 overflow-y-auto"
+          style={{ maxHeight: "calc(100svh - 14rem)" }}
+        >
           {notifications.map((notification, index) => (
             <div
               key={index}
@@ -95,16 +98,75 @@ export default function CardDemo({ className, ...props }) {
                   {notification.description}
                 </p>
               </div>
-              <MdOutlineDeleteOutline className="my-auto text-lg cursor-pointer" />
+              <MdOutlineDeleteOutline
+                className="my-auto text-lg cursor-pointer"
+                onClick={async () => {
+                  try {
+                    const token = localStorage.getItem("token");
+                    const response = await axios.delete(
+                      `${process.env.NEXT_PUBLIC_SERVER_URL}/notification/deleteByNotificationId?notificationId=${notification.id}`,
+                      {
+                        headers: {
+                          Authorization: `Bearer ${token}`,
+                        },
+                      }
+                    );
+                    if (response.status === 200) {
+                      setNotifications((prev) => {
+                        const newNotifications = [...prev];
+                        newNotifications.filter(
+                          (item) => item.id !== notification.id
+                        );
+                        return newNotifications;
+                      });
+                    }
+                  } catch (error) {
+                    console.log(error);
+                    if (error.response.status === 401) {
+                      handleUnauthorized(
+                        setIsLoggedIn,
+                        setToastMessage,
+                        router
+                      );
+                    }
+                  }
+                }}
+              />
             </div>
           ))}
         </CardContent>
         <CardFooter>
-          <Button className="w-full max-w-[40rem] mx-auto">
+          <Button
+            className="absolute bottom-3 left-1/2 transform -translate-x-1/2 max-w-[47rem]"
+            onClick={async () => {
+              try {
+                const token = localStorage.getItem("token");
+                const userId = jwtDecode(token).sub;
+                const response = await axios.delete(
+                  `${process.env.NEXT_PUBLIC_SERVER_URL}/notification/deleteByUserId?userId=${userId}`,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                    },
+                  }
+                );
+                if (response.status === 200) {
+                  setNotifications([]);
+                }
+              } catch (error) {
+                console.log(error);
+                if (error.response.status === 401) {
+                  handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+                }
+              }
+            }}
+          >
             Remove all notifications
           </Button>
         </CardFooter>
       </Card>
     </div>
   );
-}
+};
+
+export default page;

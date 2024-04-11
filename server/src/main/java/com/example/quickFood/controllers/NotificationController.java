@@ -25,11 +25,6 @@ public class NotificationController {
         return notificationService.addNotification(userId, message);
     }
 
-    @PutMapping("/markAsSeen")
-    public ResponseEntity<String> markAsSeen(@RequestParam String userId) {
-        return notificationService.markAsSeen(userId);
-    }
-
     @DeleteMapping("/deleteByNotificationId")
     public ResponseEntity<String> deleteByNotificationId(@RequestParam int notificationId) {
         return notificationService.deleteByNotificationId(notificationId);

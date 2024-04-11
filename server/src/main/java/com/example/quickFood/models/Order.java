@@ -40,5 +40,12 @@ public class Order {
 
     private Timestamp orderPlaced;
     private Timestamp deliveryTaken;
+    private Timestamp userNotified;
     private Timestamp deliveryCompleted;
+
+    private boolean isPrepared;
+    private boolean complainStatus;
+    @Lob
+    @Column(length = 1024)
+    private String complainDescription;
 }

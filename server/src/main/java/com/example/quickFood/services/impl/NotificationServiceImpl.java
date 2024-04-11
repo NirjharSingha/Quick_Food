@@ -7,6 +7,7 @@ import com.example.quickFood.repositories.NotificationRepository;
 import com.example.quickFood.repositories.UserRepository;
 import com.example.quickFood.services.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +20,15 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
+    @Autowired
     private final NotificationRepository notificationRepository;
+
+    @Autowired
     private final UserRepository userRepository;
 
+
     @Override
+    @Transactional
     public ResponseEntity<List<NotificationDto>> getNotifications(String userId) {
         try {
             List<Notification> notifications = notificationRepository.findByUserId(userId);
@@ -31,7 +37,21 @@ public class NotificationServiceImpl implements NotificationService {
                 NotificationDto notificationDto = new NotificationDto(notification.getId(), notification.getDescription(), notification.getTimestamp(), notification.isSeen());
                 notificationDtoList.add(notificationDto);
             }
+
+            boolean hasUnseen = false;
+
+            for (Notification notification : notifications) {
+                if (!notification.isSeen()) {
+                    hasUnseen = true;
+                    notification.setSeen(true);
+                }
+            }
+            if (hasUnseen) {
+                notificationRepository.saveAll(notifications);
+            }
+
             return ResponseEntity.ok(notificationDtoList);
+
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
@@ -60,21 +80,6 @@ public class NotificationServiceImpl implements NotificationService {
             }
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @Transactional
-    @Override
-    public ResponseEntity<String> markAsSeen(String userId) {
-        try {
-            List<Notification> notifications = notificationRepository.findByUserId(userId);
-            for (Notification notification : notifications) {
-                notification.setSeen(true);
-            }
-            notificationRepository.saveAll(notifications);
-            return ResponseEntity.ok("Notifications marked as seen successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Failed to mark notifications as seen.");
         }
     }
 

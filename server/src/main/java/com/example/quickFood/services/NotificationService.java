@@ -10,8 +10,6 @@ public interface NotificationService {
 
     ResponseEntity<String> addNotification(String userId, String message);
 
-    ResponseEntity<String> markAsSeen(String userId);
-
     ResponseEntity<String> deleteByNotificationId(int notificationId);
 
     ResponseEntity<String> deleteByUserId(String userId);

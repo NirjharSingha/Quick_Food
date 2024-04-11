@@ -18,7 +18,7 @@ public class Notification {
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId") // Foreign key mapping
+    @JoinColumn(name = "user_id") // Foreign key mapping
     private User user;
 
     @Lob
@@ -26,5 +26,4 @@ public class Notification {
     private String description;
     private Timestamp timestamp;
     private boolean isSeen;
-
 }

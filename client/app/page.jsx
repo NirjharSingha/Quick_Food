@@ -115,7 +115,7 @@ export default function Home() {
             <Image
               src={item}
               alt="Pizza"
-              className="h-[40vh] w-[32vw] ml-[0.5vw] mr-[0.5vw]"
+              className="h-[40vh] w-[32vw] ml-[0.5vw] mr-[0.5vw] rounded-md"
               placeholder="blur"
             />
           </div>
