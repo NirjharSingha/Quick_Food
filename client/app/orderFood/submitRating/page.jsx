@@ -24,7 +24,7 @@ const page = () => {
       const userId = jwtDecode(localStorage.getItem("token")).sub;
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/order/getOrderCard?userId=${userId}`,
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/order/getOrderCard?id=${userId}&flag=rating`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,

@@ -2,7 +2,7 @@
 
 import React from "react";
 import MenuCard from "@/app/components/MenuCard";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { handleUnauthorized } from "@/app/utils/unauthorized";
 import { useGlobals } from "@/app/contexts/Globals";

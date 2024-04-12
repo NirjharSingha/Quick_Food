@@ -122,7 +122,7 @@ const MenuCard = ({ menu, setMenuList }) => {
 
   return (
     <div
-      className={`w-[26vw] min-w-[18rem] max-w-[22rem] ${
+      className={`w-[26vw] min-w-[18rem] max-w-[21rem] ${
         pathname.includes("/yourRes") ? "h-[20rem]" : "h-[18.6rem]"
       } rounded-lg shadow-md bg-base-100 border-2 border-gray-200 hover:border-gray-300 hover:shadow-lg`}
     >

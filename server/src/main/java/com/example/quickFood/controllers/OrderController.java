@@ -1,6 +1,7 @@
 package com.example.quickFood.controllers;
 
 import com.example.quickFood.dto.OrderCard;
+import com.example.quickFood.dto.OrderDataPage;
 import com.example.quickFood.dto.PlaceOrder;
 import com.example.quickFood.services.impl.OrderServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,18 @@ public class OrderController {
     private OrderServiceImpl orderService;
 
     @GetMapping("/getOrderCard")
-    ResponseEntity<List<OrderCard>> getOrderCard(@RequestParam String userId) {
-        return ResponseEntity.ok(orderService.getOrderCard(userId));
+    ResponseEntity<List<OrderCard>> getOrderCard(@RequestParam String id, @RequestParam String flag) {
+        return ResponseEntity.ok(orderService.getOrderCard(id, flag));
+    }
+
+    @GetMapping("/getOrderDataPage")
+    ResponseEntity<OrderDataPage> getOrderDataPage(@RequestParam int orderId) {
+        return orderService.getOrderDataPage(orderId);
+    }
+
+    @PutMapping("/markAsPrepared")
+    ResponseEntity<String> markAsPrepared(@RequestParam int orderId) {
+        return orderService.markAsPrepared(orderId);
     }
 
     @PostMapping("/placeOrder")

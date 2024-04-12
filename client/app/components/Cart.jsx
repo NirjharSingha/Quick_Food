@@ -1,14 +1,6 @@
 import React from "react";
 import { FaShoppingCart } from "react-icons/fa";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import OrderDetailsTable from "./OrderDetailsTable";
 
 const Cart = ({ data, quantity, total, restaurantName }) => {
   return (
@@ -36,43 +28,16 @@ const Cart = ({ data, quantity, total, restaurantName }) => {
           <p className="text-md font-sans text-gray-500">Within 30 minutes</p>
         </div>
       </div>
-      <Table>
-        <TableCaption>Your selected food items.</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[8rem]">Image</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead className="text-right w-[100px] min-w-[100px]">
-              Price
-            </TableHead>
-            <TableHead className="text-right w-[90px] min-w-[90px]">
-              Quantity
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.map((cartItem, index) => (
-            <TableRow key={cartItem.id}>
-              <TableCell>
-                <img
-                  src={
-                    cartItem.image === null
-                      ? "/Menu.jpg"
-                      : `data:image/jpeg;base64,${cartItem.image}`
-                  }
-                  alt="logo"
-                  className="w-[6.5rem] min-w-[6.5rem] h-[4.5rem] min-h-[4.5rem] rounded-md shadow-md shadow-gray-400"
-                />
-              </TableCell>
-              <TableCell className="truncate">{cartItem.name}</TableCell>
-              <TableCell className="text-right">{cartItem.price}</TableCell>
-              <TableCell className="text-right">{quantity[index]}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <p className="mt-3 w-full font-sans font-bold text-lg truncate text-right text-gray-600">
-        Total : {total} Tk
+      <OrderDetailsTable data={data} quantity={quantity} />
+      <p className="mt-3 w-full font-sans font-bold text-lg truncate text-right text-gray-600 pr-1">
+        Total Food Price : {total} Tk
+      </p>
+      <p className="mt-3 mb-2 w-full font-sans font-bold text-lg truncate text-right text-gray-600 pr-1">
+        Delivery Charge : {(total * 0.1).toFixed(0)} Tk
+      </p>
+      <div className="h-[1px] w-full rounded-full bg-gray-700" />
+      <p className="mt-2 w-full font-sans font-bold text-lg truncate text-right text-gray-600 pr-1">
+        Total Cost : {(total + total * 0.1).toFixed(0)} Tk
       </p>
     </div>
   );

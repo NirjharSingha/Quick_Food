@@ -1,8 +1,6 @@
 package com.example.quickFood.services.impl;
 
-import com.example.quickFood.dto.OrderCard;
-import com.example.quickFood.dto.OrderQuantity;
-import com.example.quickFood.dto.PlaceOrder;
+import com.example.quickFood.dto.*;
 import com.example.quickFood.models.*;
 import com.example.quickFood.repositories.*;
 import com.example.quickFood.services.OrderService;
@@ -15,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -41,14 +40,20 @@ public class OrderServiceImpl implements OrderService {
     private final MenuServiceImpl menuService;
 
     @Override
-    public List<OrderCard> getOrderCard(String userId) {
-        List<Integer> orderIds = orderRepository.findOrdersToReview(userId);
+    public List<OrderCard> getOrderCard(String id, String flag) {
+        List<Integer> orderIds = new ArrayList<>();
+        if (Objects.equals(flag, "rating")) {
+            orderIds = orderRepository.findOrdersToReview(id);
+        } else if (Objects.equals(flag, "resPendingOrder")) {
+            orderIds = orderRepository.findPendingOrderOfRestaurant(id);
+        }
+
         List<OrderCard> orderCards = new ArrayList<>();
 
         for (int orderId : orderIds) {
             Order order = orderRepository.findById(orderId).get();
             OrderCard orderCard = new OrderCard(order.getId(), order.getRestaurant().getName(),
-                    order.getRestaurant().getImage(), order.getPrice(), order.getOrderPlaced());
+                    order.getRestaurant().getImage(), order.getPrice(), order.getPaymentMethod(), order.getOrderPlaced());
             orderCards.add(orderCard);
         }
         return orderCards;
@@ -97,5 +102,25 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return ResponseEntity.ok("Order placed successfully");
+    }
+
+    @Override
+    public ResponseEntity<OrderDataPage> getOrderDataPage(int orderId) {
+        Order order = orderRepository.findById(orderId).get();
+        List<OrderDetails> orderDetails = orderDetailsRepository.findByOrderId(orderId);
+        List<OrderDetailsDto> menuItems = new ArrayList<>();
+        for (OrderDetails orderDetail : orderDetails) {
+            OrderDetailsDto menu = new OrderDetailsDto(orderDetail.getMenu().getId(), orderDetail.getMenu().getName(), orderDetail.getMenu().getPrice(), orderDetail.getMenu().getImage(), orderDetail.getQuantity());
+            menuItems.add(menu);
+        }
+        OrderDataPage orderDataPage = new OrderDataPage(order.getUser().getName(), order.getRestaurant().getName(), order.getRider().getName(), menuItems, order.getPrice(), order.getDeliveryFee(), order.isPrepared(), order.getPaymentMethod());
+        return ResponseEntity.ok(orderDataPage);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<String> markAsPrepared(int orderId) {
+        orderRepository.markAsPrepared(orderId);
+        return ResponseEntity.ok("Order marked as prepared");
     }
 }

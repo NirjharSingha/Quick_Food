@@ -52,7 +52,7 @@ const RestaurantCard = ({ restaurant }) => {
 
   return (
     <div
-      className="w-[26vw] min-w-[18rem] max-w-[22rem] h-[16.8rem] rounded-lg shadow-md bg-base-100 border-2 border-gray-200 cursor-pointer hover:border-gray-300 hover:shadow-lg"
+      className="w-[26vw] min-w-[18rem] max-w-[21rem] h-[16.8rem] rounded-lg shadow-md bg-base-100 border-2 border-gray-200 cursor-pointer hover:border-gray-300 hover:shadow-lg"
       onClick={handleNavigate}
     >
       {restaurant.image ? (
