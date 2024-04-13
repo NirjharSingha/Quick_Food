@@ -46,6 +46,8 @@ public class OrderServiceImpl implements OrderService {
             orderIds = orderRepository.findOrdersToReview(id);
         } else if (Objects.equals(flag, "resPendingOrder")) {
             orderIds = orderRepository.findPendingOrderOfRestaurant(id);
+        } else if (Objects.equals(flag, "userPendingOrder")) {
+            orderIds = orderRepository.findPendingOrderOfUser(id);
         }
 
         List<OrderCard> orderCards = new ArrayList<>();

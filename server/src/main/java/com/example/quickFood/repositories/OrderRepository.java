@@ -21,6 +21,10 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     @Query("SELECT o.id FROM Order o WHERE o.restaurant.id = :restaurantId AND o.deliveryTaken IS NULL")
     List<Integer> findPendingOrderOfRestaurant(@Param("restaurantId") String restaurantId);
 
+
+    @Query("SELECT o.id FROM Order o WHERE o.user.id = :userId AND o.complain IS NULL")
+    List<Integer> findPendingOrderOfUser(@Param("userId") String userId);
+
     @Modifying
     @Transactional
     @Query("UPDATE Order o SET o.isPrepared = true WHERE o.id = :orderId")

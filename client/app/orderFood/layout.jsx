@@ -10,6 +10,7 @@ import { FaBowlFood } from "react-icons/fa6";
 import { PiStarFill } from "react-icons/pi";
 import { FaShoppingCart } from "react-icons/fa";
 import { useGlobals } from "../contexts/Globals";
+import { IoStatsChart } from "react-icons/io5";
 import { useEffect } from "react";
 
 export default function RootLayout({ children }) {
@@ -29,6 +30,10 @@ export default function RootLayout({ children }) {
 
   const navigateOrderNow = () => {
     router.push("/orderFood");
+  };
+
+  const navigateOrderStatus = () => {
+    router.push("/orderFood/orderStatus");
   };
 
   const navigateSubmitRating = () => {
@@ -73,6 +78,7 @@ export default function RootLayout({ children }) {
         <div
           className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
             pathname.includes("/orderFood") &&
+            !pathname.includes("/orderFood/orderStatus") &&
             !pathname.includes("/orderFood/submitRating") &&
             !pathname.includes("/orderFood/cart")
               ? "bg-blue-400"
@@ -82,6 +88,17 @@ export default function RootLayout({ children }) {
         >
           <FaBowlFood className="text-2xl mr-2" />
           <p className="font-bold truncate">Order Now</p>
+        </div>
+        <div
+          className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
+            pathname.includes("/orderFood/orderStatus")
+              ? "bg-blue-400"
+              : "bg-slate-200 hover:bg-slate-300"
+          } m-4 cursor-pointer items-center`}
+          onClick={navigateOrderStatus}
+        >
+          <IoStatsChart className="text-2xl mr-2" />
+          <p className="font-bold truncate">Order Status</p>
         </div>
         <div
           className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${

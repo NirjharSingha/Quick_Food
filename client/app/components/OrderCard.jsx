@@ -13,8 +13,10 @@ const OrderCard = ({ order, buttonRef, setSelectedOrder }) => {
   const handleClick = () => {
     if (pathname.includes("/orderFood/submitRating")) {
       router.push(`/orderFood/submitRating/${order.id}`);
-    }
-    if (pathname.includes("/yourRes") && pathname.includes("/pendingOrders")) {
+    } else if (
+      (pathname.includes("/yourRes") && pathname.includes("/pendingOrders")) ||
+      pathname.includes("/orderFood/orderStatus")
+    ) {
       setSelectedOrder(order.id);
       buttonRef.current.click();
     }

@@ -16,18 +16,21 @@ import { useRouter } from "next/navigation";
 import { useGlobals } from "../contexts/Globals";
 import OrderDetailsTable from "./OrderDetailsTable";
 import { usePathname } from "next/navigation";
+import Stepper from "./Stepper";
 
 const OrderDetailsDialog = ({ buttonRef, selectedOrder }) => {
   const [orderDetails, setOrderDetails] = useState({});
   const { setToastMessage, setIsLoggedIn } = useGlobals();
   const [tableData, setTableData] = useState([]);
   const [tableQuantity, setTableQuantity] = useState([]);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
   const getOrderDetails = async () => {
     try {
       const token = localStorage.getItem("token");
+      setLoading(true);
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/order/getOrderDataPage?orderId=${selectedOrder}`,
         {
@@ -51,6 +54,7 @@ const OrderDetailsDialog = ({ buttonRef, selectedOrder }) => {
         });
         setTableData(data);
         setTableQuantity(quantity);
+        setLoading(false);
       }
     } catch (error) {
       console.log(error);
@@ -98,79 +102,87 @@ const OrderDetailsDialog = ({ buttonRef, selectedOrder }) => {
           Button
         </div>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[94svh] overflow-y-auto">
-        <div className="flex justify-center items-center mb-3 rounded-lg">
-          <Image
-            src={Menu}
-            alt="logo"
-            width={85}
-            className="bg-white flex justify-center items-center mr-3 rounded-md border-[1px] border-solid border-gray-500 h-14"
-          />
-          <p className="font-serif text-3xl font-bold text-gray-700">Order</p>
-        </div>
-        <div className="w-full h-[9rem] p-1 shadow-md border-gray-300 border-[0.1px] shadow-gray-300 rounded-xl flex gap-3 mb-3">
-          <img
-            src="/foodDelivery.png"
-            alt="logo"
-            className="w-[11.5rem] h-[8.5rem] rounded-lg"
-          />
-          <div className="h-full flex flex-col justify-center w-full overflow-hidden">
-            <p className="text-xl font-bold text-gray-700 truncate font-sans mb-2">
-              {pathname.includes("/yourRes")
-                ? `Customer: ${
-                    orderDetails.customerName ? orderDetails.customerName : ""
-                  }`
-                : `Restaurant : ${
-                    orderDetails.restaurantName
-                      ? orderDetails.restaurantName
-                      : ""
-                  }`}
-            </p>
-            <p className="text-xl font-bold text-gray-700 truncate font-sans mb-2">
-              Rider : {orderDetails.riderName ? orderDetails.riderName : ""}
-            </p>
-            <p className="text-md font-sans text-gray-500">
-              Payment : {orderDetails.paymentMethod === "COD" ? "COD" : "Done"}
-            </p>
-          </div>
-        </div>
-        <OrderDetailsTable data={tableData} quantity={tableQuantity} />
-        <p className="w-full font-sans font-bold text-lg truncate text-right text-gray-600 pr-1">
-          Total Food Price : {orderDetails.price ? orderDetails.price : ""} Tk
-        </p>
-        {!pathname.includes("/yourRes") && (
-          <>
-            <p className="w-full font-sans font-bold text-lg truncate text-right text-gray-600 pr-1">
-              Delivery Charge :
-              {orderDetails.deliveryFee
-                ? orderDetails.deliveryFee.toFixed(0)
-                : ""}
-              Tk
-            </p>
-            <div className="h-[1px] w-full rounded-full bg-gray-700" />
-            <p className="w-full font-sans font-bold text-lg truncate text-right text-gray-600 pr-1">
-              Total Cost :
-              {orderDetails.deliveryFee && orderDetails.price
-                ? (orderDetails.price + orderDetails.deliveryFee).toFixed(0)
-                : ""}
-              Tk
-            </p>
-          </>
-        )}
-        <DialogFooter>
+      {!loading && (
+        <DialogContent className="sm:max-w-[600px] max-h-[94svh] overflow-y-auto">
           {pathname.includes("/yourRes") && (
-            <Button
-              className="w-full font-bold"
-              disabled={orderDetails.isPrepared}
-              onClick={handleClick}
-            >
-              {orderDetails.isPrepared
-                ? "Marked as Prepared"
-                : "Mark as Prepared"}
-            </Button>
+            <div className="flex justify-center items-center mb-3 rounded-lg">
+              <Image
+                src={Menu}
+                alt="logo"
+                width={85}
+                className="bg-white flex justify-center items-center mr-3 rounded-md border-[1px] border-solid border-gray-500 h-14"
+              />
+              <p className="font-serif text-3xl font-bold text-gray-700">
+                Order
+              </p>
+            </div>
           )}
-        </DialogFooter>
-      </DialogContent>
+          {pathname.includes("/orderFood/orderStatus") && <Stepper step={1} />}
+          <div className="w-full h-[9rem] p-1 shadow-md border-gray-300 border-[0.1px] shadow-gray-300 rounded-xl flex gap-3 mb-3">
+            <img
+              src="/foodDelivery.png"
+              alt="logo"
+              className="w-[11.5rem] h-[8.5rem] rounded-lg"
+            />
+            <div className="h-full flex flex-col justify-center w-full overflow-hidden">
+              <p className="text-xl font-bold text-gray-700 truncate font-sans mb-2">
+                {pathname.includes("/yourRes")
+                  ? `Customer: ${
+                      orderDetails.customerName ? orderDetails.customerName : ""
+                    }`
+                  : `Restaurant : ${
+                      orderDetails.restaurantName
+                        ? orderDetails.restaurantName
+                        : ""
+                    }`}
+              </p>
+              <p className="text-xl font-bold text-gray-700 truncate font-sans mb-2">
+                Rider : {orderDetails.riderName ? orderDetails.riderName : ""}
+              </p>
+              <p className="text-md font-sans text-gray-500">
+                Payment :{" "}
+                {orderDetails.paymentMethod === "COD" ? "COD" : "Done"}
+              </p>
+            </div>
+          </div>
+          <OrderDetailsTable data={tableData} quantity={tableQuantity} />
+          <p className="w-full font-sans font-bold text-lg truncate text-right text-gray-600 pr-1">
+            Total Food Price : {orderDetails.price ? orderDetails.price : ""} Tk
+          </p>
+          {!pathname.includes("/yourRes") && (
+            <>
+              <p className="w-full font-sans font-bold text-lg truncate text-right text-gray-600 pr-1">
+                Delivery Charge :
+                {orderDetails.deliveryFee
+                  ? orderDetails.deliveryFee.toFixed(0)
+                  : ""}
+                Tk
+              </p>
+              <div className="h-[1px] w-full rounded-full bg-gray-700" />
+              <p className="w-full font-sans font-bold text-lg truncate text-right text-gray-600 pr-1">
+                Total Cost :
+                {orderDetails.deliveryFee && orderDetails.price
+                  ? (orderDetails.price + orderDetails.deliveryFee).toFixed(0)
+                  : ""}
+                Tk
+              </p>
+            </>
+          )}
+          <DialogFooter>
+            {pathname.includes("/yourRes") && (
+              <Button
+                className="w-full font-bold"
+                disabled={orderDetails.isPrepared}
+                onClick={handleClick}
+              >
+                {orderDetails.isPrepared
+                  ? "Marked as Prepared"
+                  : "Mark as Prepared"}
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      )}
     </Dialog>
   );
 };
