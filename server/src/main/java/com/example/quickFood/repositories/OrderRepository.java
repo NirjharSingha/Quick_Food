@@ -25,6 +25,9 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     @Query("SELECT o.id FROM Order o WHERE o.user.id = :userId AND o.complain IS NULL")
     List<Integer> findPendingOrderOfUser(@Param("userId") String userId);
 
+    @Query(value = "SELECT o.id FROM orders o WHERE o.rider_id = :riderId AND o.delivery_completed IS NULL LIMIT 1", nativeQuery = true)
+    Integer getDeliveryOfRider(@Param("riderId") String riderId);
+
     @Modifying
     @Transactional
     @Query("UPDATE Order o SET o.isPrepared = true WHERE o.id = :orderId")

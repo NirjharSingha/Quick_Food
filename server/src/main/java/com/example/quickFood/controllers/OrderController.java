@@ -3,6 +3,7 @@ package com.example.quickFood.controllers;
 import com.example.quickFood.dto.OrderCard;
 import com.example.quickFood.dto.OrderDataPage;
 import com.example.quickFood.dto.PlaceOrder;
+import com.example.quickFood.dto.RiderDelivery;
 import com.example.quickFood.services.impl.OrderServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,11 @@ public class OrderController {
     @GetMapping("/getOrderDataPage")
     ResponseEntity<OrderDataPage> getOrderDataPage(@RequestParam int orderId) {
         return orderService.getOrderDataPage(orderId);
+    }
+
+    @GetMapping("deliveryOfRider")
+    ResponseEntity<RiderDelivery> getDeliveryOfRider(@RequestParam String riderId) {
+        return orderService.getDeliveryOfRider(riderId);
     }
 
     @PutMapping("/markAsPrepared")

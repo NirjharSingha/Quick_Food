@@ -115,7 +115,7 @@ public class OrderServiceImpl implements OrderService {
             OrderDetailsDto menu = new OrderDetailsDto(orderDetail.getMenu().getId(), orderDetail.getMenu().getName(), orderDetail.getMenu().getPrice(), orderDetail.getMenu().getImage(), orderDetail.getQuantity());
             menuItems.add(menu);
         }
-        OrderDataPage orderDataPage = new OrderDataPage(order.getUser().getName(), order.getRestaurant().getName(), order.getRider().getName(), menuItems, order.getPrice(), order.getDeliveryFee(), order.isPrepared(), order.getPaymentMethod());
+        OrderDataPage orderDataPage = new OrderDataPage(order.getUser().getName(), order.getRestaurant().getName(), order.getRider().getName(), menuItems, order.getPrice(), order.getDeliveryFee(), order.getDeliveryTime(), order.isPrepared(), order.getPaymentMethod());
         return ResponseEntity.ok(orderDataPage);
     }
 
@@ -124,5 +124,13 @@ public class OrderServiceImpl implements OrderService {
     public ResponseEntity<String> markAsPrepared(int orderId) {
         orderRepository.markAsPrepared(orderId);
         return ResponseEntity.ok("Order marked as prepared");
+    }
+
+    @Override
+    public ResponseEntity<RiderDelivery> getDeliveryOfRider(String riderId) {
+        int orderId = orderRepository.getDeliveryOfRider(riderId);
+        return ResponseEntity.ok(RiderDelivery.builder()
+                .orderId(orderId)
+                .build());
     }
 }

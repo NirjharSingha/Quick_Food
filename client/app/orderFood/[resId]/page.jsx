@@ -110,26 +110,24 @@ const page = ({ params }) => {
 
   return (
     <div div className="w-full overflow-y-auto" ref={menuDivRef}>
-      {
-        <div className="w-full flex items-center justify-between bg-gray-300 p-2 pl-4 pr-4 min-h-[4rem] shadow-md shadow-gray-400 rounded-md rounded-t-none">
-          <div className="flex items-center navbar-start">
-            <div className="bg-white p-[0.5rem] flex justify-center items-center mr-2 rounded-full border-[1px] border-solid border-gray-500">
-              <Image src={FavIcon} alt="logo" width={26} />
-            </div>
-            <p className="ml-1 text-xl text-gray-600 font-bold">Select Food</p>
+      <div className="w-full flex items-center justify-between bg-gray-700 p-2 pl-4 pr-4 min-h-[4rem] shadow-md shadow-gray-400 rounded-bl-md">
+        <div className="flex items-center navbar-start">
+          <div className="bg-white p-[0.5rem] flex justify-center items-center mr-2 rounded-full border-[1px] border-solid border-gray-500">
+            <Image src={FavIcon} alt="logo" width={26} />
           </div>
-          <Filter
-            nameFilter={nameFilter}
-            setNameFilter={setNameFilter}
-            categoryFilter={categoryFilter}
-            setCategoryFilter={setCategoryFilter}
-            priceFilter={priceFilter}
-            setPriceFilter={setPriceFilter}
-            ratingFilter={ratingFilter}
-            setRatingFilter={setRatingFilter}
-          />
+          <p className="ml-1 text-xl text-white font-bold">Select Food</p>
         </div>
-      }
+        <Filter
+          nameFilter={nameFilter}
+          setNameFilter={setNameFilter}
+          categoryFilter={categoryFilter}
+          setCategoryFilter={setCategoryFilter}
+          priceFilter={priceFilter}
+          setPriceFilter={setPriceFilter}
+          ratingFilter={ratingFilter}
+          setRatingFilter={setRatingFilter}
+        />
+      </div>
       <div className="p-4 grid grid-cols-3 gap-x-2 gap-y-4">
         {menu.length !== 0 &&
           menu.map((menuItem) => (

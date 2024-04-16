@@ -19,6 +19,7 @@ public class OrderDataPage {
     private List<OrderDetailsDto> menuItems;
     private double price;
     private double deliveryFee;
+    private int deliveryTime;
 
     @JsonProperty("isPrepared")
     private boolean isPrepared;

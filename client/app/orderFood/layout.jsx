@@ -49,7 +49,7 @@ export default function RootLayout({ children }) {
       className="w-screen overflow-x-hidden overflow-y-auto flex"
       style={{ height: "calc(100svh - 4rem)" }}
     >
-      <div className="w-[30%] max-w-[20rem] h-full bg-gray-100 shadow-lg shadow-gray-500 mr-1">
+      <div className="w-[30%] max-w-[20rem] h-full bg-gray-100 shadow-lg shadow-gray-500 mr-[3px]">
         <div
           className="mx-auto m-4 rounded-lg bg-gray-300 shadow-md shadow-gray-400 pt-3 pb-3"
           style={{ width: "calc(100% - 2rem)" }}

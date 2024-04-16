@@ -127,7 +127,7 @@ const OrderDetailsDialog = ({ buttonRef, selectedOrder }) => {
             <div className="h-full flex flex-col justify-center w-full overflow-hidden">
               <p className="text-xl font-bold text-gray-700 truncate font-sans mb-2">
                 {pathname.includes("/yourRes")
-                  ? `Customer: ${
+                  ? `Customer : ${
                       orderDetails.customerName ? orderDetails.customerName : ""
                     }`
                   : `Restaurant : ${
