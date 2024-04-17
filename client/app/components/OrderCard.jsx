@@ -51,7 +51,7 @@ const OrderCard = ({ order, buttonRef, setSelectedOrder }) => {
         Payment : {order.paymentMethod === "COD" ? "COD" : "Done"}
       </p>
       <p className="text-sm text-gray-600 mt-1 pl-3 pr-3 truncate">
-        Date : {new Date(order.timestamp).toLocaleDateString()}
+        Date : {new Date(order.timestamp).toLocaleString()}
       </p>
     </div>
   );

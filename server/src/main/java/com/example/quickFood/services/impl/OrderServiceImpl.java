@@ -39,6 +39,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private final MenuServiceImpl menuService;
 
+    @Autowired
+    NotificationServiceImpl notificationService;
+
     @Override
     public List<OrderCard> getOrderCard(String id, String flag) {
         List<Integer> orderIds = new ArrayList<>();
@@ -102,6 +105,14 @@ public class OrderServiceImpl implements OrderService {
                     .build();
             orderDetailsRepository.save(orderDetails);
         }
+
+        String riderNotification = "You have a new delivery from " + restaurant.getName() + " to customer " + user.getName() + " at place " + placeOrder.getDeliveryAddress() + " within " + placeOrder.getDeliveryTime() + " minutes";
+        notificationService.addNotification(availableRider, riderNotification);
+        notificationService.sendNotificationToUser(availableRider, "You have a new delivery");
+
+        String restaurantNotification = "You have a new order from " + user.getName() + " with items worth " + placeOrder.getPrice();
+        notificationService.addNotification(savedOrder.getRestaurant().getOwner().getId(), restaurantNotification);
+        notificationService.sendNotificationToUser(savedOrder.getRestaurant().getOwner().getId(), "You have a new order");
 
         return ResponseEntity.ok("Order placed successfully");
     }

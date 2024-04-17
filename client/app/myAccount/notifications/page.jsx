@@ -87,15 +87,19 @@ const page = ({ className, ...props }) => {
           {notifications.map((notification, index) => (
             <div
               key={index}
-              className="mb-4 grid grid-cols-[25px_1fr_25px] items-start pb-2 last:mb-0 shadow-md bg-base-100 rounded-md p-2"
+              className="mb-4 grid grid-cols-[25px_1fr_25px] items-start pb-2 last:mb-0 shadow-sm shadow-gray-400 bg-base-100 rounded-md p-2 pt-3"
             >
-              <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500 my-auto" />
+              <span
+                className={`flex h-2 w-2 translate-y-1 rounded-full ${
+                  notification.isSeen ? "bg-white" : "bg-sky-500"
+                }`}
+              />
               <div className="space-y-1">
-                <p className="text-sm font-medium leading-none">
-                  {notification.title}
-                </p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-md font-medium leading-none">
                   {notification.description}
+                </p>
+                <p className="text-sm text-muted-foreground text-right mt-1 mr-2">
+                  {new Date(notification.timestamp).toLocaleString()}
                 </p>
               </div>
               <MdOutlineDeleteOutline
@@ -112,9 +116,11 @@ const page = ({ className, ...props }) => {
                       }
                     );
                     if (response.status === 200) {
+                      if (!notification.isSeen) {
+                        setUnreadCount((prev) => prev - 1);
+                      }
                       setNotifications((prev) => {
-                        const newNotifications = [...prev];
-                        newNotifications.filter(
+                        const newNotifications = prev.filter(
                           (item) => item.id !== notification.id
                         );
                         return newNotifications;
@@ -152,6 +158,7 @@ const page = ({ className, ...props }) => {
                 );
                 if (response.status === 200) {
                   setNotifications([]);
+                  setUnreadCount(0);
                 }
               } catch (error) {
                 console.log(error);

@@ -9,6 +9,7 @@ import com.example.quickFood.services.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,9 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Autowired
     private final UserRepository userRepository;
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
 
 
     @Override
@@ -104,6 +108,11 @@ public class NotificationServiceImpl implements NotificationService {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Failed to delete notifications.");
         }
+    }
+
+    public void sendNotificationToUser(String userId, String message) {
+        String destination = "/user/" + userId + "/notifications";
+        simpMessagingTemplate.convertAndSend(destination, message);
     }
 
 }
