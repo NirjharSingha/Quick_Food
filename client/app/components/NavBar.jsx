@@ -158,7 +158,15 @@ const NavBar = () => {
               </>
             )}
             {isLoggedIn && role === "RIDER" && (
-              <Link href="/delivery" className="cursor-pointer hover:underline">
+              <Link
+                href="/delivery"
+                className="cursor-pointer hover:underline"
+                onClick={() => {
+                  if (!pathname.includes("/delivery")) {
+                    localStorage.removeItem("deliveryStatus");
+                  }
+                }}
+              >
                 Delivery
               </Link>
             )}

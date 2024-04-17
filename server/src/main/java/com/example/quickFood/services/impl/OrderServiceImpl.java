@@ -115,7 +115,7 @@ public class OrderServiceImpl implements OrderService {
             OrderDetailsDto menu = new OrderDetailsDto(orderDetail.getMenu().getId(), orderDetail.getMenu().getName(), orderDetail.getMenu().getPrice(), orderDetail.getMenu().getImage(), orderDetail.getQuantity());
             menuItems.add(menu);
         }
-        OrderDataPage orderDataPage = new OrderDataPage(order.getUser().getName(), order.getRestaurant().getName(), order.getRider().getName(), menuItems, order.getPrice(), order.getDeliveryFee(), order.getDeliveryTime(), order.isPrepared(), order.getPaymentMethod());
+        OrderDataPage orderDataPage = new OrderDataPage(order.getUser().getName(), order.getRestaurant().getName(), order.getRider().getName(), menuItems, order.getPrice(), order.getDeliveryFee(), order.getDeliveryTime(), order.getDeliveryAddress(), order.isPrepared(), order.getPaymentMethod(), order.getOrderPlaced(), order.getDeliveryTaken(), order.getUserNotified(), order.getDeliveryCompleted());
         return ResponseEntity.ok(orderDataPage);
     }
 

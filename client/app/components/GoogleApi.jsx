@@ -90,8 +90,8 @@ export default function GoogleApi({ setPlace }) {
   };
 
   return (
-    <div className="w-full h-screen">
-      <div className="w-[80%] h-[80%] m-auto rounded-md overflow-hidden">
+    <div className="w-full h-[80svh]">
+      <div className="w-full h-full m-auto rounded-md overflow-hidden">
         {isLoaded && (
           <GoogleMap
             center={center}

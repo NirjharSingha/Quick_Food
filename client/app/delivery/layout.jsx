@@ -14,7 +14,9 @@ export default function RootLayout({ children }) {
   const pathname = usePathname();
 
   const navigateDelivery = () => {
-    router.push("/delivery");
+    if (pathname.includes("/delivery/analytics")) {
+      router.push("/delivery");
+    }
   };
 
   const navigateAnalytics = () => {
