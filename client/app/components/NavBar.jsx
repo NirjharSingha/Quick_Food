@@ -11,12 +11,6 @@ import { Dropdown } from "./Dropdown";
 import { useRouter } from "next/navigation";
 import Toast from "./Toast";
 import Link from "next/link";
-import {
-  requestForToken,
-  firebaseConfig,
-  onMessageListener,
-} from "../utils/firebase";
-import { initializeApp } from "firebase/app";
 import { usePathname } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 
@@ -32,7 +26,6 @@ const NavBar = () => {
     role,
     setRole,
     setCartCount,
-    stompClient,
     setStompClient,
   } = useGlobals();
   const pathname = usePathname();
@@ -49,9 +42,7 @@ const NavBar = () => {
             stompClient.subscribe(
               "/user/" + userId + "/notifications",
               function (notification) {
-                console.log("Received notification:", notification.body);
-                // Handle received notification
-                alert("Received notification: " + notification.body);
+                alert(notification.body);
               }
             );
           });
@@ -59,15 +50,6 @@ const NavBar = () => {
         });
       });
     }
-  }, []);
-
-  useEffect(() => {
-    // Initialize Firebase
-    // initializeApp(firebaseConfig);
-    // requestForToken();
-    // onMessageListener().then((payload) => {
-    //   window.alert("Payload: " + JSON.stringify(payload));
-    // });
   }, []);
 
   useEffect(() => {
@@ -178,18 +160,7 @@ const NavBar = () => {
           </div>
         )}
         <div className="navbar-end">
-          <button
-            className="btn btn-ghost btn-circle"
-            onClick={() => {
-              if (stompClient) {
-                stompClient.send(
-                  "/app/sendNotification/" + "user2@gmail.com",
-                  {},
-                  JSON.stringify("Hello")
-                );
-              }
-            }}
-          >
+          <button className="btn btn-ghost btn-circle">
             <div className="indicator">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
