@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,4 +33,19 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     @Transactional
     @Query("UPDATE Order o SET o.isPrepared = true WHERE o.id = :orderId")
     void markAsPrepared(@Param("orderId") int orderId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Order o SET o.deliveryTaken = :timestamp WHERE o.id = :orderId")
+    void deliveryTaken(@Param("orderId") int orderId, @Param("timestamp") Timestamp timestamp);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Order o SET o.userNotified = :timestamp WHERE o.id = :orderId")
+    void userNotified(@Param("orderId") int orderId, @Param("timestamp") Timestamp timestamp);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Order o SET o.deliveryCompleted = :timestamp WHERE o.id = :orderId")
+    void deliveryCompleted(@Param("orderId") int orderId, @Param("timestamp") Timestamp timestamp);
 }

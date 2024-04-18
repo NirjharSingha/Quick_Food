@@ -18,4 +18,6 @@ public interface OrderService {
     ResponseEntity<String> markAsPrepared(int orderId);
 
     ResponseEntity<RiderDelivery> getDeliveryOfRider(String riderId);
+
+    ResponseEntity<String> updateStatus(int orderId, int status);
 }

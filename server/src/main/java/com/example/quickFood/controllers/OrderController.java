@@ -42,4 +42,9 @@ public class OrderController {
     ResponseEntity<String> placeOrder(@RequestBody PlaceOrder placeOrder) {
         return orderService.placeOrder(placeOrder);
     }
+
+    @PutMapping("/updateStatus")
+    ResponseEntity<String> updateStatus(@RequestParam int orderId, @RequestParam int status) {
+        return orderService.updateStatus(orderId, status);
+    }
 }

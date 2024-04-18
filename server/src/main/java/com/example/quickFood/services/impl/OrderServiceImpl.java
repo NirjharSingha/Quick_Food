@@ -139,9 +139,37 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public ResponseEntity<RiderDelivery> getDeliveryOfRider(String riderId) {
-        int orderId = orderRepository.getDeliveryOfRider(riderId);
-        return ResponseEntity.ok(RiderDelivery.builder()
-                .orderId(orderId)
-                .build());
+        Integer orderId = orderRepository.getDeliveryOfRider(riderId);
+        if (orderId != null) {
+            return ResponseEntity.ok(RiderDelivery.builder()
+                    .orderId(orderId.intValue())
+                    .build());
+        } else {
+            // Handle the case when no order is found for the rider
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+    @Override
+    public ResponseEntity<String> updateStatus(int orderId, int status) {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        if (status == 0) {
+            orderRepository.deliveryTaken(orderId, timestamp);
+            notificationService.addNotification(orderRepository.findById(orderId).get().getUser().getId(), "Your order has been taken by the rider");
+            notificationService.sendNotificationToUser(orderRepository.findById(orderId).get().getUser().getId(), "Your order has been taken by the rider");
+        } else if (status == 1) {
+            orderRepository.userNotified(orderId, timestamp);
+            notificationService.addNotification(orderRepository.findById(orderId).get().getUser().getId(), "The rider has reached to the delivery location with the order");
+            notificationService.sendNotificationToUser(orderRepository.findById(orderId).get().getUser().getId(), "The rider has reached to the delivery location with the order");
+        } else if (status == 2) {
+            orderRepository.deliveryCompleted(orderId, timestamp);
+            notificationService.addNotification(orderRepository.findById(orderId).get().getUser().getId(), "Your order has been delivered successfully");
+            notificationService.sendNotificationToUser(orderRepository.findById(orderId).get().getUser().getId(), "Your order has been delivered successfully");
+
+            String riderId = orderRepository.findById(orderId).get().getRider().getId();
+            riderStatusRepository.save(new RiderStatus(riderId, true));
+        }
+        return ResponseEntity.ok("Status updated");
     }
 }

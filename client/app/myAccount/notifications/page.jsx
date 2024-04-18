@@ -40,7 +40,7 @@ const page = ({ className, ...props }) => {
           }
         );
         if (response.status === 200) {
-          setNotifications(response.data);
+          setNotifications(response.data.reverse());
           let count = 0;
           response.data.map((data) => {
             if (!data.isSeen) {
@@ -95,7 +95,7 @@ const page = ({ className, ...props }) => {
                 }`}
               />
               <div className="space-y-1">
-                <p className="text-md font-medium leading-none">
+                <p className="text-md font-medium leading-none mr-2">
                   {notification.description}
                 </p>
                 <p className="text-sm text-muted-foreground text-right mt-1 mr-2">

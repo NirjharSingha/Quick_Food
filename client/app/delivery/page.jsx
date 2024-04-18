@@ -36,13 +36,13 @@ const page = () => {
           }
         );
         if (response.status == 200) {
-          console.log("response", response.data);
           if (response.data.orderId === null) {
             setShowMessage(true);
             setShowLoading(false);
           } else {
+            const orderId = response.data.orderId;
             const res = await axios.get(
-              `${process.env.NEXT_PUBLIC_SERVER_URL}/order/getOrderDataPage?orderId=${response.data.orderId}`,
+              `${process.env.NEXT_PUBLIC_SERVER_URL}/order/getOrderDataPage?orderId=${orderId}`,
               {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -80,7 +80,7 @@ const page = () => {
               }
               localStorage.setItem(
                 "deliveryStatus",
-                JSON.stringify({ step: step })
+                JSON.stringify({ orderId: orderId, step: step })
               );
 
               setShowLoading(false);
@@ -91,6 +91,9 @@ const page = () => {
         console.log("Error:", error);
         if (error.response.status === 401) {
           handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+        } else if (error.response.status === 404) {
+          setShowMessage(true);
+          setShowLoading(false);
         }
       }
     };
