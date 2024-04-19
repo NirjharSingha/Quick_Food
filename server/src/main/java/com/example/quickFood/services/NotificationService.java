@@ -13,4 +13,6 @@ public interface NotificationService {
     ResponseEntity<String> deleteByNotificationId(int notificationId);
 
     ResponseEntity<String> deleteByUserId(String userId);
+
+    ResponseEntity<Integer> getUnseenNotificationCount(String userId);
 }

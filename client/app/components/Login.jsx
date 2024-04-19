@@ -173,19 +173,23 @@ const Login = ({ setShowLogin, setShowSignUp, isUserLogin }) => {
           </span>
         </div>
       )}
-      <div className="mt-4 w-full flex justify-center items-center">
-        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_OAUTH_CLIENT_ID}>
-          <GoogleLogin
-            onSuccess={(credentialResponse) => {
-              const details = jwtDecode(credentialResponse.credential);
-              handleGoogleAuth(details);
-            }}
-            onError={() => {
-              console.log("Login Failed");
-            }}
-          />
-        </GoogleOAuthProvider>
-      </div>
+      {isUserLogin && (
+        <div className="mt-4 w-full flex justify-center items-center">
+          <GoogleOAuthProvider
+            clientId={process.env.NEXT_PUBLIC_OAUTH_CLIENT_ID}
+          >
+            <GoogleLogin
+              onSuccess={(credentialResponse) => {
+                const details = jwtDecode(credentialResponse.credential);
+                handleGoogleAuth(details);
+              }}
+              onError={() => {
+                console.log("Login Failed");
+              }}
+            />
+          </GoogleOAuthProvider>
+        </div>
+      )}
     </form>
   );
 };

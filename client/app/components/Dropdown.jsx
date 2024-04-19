@@ -22,7 +22,8 @@ import { useRouter } from "next/navigation";
 
 export function Dropdown({ setIsUserLogin, setShowLogin, setShowSignUp }) {
   const router = useRouter();
-  const { isLoggedIn, setIsLoggedIn } = useGlobals();
+  const { isLoggedIn, setIsLoggedIn, setToastMessage, setUnSeenNotifications } =
+    useGlobals();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -99,9 +100,11 @@ export function Dropdown({ setIsUserLogin, setShowLogin, setShowSignUp }) {
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
-                localStorage.setItem("isLoggedIn", false);
+                localStorage.removeItem("isLoggedIn");
                 localStorage.removeItem("token");
                 setIsLoggedIn(false);
+                setUnSeenNotifications(0);
+                setToastMessage("Logged out successfully");
               }}
             >
               Log out

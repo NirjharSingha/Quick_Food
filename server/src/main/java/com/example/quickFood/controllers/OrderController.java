@@ -47,4 +47,9 @@ public class OrderController {
     ResponseEntity<String> updateStatus(@RequestParam int orderId, @RequestParam int status) {
         return orderService.updateStatus(orderId, status);
     }
+
+    @PutMapping("/complaint")
+    ResponseEntity<String> complaint(@RequestParam int orderId, @RequestParam String complain) {
+        return orderService.complaint(orderId, complain);
+    }
 }

@@ -20,6 +20,7 @@ const GlobalsProvider = ({ children }) => {
   const [cartCount, setCartCount] = useState(0);
   const menuDivRef = useRef(null);
   const [stompClient, setStompClient] = useState(null);
+  const [unSeenNotifications, setUnSeenNotifications] = useState(0);
 
   return (
     <GlobalsContext.Provider
@@ -44,6 +45,8 @@ const GlobalsProvider = ({ children }) => {
         setRole,
         stompClient,
         setStompClient,
+        unSeenNotifications,
+        setUnSeenNotifications,
       }}
     >
       {children}

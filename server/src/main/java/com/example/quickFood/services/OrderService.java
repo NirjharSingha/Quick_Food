@@ -20,4 +20,6 @@ public interface OrderService {
     ResponseEntity<RiderDelivery> getDeliveryOfRider(String riderId);
 
     ResponseEntity<String> updateStatus(int orderId, int status);
+
+    ResponseEntity<String> complaint(int orderId, String complain);
 }

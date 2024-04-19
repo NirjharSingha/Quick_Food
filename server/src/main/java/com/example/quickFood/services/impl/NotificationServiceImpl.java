@@ -110,6 +110,11 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
+    @Override
+    public ResponseEntity<Integer> getUnseenNotificationCount(String userId) {
+        return ResponseEntity.ok(notificationRepository.countByUserIdAndIsSeen(userId, false));
+    }
+
     public void sendNotificationToUser(String userId, String message) {
         String destination = "/user/" + userId + "/notifications";
         simpMessagingTemplate.convertAndSend(destination, message);

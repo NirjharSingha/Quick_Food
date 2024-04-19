@@ -12,6 +12,7 @@ import Loading from "@/app/components/Loading";
 import FavIcon from "@/public/favicon.ico";
 import Image from "next/image";
 import OrderDetailsDialog from "@/app/components/OrderDetailsDialog";
+import Complaint from "@/app/components/Complaint";
 
 const page = () => {
   const { setToastMessage, setIsLoggedIn } = useGlobals();
@@ -20,6 +21,7 @@ const page = () => {
   const [showMessage, setShowMessage] = useState(false);
   const [showLoading, setShowLoading] = useState(true);
   const buttonRef = useRef(null);
+  const complaintRef = useRef(null);
   const [selectedOrder, setSelectedOrder] = useState(0);
 
   useEffect(() => {
@@ -53,7 +55,16 @@ const page = () => {
 
   return (
     <div div className="w-full overflow-y-auto">
-      <OrderDetailsDialog buttonRef={buttonRef} selectedOrder={selectedOrder} />
+      <OrderDetailsDialog
+        buttonRef={buttonRef}
+        selectedOrder={selectedOrder}
+        complaintRef={complaintRef}
+      />
+      <Complaint
+        buttonRef={complaintRef}
+        orderId={selectedOrder}
+        setOrderCards={setOrderCards}
+      />
       <div className="w-full flex items-center justify-between bg-gray-700 p-2 pl-4 pr-4 min-h-[4rem] shadow-md shadow-gray-400 rounded-bl-md">
         <div className="flex items-center navbar-start">
           <div className="bg-white p-[0.5rem] flex justify-center items-center mr-2 rounded-full border-[1px] border-solid border-gray-500">

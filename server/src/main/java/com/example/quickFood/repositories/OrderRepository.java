@@ -48,4 +48,9 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     @Transactional
     @Query("UPDATE Order o SET o.deliveryCompleted = :timestamp WHERE o.id = :orderId")
     void deliveryCompleted(@Param("orderId") int orderId, @Param("timestamp") Timestamp timestamp);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Order o SET o.complain = :complain WHERE o.id = :orderId")
+    void complain(@Param("orderId") int orderId, @Param("complain") String complain);
 }

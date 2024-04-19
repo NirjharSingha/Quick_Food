@@ -18,12 +18,13 @@ import OrderDetailsTable from "./OrderDetailsTable";
 import { usePathname } from "next/navigation";
 import Stepper from "./Stepper";
 
-const OrderDetailsDialog = ({ buttonRef, selectedOrder }) => {
+const OrderDetailsDialog = ({ buttonRef, selectedOrder, complaintRef }) => {
   const [orderDetails, setOrderDetails] = useState({});
   const { setToastMessage, setIsLoggedIn } = useGlobals();
   const [tableData, setTableData] = useState([]);
   const [tableQuantity, setTableQuantity] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [orderStatus, setOrderStatus] = useState(-1);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -54,6 +55,22 @@ const OrderDetailsDialog = ({ buttonRef, selectedOrder }) => {
         });
         setTableData(data);
         setTableQuantity(quantity);
+
+        let timeStamps = [
+          response.data.orderPlaced,
+          response.data.deliveryTaken,
+          response.data.userNotified,
+          response.data.deliveryCompleted,
+        ];
+
+        let step = 0;
+        for (let i = 1; i < timeStamps.length; i++) {
+          if (timeStamps[i] !== null) {
+            step++;
+          }
+        }
+
+        setOrderStatus(step);
         setLoading(false);
       }
     } catch (error) {
@@ -117,12 +134,14 @@ const OrderDetailsDialog = ({ buttonRef, selectedOrder }) => {
               </p>
             </div>
           )}
-          {pathname.includes("/orderFood/orderStatus") && <Stepper step={1} />}
-          <div className="w-full h-[9rem] p-1 shadow-md border-gray-300 border-[0.1px] shadow-gray-300 rounded-xl flex gap-3 mb-3">
+          {pathname.includes("/orderFood/orderStatus") && (
+            <Stepper step={orderStatus} />
+          )}
+          <div className="w-full h-[10.5rem] p-1 shadow-md border-gray-300 border-[0.1px] shadow-gray-300 rounded-xl flex gap-3 mb-3">
             <img
               src="/foodDelivery.png"
               alt="logo"
-              className="w-[11.5rem] h-[8.5rem] rounded-lg"
+              className="w-[13rem] h-[10rem] rounded-lg"
             />
             <div className="h-full flex flex-col justify-center w-full overflow-hidden">
               <p className="text-xl font-bold text-gray-700 truncate font-sans mb-2">
@@ -142,6 +161,10 @@ const OrderDetailsDialog = ({ buttonRef, selectedOrder }) => {
               <p className="text-md font-sans text-gray-500">
                 Payment :{" "}
                 {orderDetails.paymentMethod === "COD" ? "COD" : "Done"}
+              </p>
+              <p className="text-md font-sans text-gray-500 mt-1">
+                Order placed :{" "}
+                {new Date(orderDetails.orderPlaced).toLocaleString()}
               </p>
             </div>
           </div>
@@ -180,6 +203,23 @@ const OrderDetailsDialog = ({ buttonRef, selectedOrder }) => {
                   : "Mark as Prepared"}
               </Button>
             )}
+            {pathname.includes("/orderFood/orderStatus") &&
+              orderStatus == 3 && (
+                <div className="w-full mt-2 p-3 shadow-md shadow-gray-400">
+                  <p className="font-sans font-bold text-2xl mb-4 text-gray-700 text-center">
+                    Order completed successfully!
+                  </p>
+                  <Button
+                    className="w-full font-bold"
+                    onClick={() => {
+                      buttonRef.current.click();
+                      complaintRef.current.click();
+                    }}
+                  >
+                    Do you want to complain?
+                  </Button>
+                </div>
+              )}
           </DialogFooter>
         </DialogContent>
       )}

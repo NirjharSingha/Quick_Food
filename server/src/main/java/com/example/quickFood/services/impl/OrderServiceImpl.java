@@ -172,4 +172,10 @@ public class OrderServiceImpl implements OrderService {
         }
         return ResponseEntity.ok("Status updated");
     }
+
+    @Override
+    public ResponseEntity<String> complaint(int orderId, String complain) {
+        orderRepository.complain(orderId, complain);
+        return ResponseEntity.ok("Complaint registered");
+    }
 }

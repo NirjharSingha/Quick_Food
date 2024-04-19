@@ -22,7 +22,8 @@ import { jwtDecode } from "jwt-decode";
 
 const page = ({ className, ...props }) => {
   const [notifications, setNotifications] = useState([]);
-  const { setToastMessage, setIsLoggedIn } = useGlobals();
+  const { setToastMessage, setIsLoggedIn, setUnSeenNotifications } =
+    useGlobals();
   const router = useRouter();
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -48,6 +49,7 @@ const page = ({ className, ...props }) => {
             }
           });
           setUnreadCount(count);
+          setUnSeenNotifications(0);
         }
       } catch (error) {
         console.log(error);

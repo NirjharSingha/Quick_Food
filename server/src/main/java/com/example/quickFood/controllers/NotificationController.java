@@ -34,4 +34,9 @@ public class NotificationController {
     public ResponseEntity<String> deleteByUserId(@RequestParam String userId) {
         return notificationService.deleteByUserId(userId);
     }
+
+    @GetMapping("/getUnseenNotificationCount")
+    public ResponseEntity<Integer> getUnseenNotificationCount(@RequestParam String userId) {
+        return notificationService.getUnseenNotificationCount(userId);
+    }
 }
