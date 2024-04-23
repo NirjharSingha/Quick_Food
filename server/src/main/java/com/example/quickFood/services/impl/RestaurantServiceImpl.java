@@ -1,6 +1,6 @@
 package com.example.quickFood.services.impl;
 
-import com.example.quickFood.dto.ResSearchDto;
+import com.example.quickFood.dto.IdNameImgDto;
 import com.example.quickFood.dto.RestaurantDto;
 import com.example.quickFood.models.Restaurant;
 import com.example.quickFood.models.User;
@@ -11,11 +11,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -105,12 +111,78 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public List<ResSearchDto> searchRestaurant(String name) {
+    public List<IdNameImgDto> searchRestaurant(String name) {
         return restaurantRepository.searchRestaurant(name);
     }
 
     @Override
     public String restaurantName(String resId) {
         return restaurantRepository.restaurantName(resId);
+    }
+
+    @Override
+    public List<Pair<String, Double>> getRestaurantSale(String resId, String timestampString) {
+        List<Pair<String, Double>> saleList = new ArrayList<>();
+
+        for (int i = 0; i < 7; i++) {
+
+            // Parse the ISO string to LocalDate
+            LocalDateTime dateTime = LocalDateTime.parse(timestampString, DateTimeFormatter.ISO_DATE_TIME);
+            dateTime = dateTime.minusDays(i - 1);
+            LocalDate date = dateTime.toLocalDate();
+            DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
+
+            // Get start and end timestamps for the given date
+            LocalDateTime startOfDay = date.atStartOfDay();
+            LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
+
+            // Set nanoseconds to maximum value for end of the day
+            endOfDay = endOfDay.withNano(999999999);
+
+            Timestamp startTimestamp = Timestamp.valueOf(startOfDay);
+            Timestamp endTimestamp = Timestamp.valueOf(endOfDay);
+
+            Double value = restaurantRepository.getRestaurantSale(resId, startTimestamp, endTimestamp);
+            if (value ==  null) {
+                value = 0.0;
+            }
+            saleList.add(Pair.of(dayOfWeek.toString(), value));
+
+        }
+
+        return saleList;
+    }
+
+    @Override
+    public List<Pair<String, Double>> findTopSoldItems(String restaurantId) {
+        List<Pair<String, Double>> topSoldItems = restaurantRepository.findTopSoldItems(restaurantId);
+        List<Pair<String, Double>> topSoldItemsCopy = new ArrayList<>();
+        double total = 0.0;
+
+        for (Pair<String, Double> pair : topSoldItems) {
+            total += pair.getSecond();
+        }
+
+        int ct = 0;
+        for (Pair<String, Double> pair : topSoldItems) {
+            Double percentage = pair.getSecond() / total * 100;
+            topSoldItemsCopy.add(Pair.of(pair.getFirst(), percentage));
+            ct++;
+            if (ct == 5) {
+                break;
+            }
+        }
+
+        double leftPercentage = 100.0;
+
+        for (Pair<String, Double> pair : topSoldItemsCopy) {
+            leftPercentage -= pair.getSecond();
+        }
+
+        if (leftPercentage > 0) {
+            topSoldItemsCopy.add(Pair.of("Others", leftPercentage));
+        }
+
+        return topSoldItemsCopy;
     }
 }

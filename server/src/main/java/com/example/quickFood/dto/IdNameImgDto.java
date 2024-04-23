@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ResSearchDto {
+public class IdNameImgDto {
     private String id;
     private String name;
     private byte[] image;

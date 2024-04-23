@@ -13,5 +13,5 @@ import java.util.List;
 public class RatingPage {
     private String restaurantName;
     private byte[] restaurantPic;
-    List<ResSearchDto> menuItems;
+    List<IdNameImgDto> menuItems;
 }

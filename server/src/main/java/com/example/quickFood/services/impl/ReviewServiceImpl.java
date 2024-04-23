@@ -2,7 +2,7 @@ package com.example.quickFood.services.impl;
 
 import com.example.quickFood.dto.RatingDto;
 import com.example.quickFood.dto.RatingPage;
-import com.example.quickFood.dto.ResSearchDto;
+import com.example.quickFood.dto.IdNameImgDto;
 import com.example.quickFood.models.Menu;
 import com.example.quickFood.models.Order;
 import com.example.quickFood.models.OrderDetails;
@@ -45,9 +45,9 @@ public class ReviewServiceImpl implements ReviewService {
         byte[] restaurantPic = order.getRestaurant().getImage();
 
         List<OrderDetails> orderDetails = orderDetailsRepository.findByOrderId(orderId);
-        List<ResSearchDto> menuItems = new ArrayList<>();
+        List<IdNameImgDto> menuItems = new ArrayList<>();
         for (OrderDetails orderDetail : orderDetails) {
-            ResSearchDto menu = new ResSearchDto(Integer.toString(orderDetail.getMenu().getId()), orderDetail.getMenu().getName(), orderDetail.getMenu().getImage());
+            IdNameImgDto menu = new IdNameImgDto(Integer.toString(orderDetail.getMenu().getId()), orderDetail.getMenu().getName(), orderDetail.getMenu().getImage());
             menuItems.add(menu);
         }
 

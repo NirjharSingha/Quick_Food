@@ -1,11 +1,12 @@
 package com.example.quickFood.controllers;
 
-import com.example.quickFood.dto.ResSearchDto;
+import com.example.quickFood.dto.IdNameImgDto;
 import com.example.quickFood.dto.RestaurantDto;
 import com.example.quickFood.services.impl.RestaurantServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,12 +67,24 @@ public class RestaurantController {
     }
 
     @GetMapping("/searchRestaurant")
-    public ResponseEntity<List<ResSearchDto>> searchRestaurant(@RequestParam String name) {
+    public ResponseEntity<List<IdNameImgDto>> searchRestaurant(@RequestParam String name) {
         return ResponseEntity.ok(restaurantService.searchRestaurant(name.toLowerCase()));
     }
 
     @GetMapping("/getRestaurantName")
     public ResponseEntity<String> getRestaurantName(@RequestParam String resId) {
         return ResponseEntity.ok(restaurantService.restaurantName(resId));
+    }
+
+    @GetMapping("/getRestaurantSale")
+    public ResponseEntity<List<Pair<String, Double>>> getRestaurantSale(@RequestParam("timestampString") String timestampString,
+                                    @RequestParam("restaurantId") String restaurantId) {
+
+        return ResponseEntity.ok(restaurantService.getRestaurantSale(restaurantId, timestampString));
+    }
+
+    @GetMapping("/getTopSoldItems")
+    public ResponseEntity<List<Pair<String, Double>>> getTopSoldItems(@RequestParam("restaurantId") String restaurantId) {
+        return ResponseEntity.ok(restaurantService.findTopSoldItems(restaurantId));
     }
 }
