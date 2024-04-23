@@ -17,14 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -121,7 +116,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public List<Pair<String, Double>> getRestaurantSale(String resId, String timestampString) {
+    public List<Pair<String, Double>> getWeeklyRestaurantSale(String resId, String timestampString) {
         List<Pair<String, Double>> saleList = new ArrayList<>();
 
         for (int i = 0; i < 7; i++) {
@@ -179,10 +174,68 @@ public class RestaurantServiceImpl implements RestaurantService {
             leftPercentage -= pair.getSecond();
         }
 
-        if (leftPercentage > 0) {
+        if (leftPercentage > 0 && topSoldItemsCopy.size() > 0) {
             topSoldItemsCopy.add(Pair.of("Others", leftPercentage));
         }
 
         return topSoldItemsCopy;
+    }
+
+    @Override
+    public List<Pair<String, Double>> findTopReviewedItems(String restaurantId, String flag) {
+        List<Pair<String, Double>> topReviewedItems = restaurantRepository.findTopReviewedItems(restaurantId);
+        if (Objects.equals(flag, "worst")) {
+            Collections.reverse(topReviewedItems);
+        }
+
+        if (topReviewedItems.size() > 5) {
+            return topReviewedItems.subList(0, 5);
+        } else {
+            return topReviewedItems;
+        }
+    }
+
+    @Override
+    public List<Pair<String, Double>> getMonthlyRestaurantSale(String resId) {
+        List<Pair<String, Double>> saleList = new ArrayList<>();
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        for (int i = 0; i < 6; i++) {
+            // Adjust current month based on the iteration
+            LocalDateTime dateTime = currentDateTime.minusMonths(i);
+            int year = dateTime.getYear();
+            Month month = dateTime.getMonth();
+
+            // Calculate start and end timestamps for the month
+            LocalDateTime startOfMonth = LocalDateTime.of(year, month, 1, 0, 0, 0);
+            LocalDateTime endOfMonth = startOfMonth.plusMonths(1).minusNanos(1);
+
+            // Convert LocalDateTime to Timestamp
+            Timestamp startTimestamp = Timestamp.valueOf(startOfMonth);
+            Timestamp endTimestamp = Timestamp.valueOf(endOfMonth);
+
+            // Get the total sale for the month
+            Double value = restaurantRepository.getRestaurantSale(resId, startTimestamp, endTimestamp);
+            if (value == null) {
+                value = 0.0;
+            }
+
+            // Add the month and sale value to the list
+            saleList.add(Pair.of(month.toString(), value));
+        }
+
+        return saleList;
+    }
+
+    @Override
+    public List<Pair<String, Double>> getPendingOrdersToday(String restaurantId) {
+        Double preparedOrders = restaurantRepository.findPreparedPendingOrdersToday(restaurantId);
+        Double unPreparedOrders = restaurantRepository.findUnPreparedPendingOrdersToday(restaurantId);
+
+        if (preparedOrders == 0.0 && unPreparedOrders == 0.0) {
+            return new ArrayList<>();
+        } else {
+            return Arrays.asList(Pair.of("Prepared", preparedOrders), Pair.of("Unprepared", unPreparedOrders));
+        }
     }
 }

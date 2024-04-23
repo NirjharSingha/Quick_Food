@@ -23,7 +23,13 @@ public interface RestaurantService {
 
     String restaurantName(String resId);
 
-    List<Pair<String, Double>> getRestaurantSale(String resId, String timestampString);
+    List<Pair<String, Double>> getWeeklyRestaurantSale(String resId, String timestampString);
 
     List<Pair<String, Double>> findTopSoldItems(String restaurantId);
+
+    List<Pair<String, Double>> findTopReviewedItems(String restaurantId, String flag);
+
+    List<Pair<String, Double>> getMonthlyRestaurantSale(String restaurantId);
+
+    List<Pair<String, Double>> getPendingOrdersToday(String restaurantId);
 }

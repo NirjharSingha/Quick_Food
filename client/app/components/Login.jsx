@@ -81,6 +81,7 @@ const Login = ({ setShowLogin, setShowSignUp, isUserLogin }) => {
         postData
       );
       if (response.status == 200) {
+        console.log(response.data);
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("isLoggedIn", true);
         setIsLoggedIn(true);

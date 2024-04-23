@@ -36,4 +36,16 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, String> 
             "GROUP BY od.menu.name, od.menu.price " +
             "ORDER BY SUM(od.quantity) * od.menu.price DESC")
     List<Pair<String, Double>> findTopSoldItems(@Param("restaurantId") String restaurantId);
+
+    @Query("SELECT NEW org.springframework.data.util.Pair(r.menu.name, AVG(r.rating)) " +
+            "FROM Review r WHERE r.menu.restaurant.id = :restaurantId " +
+            "GROUP BY r.menu.name " +
+            "ORDER BY AVG(r.rating) DESC")
+    List<Pair<String, Double>> findTopReviewedItems(@Param("restaurantId") String restaurantId);
+
+    @Query("SELECT COUNT(O) FROM Order O WHERE O.restaurant.id = :restaurantId AND O.isPrepared = TRUE AND O.deliveryTaken IS NULL")
+    Double findPreparedPendingOrdersToday(@Param("restaurantId") String restaurantId);
+
+    @Query("SELECT COUNT(O) FROM Order O WHERE O.restaurant.id = :restaurantId AND O.isPrepared = FALSE AND O.deliveryTaken IS NULL")
+    Double findUnPreparedPendingOrdersToday(@Param("restaurantId") String restaurantId);
 }

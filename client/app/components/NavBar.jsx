@@ -144,7 +144,7 @@ const NavBar = () => {
             <Link href="/" className="cursor-pointer hover:underline">
               Home
             </Link>
-            {isLoggedIn && role === "CUSTOMER" && (
+            {isLoggedIn && role === "USER" && (
               <>
                 <Link
                   href="/orderFood"

@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addOAuthUser(GoogleAuth googleAuth) {
-        User user = new User(googleAuth.getId(), googleAuth.getName(), null, Role.CUSTOMER, null, null,
+        User user = new User(googleAuth.getId(), googleAuth.getName(), null, Role.USER, null, null,
                 new Timestamp(System.currentTimeMillis()), null);
         userRepository.save(user);
     }

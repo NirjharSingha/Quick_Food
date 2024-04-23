@@ -50,7 +50,7 @@ const SignUp = ({ setShowLogin, setShowSignUp }) => {
       id: id,
       name: username,
       password: password,
-      role: "CUSTOMER",
+      role: "USER",
     };
     try {
       const response = await axios.post(

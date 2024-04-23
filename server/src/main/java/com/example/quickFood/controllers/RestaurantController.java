@@ -76,15 +76,31 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantService.restaurantName(resId));
     }
 
-    @GetMapping("/getRestaurantSale")
-    public ResponseEntity<List<Pair<String, Double>>> getRestaurantSale(@RequestParam("timestampString") String timestampString,
-                                    @RequestParam("restaurantId") String restaurantId) {
+    @GetMapping("/getWeeklyRestaurantSale")
+    public ResponseEntity<List<Pair<String, Double>>> getWeeklyRestaurantSale(@RequestParam("timestampString") String timestampString,
+                                                                              @RequestParam("restaurantId") String restaurantId) {
 
-        return ResponseEntity.ok(restaurantService.getRestaurantSale(restaurantId, timestampString));
+        return ResponseEntity.ok(restaurantService.getWeeklyRestaurantSale(restaurantId, timestampString));
+    }
+
+    @GetMapping("/getMonthlyRestaurantSale")
+    public ResponseEntity<List<Pair<String, Double>>> getMonthlyRestaurantSale(@RequestParam("restaurantId") String restaurantId) {
+
+        return ResponseEntity.ok(restaurantService.getMonthlyRestaurantSale(restaurantId));
     }
 
     @GetMapping("/getTopSoldItems")
     public ResponseEntity<List<Pair<String, Double>>> getTopSoldItems(@RequestParam("restaurantId") String restaurantId) {
         return ResponseEntity.ok(restaurantService.findTopSoldItems(restaurantId));
+    }
+
+    @GetMapping("/getTopReviewedItems")
+    public ResponseEntity<List<Pair<String, Double>>> getTopReviewedItems(@RequestParam("restaurantId") String restaurantId, @RequestParam("flag") String flag) {
+        return ResponseEntity.ok(restaurantService.findTopReviewedItems(restaurantId, flag));
+    }
+
+    @GetMapping("/getPendingOrdersToday")
+    public ResponseEntity<List<Pair<String, Double>>> getPendingOrdersToday(@RequestParam("restaurantId") String restaurantId) {
+        return ResponseEntity.ok(restaurantService.getPendingOrdersToday(restaurantId));
     }
 }

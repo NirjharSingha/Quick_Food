@@ -46,7 +46,7 @@ public class AuthServiceImpl implements AuthService {
 
             return ResponseEntity.ok(JwtAuthResponse.builder()
                     .token(jwt)
-                    .role(Role.CUSTOMER)
+                    .role(Role.USER)
                     .build());
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -89,7 +89,7 @@ public class AuthServiceImpl implements AuthService {
 
                 return ResponseEntity.ok(JwtAuthResponse.builder()
                         .token(jwt)
-                        .role(Role.CUSTOMER)
+                        .role(Role.USER)
                         .build());
             } else {
                 var user = userRepository.findById(request.getId())

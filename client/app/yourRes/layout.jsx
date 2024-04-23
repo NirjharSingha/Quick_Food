@@ -10,6 +10,7 @@ import { usePathname } from "next/navigation";
 import { BiSolidFoodMenu } from "react-icons/bi";
 import MenuDialog from "../components/MenuDialog";
 import { MdPending } from "react-icons/md";
+import { IoMdAnalytics } from "react-icons/io";
 
 export default function RootLayout({ children }) {
   const router = useRouter();
@@ -38,6 +39,12 @@ export default function RootLayout({ children }) {
   const navigatePendingOrders = () => {
     const restaurantId = localStorage.getItem("restaurantId");
     const url = "/yourRes/" + restaurantId + "/pendingOrders";
+    router.push(url);
+  };
+
+  const navigateAnalytics = () => {
+    const restaurantId = localStorage.getItem("restaurantId");
+    const url = "/yourRes/" + restaurantId + "/analytics";
     router.push(url);
   };
 
@@ -100,7 +107,8 @@ export default function RootLayout({ children }) {
                 pathname !== "/yourRes" &&
                 pathname !== "/yourRes/addNewRes" &&
                 !pathname.includes("/menu") &&
-                !pathname.includes("/pendingOrders")
+                !pathname.includes("/pendingOrders") &&
+                !pathname.includes("/analytics")
                   ? "bg-blue-400"
                   : "bg-slate-200 hover:bg-slate-300"
               } m-4 cursor-pointer items-center`}
@@ -131,6 +139,17 @@ export default function RootLayout({ children }) {
             >
               <MdPending className="text-2xl mr-2" />
               <p className="font-bold truncate">Pending Orders</p>
+            </div>
+            <div
+              className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
+                pathname.includes("/analytics")
+                  ? "bg-blue-400"
+                  : "bg-slate-200 hover:bg-slate-300"
+              } m-4 cursor-pointer items-center`}
+              onClick={navigateAnalytics}
+            >
+              <IoMdAnalytics className="text-2xl mr-2" />
+              <p className="font-bold truncate">Analytics</p>
             </div>
           </>
         )}

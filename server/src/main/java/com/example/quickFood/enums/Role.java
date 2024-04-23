@@ -1,7 +1,7 @@
 package com.example.quickFood.enums;
 
 public enum Role {
-    CUSTOMER,
+    USER,
     ADMIN,
     RIDER
 }
