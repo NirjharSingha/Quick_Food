@@ -22,12 +22,27 @@ import { useRouter } from "next/navigation";
 
 export function Dropdown({ setIsUserLogin, setShowLogin, setShowSignUp }) {
   const router = useRouter();
-  const { isLoggedIn, setIsLoggedIn, setToastMessage, setUnSeenNotifications } =
-    useGlobals();
+  const {
+    isLoggedIn,
+    setIsLoggedIn,
+    setToastMessage,
+    setUnSeenNotifications,
+    windowWidth,
+  } = useGlobals();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
+        <div
+          tabIndex={0}
+          role="button"
+          className={
+            windowWidth >= 700
+              ? "btn btn-ghost btn-circle"
+              : `${
+                  windowWidth >= 400 ? "mr-1" : "mr-0"
+                } ml-1 hover:btn hover:btn-ghost hover:btn-circle`
+          }
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5"
@@ -44,7 +59,9 @@ export function Dropdown({ setIsUserLogin, setShowLogin, setShowSignUp }) {
           </svg>
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 mt-1">
+      <DropdownMenuContent
+        className={windowWidth > 700 ? "w-56 mt-1" : "w-44 mt-4"}
+      >
         <DropdownMenuLabel>Dropdown</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {!isLoggedIn && (

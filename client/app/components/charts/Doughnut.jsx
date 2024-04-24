@@ -51,8 +51,8 @@ const Doughnut = ({ allLabels, allData }) => {
   }, [allLabels, allData]);
 
   return (
-    <div className="flex justify-center">
-      <canvas ref={chartRef} className="max-w-[90%]" />
+    <div className="flex justify-center overflow-x-auto">
+      <canvas ref={chartRef} className="max-w-[80%]" />
     </div>
   );
 };

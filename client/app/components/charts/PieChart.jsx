@@ -4,7 +4,7 @@ import React from "react";
 import { useEffect, useRef } from "react";
 import { Chart } from "chart.js/auto";
 
-const Pie = ({ allLabels, allData }) => {
+const PieChart = ({ allLabels, allData }) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -52,9 +52,9 @@ const Pie = ({ allLabels, allData }) => {
 
   return (
     <div className="flex justify-center">
-      <canvas ref={chartRef} className="max-w-[90%]" />
+      <canvas ref={chartRef} className="max-w-[80%]" />
     </div>
   );
 };
 
-export default Pie;
+export default PieChart;

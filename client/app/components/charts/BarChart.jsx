@@ -40,6 +40,7 @@ const BarChart = ({ allLabels, allData }) => {
                 "rgb(201, 203, 207)",
               ],
               borderWidth: 1,
+              barThickness: 50,
             },
           ],
         },
@@ -51,7 +52,6 @@ const BarChart = ({ allLabels, allData }) => {
             y: {
               min: 0,
               beginAtZero: true,
-              stepSize: 1000,
             },
           },
         },
@@ -62,8 +62,11 @@ const BarChart = ({ allLabels, allData }) => {
   }, [allLabels, allData]);
 
   return (
-    <div>
-      <canvas ref={chartRef} />
+    <div className="overflow-x-auto">
+      <canvas
+        ref={chartRef}
+        className="min-h-[60svh] w-[95%] min-w-[500px] max-w-[1000px] mx-auto"
+      />
     </div>
   );
 };

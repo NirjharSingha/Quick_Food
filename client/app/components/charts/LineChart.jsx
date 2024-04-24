@@ -40,10 +40,21 @@ const LineChart = ({ allLabels, allData }) => {
                 "rgb(201, 203, 207)",
               ],
               borderWidth: 1,
+              barThickness: 20,
             },
           ],
         },
-        options: {},
+        options: {
+          scales: {
+            x: {
+              type: "category",
+            },
+            y: {
+              min: 0,
+              beginAtZero: true,
+            },
+          },
+        },
       });
 
       chartRef.current.chart = newChart;
@@ -51,10 +62,10 @@ const LineChart = ({ allLabels, allData }) => {
   }, [allLabels, allData]);
 
   return (
-    <div>
+    <div className="overflow-x-auto">
       <canvas
         ref={chartRef}
-        className="min-h-[60svh] w-[95%] min-w-[500px] max-w-[1000px] overflow-x-auto mx-auto"
+        className="min-h-[60svh] w-[95%] min-w-[500px] max-w-[1000px] mx-auto"
       />
     </div>
   );

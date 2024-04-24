@@ -48,15 +48,15 @@ export default function Home() {
       className="w-screen overflow-x-hidden overflow-y-auto bg-orange-50"
       style={{ height: "calc(100svh - 4rem)" }}
     >
-      <div className="bg-orange-50 flex items-center justify-around">
+      <div className="bg-orange-50 flex flex-col-reverse md:flex-row items-center justify-around">
         <div className="flex flex-col justify-center items-center">
-          <p className="w-full text-center text-gray-700 font-bold font-serif text-6xl mb-4">
+          <p className="w-full text-center text-gray-700 font-bold font-serif text-4xl sm:text-6xl mb-4">
             Quick Food
           </p>
-          <p className="w-full text-center text-gray-700 font-bold font-serif text-3xl">
+          <p className="w-full text-center text-gray-700 font-bold font-serif text-xl sm:3xl">
             From Order to Door
           </p>
-          <p className="w-full text-center text-gray-700 font-bold font-serif text-3xl mb-4">
+          <p className="w-full text-center text-gray-700 font-bold font-serif text-xl sm:3xl mb-4">
             in Minutes
           </p>
           <p className="w-full text-center font-serif p-2 pl-4 pr-4 text-gray-700">
@@ -64,58 +64,71 @@ export default function Home() {
             even outside the city. <br /> We ensure the quality of food and
             service.
           </p>
-          <Image placeholder="blur" src={FoodItems} alt="logo" className="" />
+          <Image
+            placeholder="blur"
+            src={FoodItems}
+            alt="logo"
+            className="hidden lg:block"
+          />
         </div>
-        <Image placeholder="blur" src={FoodDelivery} alt="logo" className="" />
+        <Image
+          placeholder="blur"
+          src={FoodDelivery}
+          alt="logo"
+          className="w-[90%] md:w-1/2 lg:w-[2/5] xl:w-1/3 2xl:w-[3/10]"
+        />
       </div>
-      <p className="bg-orange-50 p-4 w-full text-center text-gray-700 font-bold font-serif text-4xl mt-4">
+      <p className="bg-orange-50 p-4 w-full text-center text-gray-700 font-bold font-serif text-xl sm:text-4xl mt-4">
         How We Serve You
       </p>
-      <div className="mt-2 p-1 pl-4 pr-4 bg-orange-50 grid grid-cols-3 h-[45vh] overflow-hidden gap-2">
-        <div className="w-full h-full">
+      <div
+        className="mt-2 p-1 pl-4 pr-4 bg-orange-50 flex h-[37vh] gap-2 md:h-[45vh] md:grid md:grid-cols-3"
+        style={{ overflowX: "auto" }}
+      >
+        <div className="h-full">
           <Image
             src={Service_1}
             alt="logo"
-            className="h-[35vh] w-auto m-auto"
+            className="h-[27vh] w-auto m-auto min-w-[200px] md:h-[35vh]"
             placeholder="blur"
           />
-          <p className="bg-orange-50 p-4 w-full text-center text-gray-700 font-bold font-serif text-lg mt-4">
+          <p className="bg-orange-50 p-4 w-full text-center text-gray-700 font-bold font-serif text-sm md:text-lg mt-4">
             Automated Packaging
           </p>
         </div>
-        <div className="w-full h-full">
+        <div className="h-full">
           <Image
             src={Service_3}
             alt="logo"
-            className="h-[35vh] w-auto m-auto"
+            className="h-[27vh] w-auto m-auto min-w-[200px] md:h-[35vh]"
             placeholder="blur"
           />
-          <p className="bg-orange-50 p-4 w-full text-center text-gray-700 font-bold font-serif text-lg mt-4">
+          <p className="bg-orange-50 p-4 w-full text-center text-gray-700 font-bold font-serif text-sm md:text-lg mt-4">
             Packed with Love
           </p>
         </div>
-        <div className="w-full h-full">
+        <div className="h-full">
           <Image
             src={Service_2}
             alt="logo"
-            className="h-[35vh] w-auto m-auto"
+            className="h-[27vh] w-auto m-auto min-w-[200px] md:h-[35vh]"
             placeholder="blur"
           />
-          <p className="bg-orange-50 p-4 w-full text-center text-gray-700 font-bold font-serif text-lg mt-4">
+          <p className="bg-orange-50 p-4 w-full text-center text-gray-700 font-bold font-serif text-sm md:text-lg mt-4">
             Serve hot Appetite
           </p>
         </div>
       </div>
-      <p className="bg-orange-50 p-4 w-full text-center text-gray-700 font-bold font-serif text-4xl mt-4">
+      <p className="bg-orange-50 p-4 w-full text-center text-gray-700 font-bold font-serif text-xl sm:text-4xl mt-4">
         Our Trending Items
       </p>
-      <div className="carousel carousel-center mt-2 h-[42vh] p-[0.5vw] ">
+      <div className="carousel carousel-center mt-2 h-[32vh] sm:h-[42vh] p-[0.5vw] ">
         {carouselItems.map((item, index) => (
           <div className="carousel-item" key={index}>
             <Image
               src={item}
               alt="Pizza"
-              className="h-[40vh] w-[32vw] ml-[0.5vw] mr-[0.5vw] rounded-md"
+              className="h-[30vh] sm:h-[40vh] w-[48.5vw] lg:w-[32vw] ml-[0.5vw] mr-[0.5vw] rounded-md"
               placeholder="blur"
             />
           </div>

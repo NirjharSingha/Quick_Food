@@ -49,7 +49,7 @@ const page = () => {
       );
       if (response.status === 200) {
         const data = response.data;
-        const labels = data.map((item) => item.first.substring(0, 3));
+        const labels = data.map((item) => item.first);
         const values = data.map((item) => item.second);
 
         setPendingOrdersLabel(labels);
@@ -188,7 +188,7 @@ const page = () => {
   }, []);
 
   return (
-    <div className="w-full h-full overflow-y-auto p-3 relative">
+    <div className="w-full h-full overflow-y-auto p-3 relative overflow-x-hidden">
       <div
         className="w-full grid gap-1 p-3 shadow-sm shadow-gray-400 rounded-lg bg-slate-100"
         style={{ gridTemplateColumns: "2.7rem auto 2.7rem" }}
@@ -253,7 +253,7 @@ const page = () => {
               Top sold items of the restaurant
             </p>
           </div>
-          <div className="pl-2 pr-2 mt-8 mb-4 max-w-[75svh] max-h-[75svh] m-auto">
+          <div className="pl-2 pr-2 mt-8 mb-4 max-w-[70svh] max-h-[70svh] m-auto">
             <Doughnut
               allLabels={topSoldItemsLabel}
               allData={topSoldItemsData}
@@ -323,7 +323,7 @@ const page = () => {
               Current pending order status
             </p>
           </div>
-          <div className="pl-2 pr-2 mt-8 mb-8 max-w-[75svh] max-h-[75svh] m-auto">
+          <div className="pl-2 pr-2 mt-8 mb-4 max-w-[70svh] max-h-[70svh] m-auto">
             <BarChart
               allLabels={pendingOrdersLabel}
               allData={pendingOrdersData}

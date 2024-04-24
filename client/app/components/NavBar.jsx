@@ -128,27 +128,48 @@ const NavBar = () => {
         className="navbar h-[4rem] bg-base-100 sticky"
         style={{ backgroundColor: "#d6c5b7" }}
       >
-        <div className="flex items-center ml-4 navbar-start">
+        <div
+          className={`flex items-center ${
+            windowWidth >= 700 ? "ml-4" : windowWidth >= 400 ? "ml" : "ml-0"
+          } navbar-start`}
+        >
           <div className="bg-yellow-50 p-[0.35rem] flex justify-center items-center mr-2 rounded-full border-2 border-solid border-white">
             <Image src={FavIcon} alt="logo" width={30} />
           </div>
-          <div className="flex-1">
-            <a className="btn btn-ghost text-xl text-gray-700 font-bold">
-              QuickFood
-            </a>
-          </div>
+          {windowWidth >= 800 && (
+            <div className="flex-1">
+              <a className="btn btn-ghost text-xl text-gray-700 font-bold">
+                QuickFood
+              </a>
+            </div>
+          )}
         </div>
         {!isLoggedIn && <></>}
         {isLoggedIn && (
-          <div className="navbar-center flex justify-between gap-6 font-semibold font-sans text-gray-700 items-center">
-            <Link href="/" className="cursor-pointer hover:underline">
+          <div
+            className={`navbar-center flex justify-between ${
+              windowWidth > 500
+                ? "gap-6"
+                : windowWidth > 350
+                ? "gap-3"
+                : "gap-2"
+            } font-semibold font-sans text-gray-700 items-center`}
+          >
+            <Link
+              href="/"
+              className={`cursor-pointer hover:underline ${
+                windowWidth < 530 ? "text-[0.8rem]" : ""
+              }`}
+            >
               Home
             </Link>
             {isLoggedIn && role === "USER" && (
               <>
                 <Link
                   href="/orderFood"
-                  className="cursor-pointer hover:underline"
+                  className={`cursor-pointer hover:underline ${
+                    windowWidth < 530 ? "text-[0.8rem]" : ""
+                  }`}
                   onClick={() => {
                     if (!pathname.includes("/orderFood")) {
                       localStorage.removeItem("cart");
@@ -156,13 +177,15 @@ const NavBar = () => {
                     }
                   }}
                 >
-                  Order Food
+                  Order Now
                 </Link>
                 <Link
                   href="/yourRes"
-                  className="cursor-pointer hover:underline"
+                  className={`cursor-pointer hover:underline ${
+                    windowWidth < 530 ? "text-[0.8rem]" : ""
+                  }`}
                 >
-                  Your Restaurants
+                  Your Restaurant
                 </Link>
               </>
             )}
@@ -186,28 +209,33 @@ const NavBar = () => {
             )}
           </div>
         )}
-        <div className="navbar-end">
-          <button className="btn btn-ghost btn-circle">
-            <div className="indicator">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                />
-              </svg>
-              <span className="badge badge-xs badge-primary indicator-item w-[.8rem] h-[.8rem] p-0">
-                {unSeenNotifications > 0 ? unSeenNotifications : ""}
-              </span>
-            </div>
-          </button>
+        <div
+          className="navbar-end"
+          style={windowWidth < 350 ? { width: "35%" } : {}}
+        >
+          {windowWidth >= 550 && (
+            <button className="btn btn-ghost btn-circle">
+              <div className="indicator">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                  />
+                </svg>
+                <span className="badge badge-xs badge-primary indicator-item w-[.8rem] h-[.8rem] p-0">
+                  {unSeenNotifications > 0 ? unSeenNotifications : ""}
+                </span>
+              </div>
+            </button>
+          )}
           <Dropdown
             setShowLogin={setShowLogin}
             setShowSignUp={setShowSignUp}

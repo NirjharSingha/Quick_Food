@@ -87,7 +87,7 @@ export default function RootLayout({ children }) {
           onClick={navigateOrderNow}
         >
           <FaBowlFood className="text-2xl mr-2" />
-          <p className="font-bold truncate">Order Now</p>
+          <p className="font-bold truncate">Order Food</p>
         </div>
         <div
           className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
