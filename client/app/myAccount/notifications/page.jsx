@@ -22,8 +22,12 @@ import { jwtDecode } from "jwt-decode";
 
 const page = ({ className, ...props }) => {
   const [notifications, setNotifications] = useState([]);
-  const { setToastMessage, setIsLoggedIn, setUnSeenNotifications } =
-    useGlobals();
+  const {
+    setToastMessage,
+    setIsLoggedIn,
+    setUnSeenNotifications,
+    windowWidth,
+  } = useGlobals();
   const router = useRouter();
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -97,10 +101,18 @@ const page = ({ className, ...props }) => {
                 }`}
               />
               <div className="space-y-1">
-                <p className="text-md font-medium leading-none mr-2">
+                <p
+                  className={`${
+                    windowWidth > 400 ? "text-md" : "text-sm"
+                  } font-medium leading-none mr-2`}
+                >
                   {notification.description}
                 </p>
-                <p className="text-sm text-muted-foreground text-right mt-1 mr-2">
+                <p
+                  className={`${
+                    windowWidth > 400 ? "text-sm" : "text-[0.8rem]"
+                  } text-muted-foreground text-right mt-1 mr-2`}
+                >
                   {new Date(notification.timestamp).toLocaleString()}
                 </p>
               </div>

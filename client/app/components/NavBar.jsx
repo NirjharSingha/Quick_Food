@@ -14,6 +14,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import { IoMdMenu } from "react-icons/io";
+import Cross from "./Cross";
 
 const NavBar = () => {
   const router = useRouter();
@@ -30,6 +32,8 @@ const NavBar = () => {
     setStompClient,
     unSeenNotifications,
     setUnSeenNotifications,
+    setShowSideBar,
+    showSideBar,
   } = useGlobals();
   const pathname = usePathname();
 
@@ -81,6 +85,11 @@ const NavBar = () => {
 
   useEffect(() => {
     setWindowWidth(window.innerWidth);
+    if (window.innerWidth < 900) {
+      setShowSideBar(false);
+    } else {
+      setShowSideBar(true);
+    }
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
@@ -133,9 +142,18 @@ const NavBar = () => {
             windowWidth >= 700 ? "ml-4" : windowWidth >= 400 ? "ml" : "ml-0"
           } navbar-start`}
         >
-          <div className="bg-yellow-50 p-[0.35rem] flex justify-center items-center mr-2 rounded-full border-2 border-solid border-white">
-            <Image src={FavIcon} alt="logo" width={30} />
-          </div>
+          {windowWidth > 900 || pathname === "/" ? (
+            <div className="bg-yellow-50 p-[0.35rem] flex justify-center items-center mr-2 rounded-full border-2 border-solid border-white">
+              <Image src={FavIcon} alt="logo" width={30} />
+            </div>
+          ) : !showSideBar ? (
+            <IoMdMenu
+              className="text-2xl md:text-3xl text-gray-700 cursor-pointer"
+              onClick={() => setShowSideBar(true)}
+            />
+          ) : (
+            <Cross />
+          )}
           {windowWidth >= 800 && (
             <div className="flex-1">
               <a className="btn btn-ghost text-xl text-gray-700 font-bold">

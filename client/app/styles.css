@@ -1,0 +1,9 @@
+.sideBarAnimation {
+  transform: translateX(-100%);
+  animation: slide-in 1s forwards;
+}
+@keyframes slide-in {
+  to {
+    transform: translateX(0);
+  }
+}

@@ -13,10 +13,13 @@ import Password from "@/app/components/Password";
 export default function RootLayout({ children }) {
   const router = useRouter();
   const {
+    windowWidth,
     setIsLoggedIn,
     profilePercentage,
     setProfilePercentage,
     setToastMessage,
+    showSideBar,
+    sideBarRef,
   } = useGlobals();
   const [selected, setSelected] = useState("Personal info");
 
@@ -65,57 +68,70 @@ export default function RootLayout({ children }) {
       className="w-screen overflow-x-hidden overflow-y-auto flex"
       style={{ height: "calc(100svh - 4rem)" }}
     >
-      <div className="w-[30%] max-w-[20rem] h-full bg-gray-100 shadow-lg shadow-gray-500 mr-1">
+      {(showSideBar || windowWidth > 900) && (
         <div
-          className="mx-auto m-4 rounded-lg bg-gray-300 shadow-md shadow-gray-400 pt-3 pb-3"
-          style={{ width: "calc(100% - 2rem)" }}
+          className={`${
+            windowWidth > 1200 ? "w-[30%]" : "w-[40%]"
+          } max-w-[20rem] h-full bg-gray-100 shadow-lg shadow-gray-500 min-w-[240px] mr-1 ${
+            windowWidth < 900
+              ? showSideBar
+                ? "absolute top-16 left-0 z-10 sideBarAnimation"
+                : "hidden"
+              : ""
+          }`}
+          ref={sideBarRef}
         >
-          <div className="flex justify-center items-center mb-3">
-            <div className="bg-blue-100 p-[0.35rem] flex justify-center items-center mr-2 rounded-full border-2 border-solid border-white w-[2.3rem] h-[2.3rem]">
-              <BsFillPersonFill className="text-xl text-blue-400" />
+          <div
+            className="mx-auto m-4 rounded-lg bg-gray-300 shadow-md shadow-gray-400 pt-3 pb-3"
+            style={{ width: "calc(100% - 2rem)" }}
+          >
+            <div className="flex justify-center items-center mb-3">
+              <div className="bg-blue-100 p-[0.35rem] flex justify-center items-center mr-2 rounded-full border-2 border-solid border-white w-[2.3rem] h-[2.3rem]">
+                <BsFillPersonFill className="text-xl text-blue-400" />
+              </div>
+              <p className="text-center text-gray-600 text-xl font-bold font-sans">
+                My Account
+              </p>
             </div>
-            <p className="text-center text-gray-600 text-xl font-bold font-sans">
-              My Account
+            <div className="w-[90%] mx-auto h-[0.5rem] rounded-xl bg-white">
+              <div
+                className={`h-full w-[${profilePercentage}%] rounded-xl ${
+                  profilePercentage !== 100 ? "rounded-r-none" : ""
+                }`}
+                style={{ backgroundColor: "#1BC4BF" }}
+              ></div>
+            </div>
+            <p className="text-center text-slate-500 mt-2 text-sm font-sans truncate">
+              {profilePercentage !== 0
+                ? `Profile ${profilePercentage}% complete`
+                : "Profile _% complete"}
             </p>
           </div>
-          <div className="w-[90%] mx-auto h-[0.5rem] rounded-xl bg-white">
-            <div
-              className={`h-full w-[${profilePercentage}%] rounded-xl ${
-                profilePercentage !== 100 ? "rounded-r-none" : ""
-              }`}
-              style={{ backgroundColor: "#1BC4BF" }}
-            ></div>
+          <div
+            className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
+              selected === "Personal info"
+                ? "bg-blue-400"
+                : "bg-slate-200 hover:bg-slate-300"
+            } m-4 cursor-pointer items-center`}
+            onClick={navigateToMyAccount}
+          >
+            <BsFillPersonFill className="text-2xl mr-2" />
+            <p className="font-bold truncate">Personal info</p>
           </div>
-          <p className="text-center text-slate-500 mt-2 text-sm font-sans truncate">
-            {profilePercentage !== 0
-              ? `Profile ${profilePercentage}% complete`
-              : "Profile _% complete"}
-          </p>
+          <div
+            className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
+              selected === "Notifications"
+                ? "bg-blue-400"
+                : "bg-slate-200 hover:bg-slate-300"
+            } m-4 cursor-pointer items-center`}
+            onClick={navigateToNotifications}
+          >
+            <IoNotifications className="text-2xl mr-2" />
+            <p className="font-bold truncate">Notifications</p>
+          </div>
+          <Password />
         </div>
-        <div
-          className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
-            selected === "Personal info"
-              ? "bg-blue-400"
-              : "bg-slate-200 hover:bg-slate-300"
-          } m-4 cursor-pointer items-center`}
-          onClick={navigateToMyAccount}
-        >
-          <BsFillPersonFill className="text-2xl mr-2" />
-          <p className="font-bold truncate">Personal info</p>
-        </div>
-        <div
-          className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
-            selected === "Notifications"
-              ? "bg-blue-400"
-              : "bg-slate-200 hover:bg-slate-300"
-          } m-4 cursor-pointer items-center`}
-          onClick={navigateToNotifications}
-        >
-          <IoNotifications className="text-2xl mr-2" />
-          <p className="font-bold truncate">Notifications</p>
-        </div>
-        <Password />
-      </div>
+      )}
       <div
         className="overflow-x-hidden overflow-y-auto flex w-full"
         style={{ height: "calc(100svh - 4rem)" }}

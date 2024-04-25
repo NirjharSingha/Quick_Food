@@ -19,7 +19,7 @@ const SignUp = ({ setShowLogin, setShowSignUp }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const containerRef = useRef(null);
-  const { setIsLoggedIn, setToastMessage, setRole } = useGlobals();
+  const { setIsLoggedIn, setToastMessage, setRole, windowWidth } = useGlobals();
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -98,8 +98,13 @@ const SignUp = ({ setShowLogin, setShowSignUp }) => {
 
   return (
     <form
-      className="p-7 bg-white z-50 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-xl mt-[2rem]"
-      style={{ boxShadow: "-3px 5px 5px rgba(0, 0, 0, 0.3)" }}
+      className={`p-7 bg-white z-50 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-xl overflow-y-auto ${
+        windowWidth > 400 ? "min-w-[25rem]" : "w-[95%] pb-3 pl-3 pr-3"
+      }`}
+      style={{
+        boxShadow: "-3px 5px 5px rgba(0, 0, 0, 0.3)",
+        maxHeight: "calc(100svh)",
+      }}
       ref={containerRef}
       onSubmit={handleSignUp}
     >

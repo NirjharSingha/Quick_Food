@@ -192,15 +192,15 @@ const Page = () => {
                 />
               )}
               {isEdit && (
-                <div className="w-[65%] flex justify-center items-center mb-4 mt-3">
+                <div className="w-[65%] min-w-[220px] flex justify-center items-center mb-4 mt-3">
                   <div
                     onClick={() => fileInputRef.current.click()}
                     className="file-input file-input-bordered file-input-xs w-full max-w-[15rem] flex cursor-pointer"
                   >
-                    <div className="w-[40%] h-full bg-slate-600 text-white flex justify-center items-center">
+                    <div className="w-[44%] h-full bg-slate-600 text-white flex justify-center items-center">
                       Choose image
                     </div>
-                    <div className="w-[60%] h-full text-gray-700 flex justify-center items-center">
+                    <div className="w-[56%] h-full text-gray-700 flex justify-center items-center">
                       {imgStream === "" ? "No image chosen" : "Image chosen"}
                     </div>
                   </div>

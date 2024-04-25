@@ -21,6 +21,8 @@ const GlobalsProvider = ({ children }) => {
   const menuDivRef = useRef(null);
   const [stompClient, setStompClient] = useState(null);
   const [unSeenNotifications, setUnSeenNotifications] = useState(0);
+  const [showSideBar, setShowSideBar] = useState(false);
+  const sideBarRef = useRef(null);
 
   return (
     <GlobalsContext.Provider
@@ -47,6 +49,9 @@ const GlobalsProvider = ({ children }) => {
         setStompClient,
         unSeenNotifications,
         setUnSeenNotifications,
+        showSideBar,
+        setShowSideBar,
+        sideBarRef,
       }}
     >
       {children}

@@ -23,7 +23,7 @@ import { RiLockPasswordFill } from "react-icons/ri";
 const Password = () => {
   const buttonRef = useRef(null);
   const router = useRouter();
-  const { setIsLoggedIn, setToastMessage } = useGlobals();
+  const { setIsLoggedIn, setToastMessage, windowWidth } = useGlobals();
   const [newPass, setNewPass] = useState("");
   const [showNewPass, setShowNewPass] = useState(false);
   const [confirmPass, setConfirmPass] = useState("");
@@ -61,7 +61,12 @@ const Password = () => {
           {warning}
         </p>
         <div className="grid grid-cols-3 mb-3 items-center">
-          <Label htmlFor="accountId" className="text-left text-sm truncate">
+          <Label
+            htmlFor="accountId"
+            className={`text-left ${
+              windowWidth > 450 ? "text-sm" : "text-[0.8rem]"
+            } truncate`}
+          >
             New Password:
           </Label>
           <div className="p-1 flex items-center indent-2 rounded-2xl border-b-2 rounded-b-none col-span-2">
@@ -95,7 +100,9 @@ const Password = () => {
         <div className="grid grid-cols-3 mb-3 items-center">
           <Label
             htmlFor="accountId"
-            className="text-left text-sm truncate col-span-1"
+            className={`text-left ${
+              windowWidth > 450 ? "text-sm" : "text-[0.8rem]"
+            } truncate`}
           >
             Confirm Password:
           </Label>
