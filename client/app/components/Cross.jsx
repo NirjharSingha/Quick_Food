@@ -33,3 +33,5 @@ const Cross = () => {
 };
 
 export default Cross;
+
+// responsive

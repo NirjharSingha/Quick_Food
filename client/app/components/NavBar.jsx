@@ -85,6 +85,7 @@ const NavBar = () => {
 
   useEffect(() => {
     setWindowWidth(window.innerWidth);
+    console.log(window.innerWidth);
     if (window.innerWidth < 900) {
       setShowSideBar(false);
     } else {
@@ -266,3 +267,5 @@ const NavBar = () => {
 };
 
 export default NavBar;
+
+// responsive

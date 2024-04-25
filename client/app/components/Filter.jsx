@@ -58,7 +58,7 @@ const Filter = ({
           <LuListFilter className="text-gray-700 text-lg ml-2" />
         </div>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[450px]">
+      <DialogContent className="sm:max-w-[450px] max-h-[100svh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Filters</DialogTitle>
           <DialogDescription className="mb-2 mt-3">
@@ -184,3 +184,5 @@ const Filter = ({
 };
 
 export default Filter;
+
+// responsive

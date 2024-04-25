@@ -13,7 +13,7 @@ import FavIcon from "@/public/favicon.ico";
 import Image from "next/image";
 
 const page = () => {
-  const { setToastMessage, setIsLoggedIn } = useGlobals();
+  const { setToastMessage, setIsLoggedIn, windowWidth } = useGlobals();
   const router = useRouter();
   const [orderCards, setOrderCards] = useState([]);
   const [showMessage, setShowMessage] = useState(false);
@@ -60,7 +60,21 @@ const page = () => {
           </p>
         </div>
       </div>
-      <div className="p-4 grid grid-cols-3 gap-x-2 gap-y-4">
+      <div
+        className={`p-4 grid ${
+          windowWidth > 1410
+            ? "grid-cols-4"
+            : windowWidth > 1130
+            ? "grid-cols-3"
+            : windowWidth > 900 && windowWidth < 1130
+            ? "grid-cols-2"
+            : windowWidth > 810
+            ? "grid-cols-3"
+            : windowWidth > 550
+            ? "grid-cols-2"
+            : "grid-cols-1"
+        } gap-x-2 gap-y-4`}
+      >
         {orderCards.length !== 0 &&
           orderCards.map((order) => (
             <div key={order.id} className="w-full flex justify-center">
@@ -69,13 +83,13 @@ const page = () => {
           ))}
       </div>
       {showLoading && (
-        <div className="col-span-3">
+        <div className="col-span-4">
           <Loading />
         </div>
       )}
       {showMessage && (
         <p
-          className="text-md col-span-3 font-serif text-gray-700 w-full text-center flex justify-center items-center"
+          className="text-md col-span-4 font-serif text-gray-700 w-full text-center flex justify-center items-center"
           style={{ height: "calc(100svh - 10rem)" }}
         >
           No Orders To Give Rating

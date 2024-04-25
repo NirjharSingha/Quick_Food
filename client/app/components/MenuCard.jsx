@@ -20,7 +20,7 @@ const MenuCard = ({ menu, setMenuList }) => {
   const [quantity, setQuantity] = useState(0);
   const { setCartCount } = useGlobals();
   const cartAlertRef = useRef(null);
-  const { setToastMessage, setIsLoggedIn } = useGlobals();
+  const { setToastMessage, setIsLoggedIn, windowWidth } = useGlobals();
   const [rating, setRating] = useState(0);
   const router = useRouter();
 
@@ -122,7 +122,17 @@ const MenuCard = ({ menu, setMenuList }) => {
 
   return (
     <div
-      className={`w-[26vw] min-w-[18rem] max-w-[21rem] ${
+      className={`${
+        windowWidth > 900 && windowWidth < 1130
+          ? "w-[32vw]"
+          : windowWidth > 810
+          ? "w-[26vw]"
+          : windowWidth > 550
+          ? "w-[40vw]"
+          : windowWidth > 370
+          ? "w-[80vw]"
+          : "w-[90vw]"
+      } min-w-[16rem] max-w-[21rem] ${
         pathname.includes("/yourRes") ? "h-[20rem]" : "h-[18.6rem]"
       } rounded-lg shadow-md bg-base-100 border-2 border-gray-200 hover:border-gray-300 hover:shadow-lg`}
     >
@@ -234,3 +244,5 @@ const MenuCard = ({ menu, setMenuList }) => {
 };
 
 export default MenuCard;
+
+// responsive

@@ -180,3 +180,5 @@ const Password = () => {
 };
 
 export default Password;
+
+// responsive

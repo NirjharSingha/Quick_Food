@@ -135,3 +135,5 @@ export function Dropdown({ setIsUserLogin, setShowLogin, setShowSignUp }) {
     </DropdownMenu>
   );
 }
+
+// responsive

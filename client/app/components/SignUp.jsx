@@ -234,3 +234,5 @@ const SignUp = ({ setShowLogin, setShowSignUp }) => {
 };
 
 export default SignUp;
+
+// responsive

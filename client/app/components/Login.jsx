@@ -201,3 +201,5 @@ const Login = ({ setShowLogin, setShowSignUp, isUserLogin }) => {
 };
 
 export default Login;
+
+// responsive

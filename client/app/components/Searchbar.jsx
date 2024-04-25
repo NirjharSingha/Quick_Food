@@ -50,25 +50,24 @@ const Searchbar = () => {
   return (
     <div ref={containerRef} className="relative">
       <div className="flex w-full">
-        {windowWidth >= 500 && (
-          <>
-            <div className="h-[2rem] w-14 bg-white border-2 border-solid border-gray-500 flex justify-center items-center mt-0.5rem rounded-l-full border-r-0 min-h-[2rem]">
-              <IoSearchOutline className="text-gray-500 text-[1.1rem]" />
-            </div>
-            <input
-              type="text"
-              className="bg-white h-[2rem] border-2 border-solid border-gray-500 rounded-r-full border-l-0 focus:border-gray-500 focus:outline-none min-h-[2rem]"
-              placeholder="Type to search"
-              value={inputValue}
-              onChange={(e) => handleInputChange(e.target.value)}
-            />
-          </>
-        )}
-        {windowWidth < 500 && (
-          <div className="h-[2rem] ml-2 w-[2rem] rounded-full bg-gray-200 flex justify-center items-center mt-0.5rem min-h-[2rem] cursor-pointer">
-            <IoSearchOutline className="text-gray-500 text-[1.1rem]" />
-          </div>
-        )}
+        <div className="h-[2rem] w-14 bg-white border-2 border-solid border-gray-500 flex justify-center items-center mt-0.5rem rounded-l-full border-r-0 min-h-[2rem]">
+          <IoSearchOutline className="text-gray-500 text-[1.1rem]" />
+        </div>
+        <input
+          type="text"
+          className={`bg-white h-[2rem] border-2 border-solid border-gray-500 rounded-r-full border-l-0 focus:border-gray-500 focus:outline-none min-h-[2rem] ${
+            windowWidth < 640
+              ? windowWidth > 530
+                ? "w-[11.7rem] text-[0.8rem]"
+                : windowWidth > 335
+                ? "w-[15.7rem]"
+                : "w-[90%]"
+              : "w-[15.7rem]"
+          }`}
+          placeholder="Search Restaurants"
+          value={inputValue}
+          onChange={(e) => handleInputChange(e.target.value)}
+        />
       </div>
       {showResult && (
         <SearchResult
@@ -83,3 +82,5 @@ const Searchbar = () => {
 };
 
 export default Searchbar;
+
+// responsive

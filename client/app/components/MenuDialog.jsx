@@ -70,7 +70,7 @@ const MenuDialog = ({ isAdd, menu }) => {
           </div>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[450px]">
+      <DialogContent className="sm:max-w-[450px] max-h-[100svh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Menu Item</DialogTitle>
           <DialogDescription className="mb-2 mt-3">
@@ -169,12 +169,12 @@ const MenuDialog = ({ isAdd, menu }) => {
           <Label htmlFor="accountId" className="text-left text-sm truncate">
             Image :
           </Label>
-          <div className="flex items-center indent-2 rounded-2xl border-b-2 rounded-b-none col-span-2">
+          <div className="flex items-center indent-2 rounded-2xl border-b-2 rounded-b-none col-span-2 text-[0.8rem]">
             <input
               type="file"
               name="file"
               id="file"
-              className="file-input file-input-bordered h-[2rem] w-full max-w-xs"
+              className="file-input file-input-bordered h-[2rem] w-full max-w-xs text-[0.8rem]"
               accept="image/*"
               onChange={(e) => {
                 setWarning("");
@@ -283,3 +283,5 @@ const MenuDialog = ({ isAdd, menu }) => {
 };
 
 export default MenuDialog;
+
+// responsive

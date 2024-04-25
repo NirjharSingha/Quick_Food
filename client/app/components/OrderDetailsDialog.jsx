@@ -20,7 +20,7 @@ import Stepper from "./Stepper";
 
 const OrderDetailsDialog = ({ buttonRef, selectedOrder, complaintRef }) => {
   const [orderDetails, setOrderDetails] = useState({});
-  const { setToastMessage, setIsLoggedIn } = useGlobals();
+  const { setToastMessage, setIsLoggedIn, windowWidth } = useGlobals();
   const [tableData, setTableData] = useState([]);
   const [tableQuantity, setTableQuantity] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -120,7 +120,7 @@ const OrderDetailsDialog = ({ buttonRef, selectedOrder, complaintRef }) => {
         </div>
       </DialogTrigger>
       {!loading && (
-        <DialogContent className="sm:max-w-[600px] max-h-[94svh] overflow-y-auto">
+        <DialogContent className="max-w-[600px] max-h-[94svh] overflow-y-auto">
           {pathname.includes("/yourRes") && (
             <div className="flex justify-center items-center mb-3 rounded-lg">
               <Image
@@ -137,14 +137,22 @@ const OrderDetailsDialog = ({ buttonRef, selectedOrder, complaintRef }) => {
           {pathname.includes("/orderFood/orderStatus") && (
             <Stepper step={orderStatus} />
           )}
-          <div className="w-full h-[10.5rem] p-1 shadow-md border-gray-300 border-[0.1px] shadow-gray-300 rounded-xl flex gap-3 mb-3">
+          <div className="w-full h-[10.5rem] p-1 shadow-md border-gray-300 border-[0.1px] shadow-gray-300 rounded-xl flex gap-3 mb-3 min-w-[450px]">
             <img
               src="/foodDelivery.png"
               alt="logo"
-              className="w-[13rem] h-[10rem] rounded-lg"
+              className={`${
+                windowWidth > 480
+                  ? "w-[13rem] h-[10rem]"
+                  : "w-[10rem] h-[8rem] my-auto"
+              } rounded-lg`}
             />
             <div className="h-full flex flex-col justify-center w-full overflow-hidden">
-              <p className="text-xl font-bold text-gray-700 truncate font-sans mb-2">
+              <p
+                className={`${
+                  windowWidth > 650 ? "text-xl" : "text-md"
+                } font-bold text-gray-700 truncate font-sans mb-2`}
+              >
                 {pathname.includes("/yourRes")
                   ? `Customer : ${
                       orderDetails.customerName ? orderDetails.customerName : ""
@@ -155,14 +163,26 @@ const OrderDetailsDialog = ({ buttonRef, selectedOrder, complaintRef }) => {
                         : ""
                     }`}
               </p>
-              <p className="text-xl font-bold text-gray-700 truncate font-sans mb-2">
+              <p
+                className={`${
+                  windowWidth > 650 ? "text-xl" : "text-md"
+                } font-bold text-gray-700 truncate font-sans mb-2`}
+              >
                 Rider : {orderDetails.riderName ? orderDetails.riderName : ""}
               </p>
-              <p className="text-md font-sans text-gray-500">
+              <p
+                className={`${
+                  windowWidth > 650 ? "text-md" : "text-sm"
+                } font-sans text-gray-500`}
+              >
                 Payment :{" "}
                 {orderDetails.paymentMethod === "COD" ? "COD" : "Done"}
               </p>
-              <p className="text-md font-sans text-gray-500 mt-1">
+              <p
+                className={`${
+                  windowWidth > 650 ? "text-md" : "text-sm"
+                } font-sans text-gray-500`}
+              >
                 Order placed :{" "}
                 {new Date(orderDetails.orderPlaced).toLocaleString()}
               </p>
@@ -228,3 +248,5 @@ const OrderDetailsDialog = ({ buttonRef, selectedOrder, complaintRef }) => {
 };
 
 export default OrderDetailsDialog;
+
+// responsive

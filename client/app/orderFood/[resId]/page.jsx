@@ -14,7 +14,7 @@ import Filter from "@/app/components/Filter";
 
 const page = ({ params }) => {
   const { resId } = params;
-  const { setToastMessage, setIsLoggedIn } = useGlobals();
+  const { setToastMessage, setIsLoggedIn, windowWidth } = useGlobals();
   const router = useRouter();
   const [page, setPage] = useState(0);
   const [prevScrollTop, setPrevScrollTop] = useState(0);
@@ -128,7 +128,21 @@ const page = ({ params }) => {
           setRatingFilter={setRatingFilter}
         />
       </div>
-      <div className="p-4 grid grid-cols-3 gap-x-2 gap-y-4">
+      <div
+        className={`p-4 grid ${
+          windowWidth > 1410
+            ? "grid-cols-4"
+            : windowWidth > 1130
+            ? "grid-cols-3"
+            : windowWidth > 900 && windowWidth < 1130
+            ? "grid-cols-2"
+            : windowWidth > 810
+            ? "grid-cols-3"
+            : windowWidth > 550
+            ? "grid-cols-2"
+            : "grid-cols-1"
+        } gap-x-2 gap-y-4`}
+      >
         {menu.length !== 0 &&
           menu.map((menuItem) => (
             <div key={menuItem.id} className="w-full flex justify-center">
