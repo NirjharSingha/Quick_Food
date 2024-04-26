@@ -65,10 +65,12 @@ const LineChart = ({ allLabels, allData }) => {
     <div className="overflow-x-auto">
       <canvas
         ref={chartRef}
-        className="min-h-[60svh] w-[95%] min-w-[500px] max-w-[1000px] mx-auto"
+        className="min-h-[60svh] w-[95%] min-w-[400px] max-w-[800px] mx-auto"
       />
     </div>
   );
 };
 
 export default LineChart;
+
+// responsive

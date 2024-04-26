@@ -191,3 +191,5 @@ const page = ({ className, ...props }) => {
 };
 
 export default page;
+
+// responsive

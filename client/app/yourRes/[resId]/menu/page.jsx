@@ -10,8 +10,14 @@ import { useRouter } from "next/navigation";
 import Loading from "@/app/components/Loading";
 
 const page = () => {
-  const { setToastMessage, setIsLoggedIn, menu, setMenu, menuDivRef } =
-    useGlobals();
+  const {
+    setToastMessage,
+    setIsLoggedIn,
+    menu,
+    setMenu,
+    menuDivRef,
+    windowWidth,
+  } = useGlobals();
   const router = useRouter();
   const [page, setPage] = useState(0);
   const [prevScrollTop, setPrevScrollTop] = useState(0);
@@ -92,7 +98,19 @@ const page = () => {
 
   return (
     <div
-      className="p-4 w-full grid grid-cols-3 gap-x-2 gap-y-4 overflow-y-auto"
+      className={`p-4 w-full grid ${
+        windowWidth > 1410
+          ? "grid-cols-4"
+          : windowWidth > 1130
+          ? "grid-cols-3"
+          : windowWidth > 900 && windowWidth < 1130
+          ? "grid-cols-2"
+          : windowWidth > 810
+          ? "grid-cols-3"
+          : windowWidth > 550
+          ? "grid-cols-2"
+          : "grid-cols-1"
+      } gap-x-2 gap-y-4 overflow-y-auto`}
       ref={menuDivRef}
     >
       {menu.length !== 0 &&
@@ -102,7 +120,7 @@ const page = () => {
           </div>
         ))}
       {showLoading && (
-        <div className="col-span-3">
+        <div className="col-span-4">
           <Loading />
         </div>
       )}
@@ -111,3 +129,5 @@ const page = () => {
 };
 
 export default page;
+
+// responsive

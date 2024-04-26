@@ -350,3 +350,5 @@ const Page = () => {
 };
 
 export default Page;
+
+// responsive

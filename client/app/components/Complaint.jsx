@@ -19,7 +19,7 @@ import { handleUnauthorized } from "../utils/unauthorized";
 const Complaint = ({ buttonRef, orderId, setOrderCards }) => {
   const [warning, setWarning] = useState("");
   const [input, setInput] = useState("");
-  const { setToastMessage, setIsLoggedIn } = useGlobals();
+  const { setToastMessage, setIsLoggedIn, windowWidth } = useGlobals();
   const router = useRouter();
 
   const handler = async (complaint) => {
@@ -66,9 +66,9 @@ const Complaint = ({ buttonRef, orderId, setOrderCards }) => {
           Complaint
         </button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[450px]">
+      <DialogContent className="sm:max-w-[450px] max-h-[100svh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Filters</DialogTitle>
+          <DialogTitle>Complaint</DialogTitle>
           <DialogDescription className="mb-2 mt-3">
             Your order is successfully delivered to you. Do you have any
             complaint regarding our services?
@@ -88,25 +88,30 @@ const Complaint = ({ buttonRef, orderId, setOrderCards }) => {
           }}
         />
         <DialogFooter>
-          <div className="w-full p-2 flex items-center"></div>
-          <Button
-            className="w-[9rem] font-bold bg-white text-gray-700 hover:text-black hover:bg-slate-200 shadow"
-            onClick={async () => handler("")}
+          <div
+            className={`w-full p-2 flex ${
+              windowWidth <= 360 ? "flex-col" : ""
+            } items-center justify-between gap-3`}
           >
-            No Complaint
-          </Button>
-          <Button
-            className="w-[9rem] font-bold"
-            onClick={async () => {
-              if (input === "") {
-                setWarning("Fill your complaint in the input field!");
-                return;
-              }
-              handler(input);
-            }}
-          >
-            Submit Complaint
-          </Button>
+            <Button
+              className="w-[9rem] font-bold bg-white text-gray-700 hover:text-black hover:bg-slate-200 shadow"
+              onClick={async () => handler("")}
+            >
+              No Complaint
+            </Button>
+            <Button
+              className="w-[9rem] font-bold"
+              onClick={async () => {
+                if (input === "") {
+                  setWarning("Fill your complaint in the input field!");
+                  return;
+                }
+                handler(input);
+              }}
+            >
+              Submit Complaint
+            </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -114,3 +119,5 @@ const Complaint = ({ buttonRef, orderId, setOrderCards }) => {
 };
 
 export default Complaint;
+
+// responsive

@@ -20,7 +20,7 @@ import BarChart from "@/app/components/charts/BarChart";
 const page = () => {
   const router = useRouter();
   const [date, setDate] = useState(new Date(Date.now()));
-  const { setIsLoggedIn, setToastMessage } = useGlobals();
+  const { setIsLoggedIn, setToastMessage, windowWidth } = useGlobals();
   const [weeklySaleLabel, setWeeklySaleLabel] = useState([]);
   const [weeklySaleData, setWeeklySaleData] = useState([]);
   const [monthlySaleLabel, setMonthlySaleLabel] = useState([]);
@@ -193,15 +193,31 @@ const page = () => {
         className="w-full grid gap-1 p-3 shadow-sm shadow-gray-400 rounded-lg bg-slate-100"
         style={{ gridTemplateColumns: "2.7rem auto 2.7rem" }}
       >
-        <div className="w-[2.4rem] h-[2.4rem] rounded-full bg-gray-500 flex justify-center items-center my-auto">
-          <MdAttachMoney className="text-3xl text-white" />
+        <div
+          className={`${
+            windowWidth > 460
+              ? "w-[2.4rem] h-[2.4rem]"
+              : "w-[1.8rem] h-[1.8rem]"
+          } rounded-full bg-gray-500 flex justify-center items-center my-auto`}
+        >
+          <MdAttachMoney
+            className={`${
+              windowWidth > 460 ? "text-3xl" : "text-xl"
+            } text-white`}
+          />
         </div>
-        <p className="my-auto font-sans text-gray-700 font-bold text-lg">
+        <p
+          className={`my-auto font-sans text-gray-700 font-bold ${
+            windowWidth > 460 ? "text-lg" : "text-sm"
+          }`}
+        >
           Sale of the restaurant on a week
         </p>
         <div ref={iconRef} className="ml-auto my-auto">
           <FaCalendarDays
-            className="text-3xl text-gray-500 cursor-pointer hover:text-gray-700"
+            className={`${
+              windowWidth > 460 ? "text-3xl" : "text-xl"
+            } text-gray-500 cursor-pointer hover:text-gray-700`}
             onClick={() => setShowCalendar((prev) => !prev)}
           />
         </div>
@@ -219,7 +235,11 @@ const page = () => {
       )}
       <div className="pl-2 pr-2 mt-8 mb-4 w-[90%] m-auto">
         <LineChart allLabels={weeklySaleLabel} allData={weeklySaleData} />
-        <p className="w-full text-center font-serif mt-3 font-bold text-gray-700">
+        <p
+          className={`${
+            windowWidth > 460 ? "" : "text-[0.8rem]"
+          } w-full text-center font-serif mt-3 font-bold text-gray-700`}
+        >
           A line chart of the weekly sale of your restaurant.
         </p>
       </div>
@@ -227,16 +247,34 @@ const page = () => {
         className="w-full grid gap-1 p-3 shadow-sm shadow-gray-400 rounded-lg bg-slate-100 mt-12"
         style={{ gridTemplateColumns: "2.7rem auto" }}
       >
-        <div className="w-[2.4rem] h-[2.4rem] rounded-full bg-gray-500 flex justify-center items-center my-auto">
-          <MdAttachMoney className="text-3xl text-white" />
+        <div
+          className={`${
+            windowWidth > 460
+              ? "w-[2.4rem] h-[2.4rem]"
+              : "w-[1.8rem] h-[1.8rem]"
+          } rounded-full bg-gray-500 flex justify-center items-center my-auto`}
+        >
+          <MdAttachMoney
+            className={`${
+              windowWidth > 460 ? "text-3xl" : "text-xl"
+            } text-white`}
+          />
         </div>
-        <p className="my-auto font-sans text-gray-700 font-bold text-lg">
+        <p
+          className={`my-auto font-sans text-gray-700 font-bold ${
+            windowWidth > 460 ? "text-lg" : "text-sm"
+          }`}
+        >
           Sale of the restaurant over last 6 months
         </p>
       </div>
       <div className="pl-2 pr-2 mt-8 mb-4 w-[90%] m-auto">
         <LineChart allLabels={monthlySaleLabel} allData={monthlySaleData} />
-        <p className="w-full text-center font-serif mt-3 font-bold text-gray-700">
+        <p
+          className={`${
+            windowWidth > 460 ? "" : "text-[0.8rem]"
+          } w-full text-center font-serif mt-3 font-bold text-gray-700`}
+        >
           A line chart of the monthly sale of your restaurant.
         </p>
       </div>
@@ -246,19 +284,43 @@ const page = () => {
             className="w-full grid gap-1 p-3 shadow-sm shadow-gray-400 rounded-lg bg-slate-100 mt-12"
             style={{ gridTemplateColumns: "2.7rem auto" }}
           >
-            <div className="w-[2.4rem] h-[2.4rem] rounded-full bg-gray-500 flex justify-center items-center my-auto">
-              <RiDiscountPercentFill className="text-3xl text-white" />
+            <div
+              className={`${
+                windowWidth > 460
+                  ? "w-[2.4rem] h-[2.4rem]"
+                  : "w-[1.8rem] h-[1.8rem]"
+              } rounded-full bg-gray-500 flex justify-center items-center my-auto`}
+            >
+              <RiDiscountPercentFill
+                className={`${
+                  windowWidth > 460 ? "text-3xl" : "text-xl"
+                } text-white`}
+              />
             </div>
-            <p className="my-auto font-sans text-gray-700 font-bold text-lg">
+            <p
+              className={`my-auto font-sans text-gray-700 font-bold ${
+                windowWidth > 460 ? "text-lg" : "text-sm"
+              }`}
+            >
               Top sold items of the restaurant
             </p>
           </div>
-          <div className="pl-2 pr-2 mt-8 mb-4 max-w-[70svh] max-h-[70svh] m-auto">
+          <div
+            className={`pl-2 pr-2 mt-8 mb-4 ${
+              windowWidth > 400
+                ? "max-w-[500px] max-h-[500px]"
+                : "max-w-[550px] max-h-[550px]"
+            } m-auto`}
+          >
             <Doughnut
               allLabels={topSoldItemsLabel}
               allData={topSoldItemsData}
             />
-            <p className="w-full text-center font-serif mt-3 font-bold text-gray-700">
+            <p
+              className={`${
+                windowWidth > 460 ? "" : "text-[0.8rem]"
+              } w-full text-center font-serif mt-3 font-bold text-gray-700`}
+            >
               A doughnut chart of top sold items
             </p>
           </div>
@@ -268,15 +330,37 @@ const page = () => {
         <>
           <div
             className="w-full grid gap-1 p-3 shadow-sm shadow-gray-400 rounded-lg bg-slate-100 mt-16"
-            style={{ gridTemplateColumns: "2.7rem auto 8rem" }}
+            style={{
+              gridTemplateColumns: `2.7rem auto ${
+                windowWidth > 440 ? "8rem" : "3rem"
+              }`,
+            }}
           >
-            <div className="w-[2.4rem] h-[2.4rem] rounded-full bg-gray-500 flex justify-center items-center my-auto">
-              <PiStarFill className="text-3xl text-white" />
+            <div
+              className={`${
+                windowWidth > 460
+                  ? "w-[2.4rem] h-[2.4rem]"
+                  : "w-[1.8rem] h-[1.8rem]"
+              } rounded-full bg-gray-500 flex justify-center items-center my-auto`}
+            >
+              <PiStarFill
+                className={`${
+                  windowWidth > 460 ? "text-3xl" : "text-xl"
+                } text-white`}
+              />
             </div>
-            <p className="my-auto font-sans text-gray-700 font-bold text-lg">
+            <p
+              className={`my-auto font-sans text-gray-700 font-bold ${
+                windowWidth > 460 ? "text-lg" : "text-sm"
+              }`}
+            >
               Best or worst reviewed items of the restaurant
             </p>
-            <div className="ml-auto my-auto flex items-center space-x-2">
+            <div
+              className={`ml-auto my-auto flex items-center ${
+                windowWidth > 440 ? "space-x-2" : "flex-col space-y-1"
+              }`}
+            >
               <p
                 className={`text-sm ${
                   reviewFlag === "best" ? "text-gray-700" : "text-gray-400"
@@ -304,7 +388,11 @@ const page = () => {
               allLabels={topReviewedItemsLabel}
               allData={topReviewedItemsData}
             />
-            <p className="w-full text-center font-serif mt-3 font-bold text-gray-700">
+            <p
+              className={`${
+                windowWidth > 460 ? "" : "text-[0.8rem]"
+              } w-full text-center font-serif mt-3 font-bold text-gray-700`}
+            >
               A bar chart of the {reviewFlag} reviewed items.
             </p>
           </div>
@@ -316,19 +404,37 @@ const page = () => {
             className="w-full grid gap-1 p-3 shadow-sm shadow-gray-400 rounded-lg bg-slate-100 mt-12"
             style={{ gridTemplateColumns: "2.7rem auto" }}
           >
-            <div className="w-[2.4rem] h-[2.4rem] rounded-full bg-gray-500 flex justify-center items-center my-auto">
-              <MdPending className="text-3xl text-white" />
+            <div
+              className={`${
+                windowWidth > 460
+                  ? "w-[2.4rem] h-[2.4rem]"
+                  : "w-[1.8rem] h-[1.8rem]"
+              } rounded-full bg-gray-500 flex justify-center items-center my-auto`}
+            >
+              <MdPending
+                className={`${
+                  windowWidth > 460 ? "text-3xl" : "text-xl"
+                } text-white`}
+              />
             </div>
-            <p className="my-auto font-sans text-gray-700 font-bold text-lg">
+            <p
+              className={`my-auto font-sans text-gray-700 font-bold ${
+                windowWidth > 460 ? "text-lg" : "text-sm"
+              }`}
+            >
               Current pending order status
             </p>
           </div>
-          <div className="pl-2 pr-2 mt-8 mb-4 max-w-[70svh] max-h-[70svh] m-auto">
+          <div className="pl-2 pr-2 mt-8 mb-4 w-[90%] m-auto">
             <BarChart
               allLabels={pendingOrdersLabel}
               allData={pendingOrdersData}
             />
-            <p className="w-full text-center font-serif mt-3 font-bold text-gray-700">
+            <p
+              className={`${
+                windowWidth > 460 ? "" : "text-[0.8rem]"
+              } w-full text-center font-serif mt-3 font-bold text-gray-700`}
+            >
               A bar chart of current pending orders
             </p>
           </div>
@@ -339,3 +445,5 @@ const page = () => {
 };
 
 export default page;
+
+// responsive

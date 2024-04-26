@@ -34,7 +34,7 @@ export default function RootLayout({ children }) {
         <div
           className={`${
             windowWidth > 1200 ? "w-[30%]" : "w-[40%]"
-          } max-w-[20rem] h-full bg-gray-100 shadow-lg shadow-gray-500 min-w-[240px] mr-1 ${
+          } max-w-[20rem] h-full max-h-full overflow-y-auto bg-gray-100 shadow-lg shadow-gray-500 min-w-[240px] mr-1 ${
             windowWidth < 900
               ? showSideBar
                 ? "absolute top-16 left-0 z-10 sideBarAnimation"
@@ -102,3 +102,5 @@ export default function RootLayout({ children }) {
     </div>
   );
 }
+
+// responsive

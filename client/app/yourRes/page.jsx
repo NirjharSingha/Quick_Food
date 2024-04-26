@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import Loading from "../components/Loading";
 
 const page = () => {
-  const { setToastMessage, setIsLoggedIn } = useGlobals();
+  const { setToastMessage, setIsLoggedIn, windowWidth } = useGlobals();
   const router = useRouter();
   const [restaurants, setRestaurants] = useState([]);
   const [showMessage, setShowMessage] = useState(false);
@@ -47,9 +47,23 @@ const page = () => {
   }, []);
 
   return (
-    <div className="p-4 w-full grid grid-cols-3 gap-x-2 gap-y-4 overflow-y-auto">
+    <div
+      className={`p-4 w-full grid ${
+        windowWidth > 1410
+          ? "grid-cols-4"
+          : windowWidth > 1130
+          ? "grid-cols-3"
+          : windowWidth > 900 && windowWidth < 1130
+          ? "grid-cols-2"
+          : windowWidth > 810
+          ? "grid-cols-3"
+          : windowWidth > 550
+          ? "grid-cols-2"
+          : "grid-cols-1"
+      } gap-x-2 gap-y-4 overflow-y-auto`}
+    >
       {showMessage && (
-        <p className="text-md col-span-3 font-serif text-gray-700 w-full h-full flex justify-center items-center">
+        <p className="text-md col-span-4 font-serif text-gray-700 w-full h-full flex justify-center items-center">
           No Restaurants Found
         </p>
       )}
@@ -60,7 +74,7 @@ const page = () => {
           </div>
         ))}
       {showLoading && (
-        <div className="col-span-3">
+        <div className="col-span-4">
           <Loading />
         </div>
       )}
@@ -69,3 +83,5 @@ const page = () => {
 };
 
 export default page;
+
+// responsive
