@@ -53,7 +53,7 @@ const Stepper = ({ step }) => {
       </div>
       <div className="flex justify-between p-3 pt-0">
         <div
-          className={`flex justify-center items-center rounded-sm w-[6rem] max-w-[20%] h-12 text-sm ${
+          className={`flex justify-center items-center rounded-sm w-[6rem] max-w-[20%] h-12 text-xs sm:text-sm ${
             step >= 0 ? "text-gray-800" : "text-gray-400"
           } text-center`}
         >
@@ -62,7 +62,7 @@ const Stepper = ({ step }) => {
           Placed
         </div>
         <div
-          className={`flex justify-center items-center rounded-sm w-[6rem] max-w-[20%] h-12 text-sm ${
+          className={`flex justify-center items-center rounded-sm w-[6rem] max-w-[20%] h-12 text-xs sm:text-sm ${
             step >= 1 ? "text-gray-800" : "text-gray-400"
           } text-center`}
         >
@@ -71,7 +71,7 @@ const Stepper = ({ step }) => {
           Received
         </div>
         <div
-          className={`flex justify-center items-center rounded-sm w-[6rem] max-w-[20%] h-12 text-sm ${
+          className={`flex justify-center items-center rounded-sm w-[6rem] max-w-[20%] h-12 text-xs sm:text-sm ${
             step >= 2 ? "text-gray-800" : "text-gray-400"
           } text-center`}
         >
@@ -80,7 +80,7 @@ const Stepper = ({ step }) => {
           Notified
         </div>
         <div
-          className={`flex justify-center items-center rounded-sm w-[6rem] max-w-[20%] h-12 text-sm ${
+          className={`flex justify-center items-center rounded-sm w-[6rem] max-w-[20%] h-12 text-xs sm:text-sm ${
             step >= 3 ? "text-gray-800" : "text-gray-400"
           } text-center`}
         >
@@ -94,3 +94,5 @@ const Stepper = ({ step }) => {
 };
 
 export default Stepper;
+
+// responsive

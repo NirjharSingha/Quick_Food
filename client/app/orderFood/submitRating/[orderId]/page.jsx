@@ -23,7 +23,7 @@ import { FaStar } from "react-icons/fa";
 const page = ({ params }) => {
   const { orderId } = params;
   const [showLoading, setShowLoading] = useState(true);
-  const { setToastMessage, setIsLoggedIn } = useGlobals();
+  const { setToastMessage, setIsLoggedIn, windowWidth } = useGlobals();
   const router = useRouter();
   const alertRef = useRef(null);
   const [pageData, setPageData] = useState({});
@@ -86,7 +86,7 @@ const page = ({ params }) => {
       }
     });
     if (!flag) {
-      setToastMessage("Please give rating to atleast one item");
+      setToastMessage("Please give rating to at least one item");
       return;
     }
     const token = localStorage.getItem("token");
@@ -134,7 +134,7 @@ const page = ({ params }) => {
         {!showLoading && (
           <div className="h-full">
             <div
-              className="max-w-[42.5rem] mt-1 rounded-md mx-auto overflow-y-auto shadow-md shadow-gray-400 p-5"
+              className="max-w-[42.5rem] mt-1 rounded-md mx-auto overflow-y-auto shadow-md shadow-gray-400 p-5 pl-1 pr-1 md:pl-5 md:pr-5"
               style={{ height: "calc(100% - 4.75rem)" }}
             >
               <div className="flex justify-center items-center mb-3">
@@ -151,17 +151,16 @@ const page = ({ params }) => {
                       : `data:image/jpeg;base64,${pageData.restaurantPic}`
                   }
                   alt="logo"
-                  className="w-[11.5rem] h-[8.5rem] rounded-lg"
+                  className="w-[11.5rem] max-w-[50%] h-[8.5rem] rounded-lg"
                 />
                 <div className="h-full flex flex-col justify-center w-full overflow-hidden">
-                  <p className="text-2xl font-bold text-gray-700 truncate font-sans mb-2">
+                  <p className="text-lg sm:text-2xl font-bold text-gray-700 truncate font-sans mb-2">
                     {pageData.restaurantName}
                   </p>
-                  <p className="text-md font-sans text-gray-500 truncate">
+                  <p className="text-sm sm:text-base font-sans text-gray-500">
                     Give rating to the food
-                  </p>
-                  <p className="text-md font-sans text-gray-500 truncate">
-                    You ordered from here
+                    {windowWidth > 390 && <br />}
+                    {windowWidth < 390 && " "}you ordered from here
                   </p>
                 </div>
               </div>
@@ -235,3 +234,5 @@ const page = ({ params }) => {
 };
 
 export default page;
+
+// responsive

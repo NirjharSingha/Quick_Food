@@ -70,3 +70,5 @@ const OrderCard = ({ order, buttonRef, setSelectedOrder }) => {
 };
 
 export default OrderCard;
+
+// responsive

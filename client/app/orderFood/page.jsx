@@ -87,7 +87,11 @@ const page = () => {
   return (
     <div className="w-full overflow-y-auto" ref={divRef}>
       {
-        <div className="w-full flex items-center justify-between bg-gray-700 p-2 pl-4 pr-4 min-h-[4rem] shadow-md shadow-gray-400 rounded-bl-md">
+        <div
+          className={`w-full flex items-center justify-between bg-gray-700 p-2 pl-4 pr-4 min-h-[4rem] shadow-md shadow-gray-400 ${
+            windowWidth > 900 ? "rounded-bl-md" : "rounded-none"
+          }`}
+        >
           {windowWidth > 530 && (
             <div className="flex items-center navbar-start">
               <div className="bg-white p-[0.5rem] flex justify-center items-center mr-2 rounded-full border-[1px] border-solid border-gray-500">
@@ -133,3 +137,5 @@ const page = () => {
 };
 
 export default page;
+
+// responsive

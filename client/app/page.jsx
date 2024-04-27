@@ -53,10 +53,10 @@ export default function Home() {
           <p className="w-full text-center text-gray-700 font-bold font-serif text-4xl sm:text-6xl mb-4">
             Quick Food
           </p>
-          <p className="w-full text-center text-gray-700 font-bold font-serif text-xl sm:3xl">
+          <p className="w-full text-center text-gray-700 font-bold font-serif text-xl sm:text-3xl">
             From Order to Door
           </p>
-          <p className="w-full text-center text-gray-700 font-bold font-serif text-xl sm:3xl mb-4">
+          <p className="w-full text-center text-gray-700 font-bold font-serif text-xl sm:text-3xl mb-4">
             in Minutes
           </p>
           <p className="w-full text-center font-serif p-2 pl-4 pr-4 text-gray-700">

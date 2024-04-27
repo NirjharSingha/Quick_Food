@@ -65,13 +65,17 @@ const page = () => {
         orderId={selectedOrder}
         setOrderCards={setOrderCards}
       />
-      <div className="w-full flex items-center justify-between bg-gray-700 p-2 pl-4 pr-4 min-h-[4rem] shadow-md shadow-gray-400 rounded-bl-md">
-        <div className="flex items-center navbar-start">
+      <div
+        className={`w-full flex items-center justify-between bg-gray-700 p-2 pl-4 pr-4 min-h-[4rem] shadow-md shadow-gray-400 ${
+          windowWidth > 900 ? "rounded-bl-md" : "rounded-none"
+        }`}
+      >
+        <div className="flex items-center">
           <div className="bg-white p-[0.5rem] flex justify-center items-center mr-2 rounded-full border-[1px] border-solid border-gray-500">
             <Image src={FavIcon} alt="logo" width={26} />
           </div>
-          <p className="ml-1 text-xl text-white font-bold">
-            Find the Status of Your Orders Here
+          <p className="ml-1 text-base sm:text-xl text-white font-bold">
+            Find Order Status Here
           </p>
         </div>
       </div>
@@ -119,3 +123,5 @@ const page = () => {
 };
 
 export default page;
+
+// responsive

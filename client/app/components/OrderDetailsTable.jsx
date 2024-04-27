@@ -39,9 +39,15 @@ const OrderDetailsTable = ({ data, quantity }) => {
                 className="w-[6.5rem] min-w-[6.5rem] h-[4.5rem] min-h-[4.5rem] rounded-md shadow-md shadow-gray-400"
               />
             </TableCell>
-            <TableCell className="truncate">{cartItem.name}</TableCell>
-            <TableCell className="text-right">{cartItem.price}</TableCell>
-            <TableCell className="text-right">{quantity[index]}</TableCell>
+            <TableCell className="truncate text-xs sm:text-sm">
+              {cartItem.name}
+            </TableCell>
+            <TableCell className="text-right text-xs sm:text-sm">
+              {cartItem.price}
+            </TableCell>
+            <TableCell className="text-right text-sm sm:text-md">
+              {quantity[index]}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -50,3 +56,5 @@ const OrderDetailsTable = ({ data, quantity }) => {
 };
 
 export default OrderDetailsTable;
+
+// responsive
