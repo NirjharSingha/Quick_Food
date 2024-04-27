@@ -2,7 +2,7 @@ import React from "react";
 
 const Stepper = ({ step }) => {
   return (
-    <div className="w-full bg-slate-100 shadow-sm shadow-gray-300 rounded-md mt-3">
+    <div className="w-full bg-slate-100 shadow-sm shadow-gray-300 rounded-md mt-3 min-w-[450px]">
       <div className="flex justify-between items-center pt-3 pl-10 pr-10 pb-1">
         <div
           className={`flex justify-center items-center ${

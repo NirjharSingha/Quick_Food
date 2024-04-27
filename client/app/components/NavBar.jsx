@@ -16,6 +16,7 @@ import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { IoMdMenu } from "react-icons/io";
 import Cross from "./Cross";
+import { handleUnauthorized } from "../utils/unauthorized";
 
 const NavBar = () => {
   const router = useRouter();
@@ -25,6 +26,7 @@ const NavBar = () => {
     setIsLoggedIn,
     isLoggedIn,
     toastMessage,
+    setToastMessage,
     toastRef,
     role,
     setRole,
@@ -40,17 +42,24 @@ const NavBar = () => {
   const getUnseenNotifications = async () => {
     if (localStorage.getItem("token")) {
       const userId = jwtDecode(localStorage.getItem("token")).sub;
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/notification/getUnseenNotificationCount?userId=${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/notification/getUnseenNotificationCount?userId=${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        if (response.status === 200) {
+          setUnSeenNotifications(response.data);
+          console.log(response.data);
         }
-      );
-      if (response.status === 200) {
-        setUnSeenNotifications(response.data);
-        console.log(response.data);
+      } catch (error) {
+        console.log("Error:", error);
+        if (error.response.status === 401) {
+          handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+        }
       }
     }
   };
@@ -211,7 +220,9 @@ const NavBar = () => {
             {isLoggedIn && role === "RIDER" && (
               <Link
                 href="/delivery"
-                className="cursor-pointer hover:underline"
+                className={`cursor-pointer hover:underline ${
+                  windowWidth < 530 ? "text-[0.8rem]" : ""
+                }`}
                 onClick={() => {
                   if (!pathname.includes("/delivery")) {
                     localStorage.removeItem("deliveryStatus");
@@ -222,7 +233,12 @@ const NavBar = () => {
               </Link>
             )}
             {isLoggedIn && role === "ADMIN" && (
-              <Link href="/delivery" className="cursor-pointer hover:underline">
+              <Link
+                href="/delivery"
+                className={`cursor-pointer hover:underline ${
+                  windowWidth < 530 ? "text-[0.8rem]" : ""
+                }`}
+              >
                 Admin Dashboard
               </Link>
             )}

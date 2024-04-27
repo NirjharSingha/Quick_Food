@@ -4,7 +4,10 @@ import loading from "@/app/animations/loading.json";
 
 const Loading = () => {
   return (
-    <Lottie animationData={loading} className="w-[2.5rem] h-[2.5rem] m-auto" />
+    <Lottie
+      animationData={loading}
+      className="w-[2rem] h-[2rem] sm:w-[2.5rem] sm:h-[2.5rem] m-auto"
+    />
   );
 };
 

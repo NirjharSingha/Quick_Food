@@ -15,7 +15,7 @@ import OrderDetailsCard from "../components/OrderDetailsCard";
 
 const page = () => {
   const router = useRouter();
-  const { setToastMessage, setIsLoggedIn } = useGlobals();
+  const { setToastMessage, setIsLoggedIn, windowWidth } = useGlobals();
   const [showMessage, setShowMessage] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
@@ -90,6 +90,7 @@ const page = () => {
       } catch (error) {
         console.log("Error:", error);
         if (error.response.status === 401) {
+          console.log("Unauthorized");
           handleUnauthorized(setIsLoggedIn, setToastMessage, router);
         } else if (error.response.status === 404) {
           setShowMessage(true);
@@ -98,11 +99,7 @@ const page = () => {
       }
     };
 
-    const deliveryStatus = JSON.parse(localStorage.getItem("deliveryStatus"));
-    if (!deliveryStatus) {
-      console.log("No delivery status found");
-      getDeliveryData();
-    }
+    getDeliveryData();
   }, []);
 
   return (
@@ -121,13 +118,24 @@ const page = () => {
         <div div className="w-full overflow-y-auto">
           <DeliveryHeader />
           <div className="flex justify-center items-center mb-4 mt-4">
-            <MdDataset className="mr-2 text-6xl text-gray-700" />
-            <p className="font-serif text-4xl font-bold text-gray-700">
+            <MdDataset
+              className={`mr-2 ${
+                windowWidth > 650 ? "text-6xl" : "text-5xl"
+              } text-gray-700`}
+            />
+            <p
+              className={`font-serif ${
+                windowWidth > 650 ? "text-4xl" : "text-2xl"
+              } font-bold text-gray-700`}
+            >
               Order Details
             </p>
           </div>
-          <OrderDetailsCard orderDetails={orderDetails} />
-          <div className="p-4">
+          <OrderDetailsCard
+            orderDetails={orderDetails}
+            windowWidth={windowWidth}
+          />
+          <div className={`p-4 ${windowWidth > 700 ? "" : "pl-1 pr-1"}`}>
             <OrderDetailsTable data={tableData} quantity={tableQuantity} />
           </div>
         </div>
@@ -137,3 +145,5 @@ const page = () => {
 };
 
 export default page;
+
+// responsive
