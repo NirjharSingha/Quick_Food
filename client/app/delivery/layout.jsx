@@ -55,7 +55,7 @@ export default function RootLayout({ children }) {
                 alt="logo"
                 className="mr-2 rounded-full border-2 border-solid border-white"
               />
-              <p className="text-center text-gray-600 text-xl font-bold font-sans">
+              <p className="text-center text-gray-600 text-lg sm:text-xl font-bold font-sans">
                 Delivery Service
               </p>
             </div>
@@ -64,7 +64,7 @@ export default function RootLayout({ children }) {
               <TbSeparatorVertical className="h-5 w-5 text-gray-600" />
               <div className="w-[35%] h-[2px] bg-gray-600 rounded-full" />
             </div>
-            <p className="text-center text-gray-600 text-sm font-bold font-sans">
+            <p className="text-center text-gray-600 text-xs sm:text-sm font-bold font-sans">
               Delivery info for Rider
             </p>
           </div>
@@ -77,8 +77,10 @@ export default function RootLayout({ children }) {
             } m-4 cursor-pointer items-center`}
             onClick={navigateDelivery}
           >
-            <MdDeliveryDining className="text-2xl mr-2" />
-            <p className="font-bold truncate">Your Delivery</p>
+            <MdDeliveryDining className="text-xl sm:text-2xl mr-2" />
+            <p className="font-bold truncate text-sm sm:text-base">
+              Your Delivery
+            </p>
           </div>
           <div
             className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
@@ -88,8 +90,10 @@ export default function RootLayout({ children }) {
             } m-4 cursor-pointer items-center`}
             onClick={navigateAnalytics}
           >
-            <IoMdAnalytics className="text-xl mr-2" />
-            <p className="font-bold truncate">Performance Analytics</p>
+            <IoMdAnalytics className="text-xl sm:text-2xl mr-2" />
+            <p className="font-bold truncate text-sm sm:text-base">
+              Performance Analytics
+            </p>
           </div>
         </div>
       )}

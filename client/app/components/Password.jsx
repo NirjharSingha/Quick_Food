@@ -46,8 +46,10 @@ const Password = () => {
           ref={buttonRef}
           onClick={resetValue}
         >
-          <RiLockPasswordFill className="text-2xl mr-2" />
-          <p className="font-bold truncate">Update Password</p>
+          <RiLockPasswordFill className="text-xl sm:text-2xl mr-2" />
+          <p className="font-bold truncate text-sm sm:text-base">
+            Update Password
+          </p>
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[450px] max-h-[100svh] overflow-y-auto">

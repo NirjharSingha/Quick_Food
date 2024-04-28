@@ -76,7 +76,7 @@ export default function RootLayout({ children }) {
               <div className="bg-blue-100 p-[0.35rem] flex justify-center items-center mr-2 rounded-full border-2 border-solid border-white w-[2.3rem] h-[2.3rem]">
                 <SiHomeassistantcommunitystore className="text-xl text-blue-400" />
               </div>
-              <p className="text-center text-gray-600 text-xl font-bold font-sans">
+              <p className="text-center text-gray-600 text-lg sm:text-xl font-bold font-sans">
                 Restaurants
               </p>
             </div>
@@ -85,7 +85,7 @@ export default function RootLayout({ children }) {
               <TbSeparatorVertical className="h-5 w-5 text-gray-600" />
               <div className="w-[35%] h-[2px] bg-gray-600 rounded-full" />
             </div>
-            <p className="text-center text-gray-600 text-sm font-bold font-sans">
+            <p className="text-center text-gray-600 text-xs sm:text-sm font-bold font-sans">
               Manage your restaurants here
             </p>
           </div>
@@ -99,8 +99,10 @@ export default function RootLayout({ children }) {
                 } m-4 cursor-pointer items-center`}
                 onClick={navigateYourRestaurants}
               >
-                <FaHome className="text-2xl mr-2" />
-                <p className="font-bold truncate">Your Restaurants</p>
+                <FaHome className="text-xl sm:text-2xl mr-2" />
+                <p className="font-bold truncate text-sm sm:text-base">
+                  Your Restaurants
+                </p>
               </div>
               <div
                 className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
@@ -110,8 +112,10 @@ export default function RootLayout({ children }) {
                 } m-4 cursor-pointer items-center`}
                 onClick={navigateAddNewRestaurant}
               >
-                <IoMdAddCircle className="text-2xl mr-2" />
-                <p className="font-bold truncate">Add New Restaurant</p>
+                <IoMdAddCircle className="text-xl sm:text-2xl mr-2" />
+                <p className="font-bold truncate text-sm sm:text-base">
+                  Add New Restaurant
+                </p>
               </div>
             </>
           ) : (
@@ -128,8 +132,10 @@ export default function RootLayout({ children }) {
                 } m-4 cursor-pointer items-center`}
                 onClick={navigateResById}
               >
-                <FaHome className="text-2xl mr-2" />
-                <p className="font-bold truncate">Restaurant Info</p>
+                <FaHome className="text-xl sm:text-2xl mr-2" />
+                <p className="font-bold truncate text-sm sm:text-base">
+                  Restaurant Info
+                </p>
               </div>
               <div
                 className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
@@ -139,8 +145,10 @@ export default function RootLayout({ children }) {
                 } m-4 cursor-pointer items-center`}
                 onClick={navigateMenu}
               >
-                <BiSolidFoodMenu className="text-2xl mr-2" />
-                <p className="font-bold truncate">Menu Items</p>
+                <BiSolidFoodMenu className="text-xl sm:text-2xl mr-2" />
+                <p className="font-bold truncate text-sm sm:text-base">
+                  Menu Items
+                </p>
               </div>
               <MenuDialog isAdd={true} menu={{}} />
               <div
@@ -151,8 +159,10 @@ export default function RootLayout({ children }) {
                 } m-4 cursor-pointer items-center`}
                 onClick={navigatePendingOrders}
               >
-                <MdPending className="text-2xl mr-2" />
-                <p className="font-bold truncate">Pending Orders</p>
+                <MdPending className="text-xl sm:text-2xl mr-2" />
+                <p className="font-bold truncate text-sm sm:text-base">
+                  Pending Orders
+                </p>
               </div>
               <div
                 className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
@@ -162,8 +172,10 @@ export default function RootLayout({ children }) {
                 } m-4 cursor-pointer items-center`}
                 onClick={navigateAnalytics}
               >
-                <IoMdAnalytics className="text-2xl mr-2" />
-                <p className="font-bold truncate">Analytics</p>
+                <IoMdAnalytics className="text-xl sm:text-2xl mr-2" />
+                <p className="font-bold truncate text-sm sm:text-base">
+                  Analytics
+                </p>
               </div>
             </>
           )}

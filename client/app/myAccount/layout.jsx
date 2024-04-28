@@ -89,7 +89,7 @@ export default function RootLayout({ children }) {
               <div className="bg-blue-100 p-[0.35rem] flex justify-center items-center mr-2 rounded-full border-2 border-solid border-white w-[2.3rem] h-[2.3rem]">
                 <BsFillPersonFill className="text-xl text-blue-400" />
               </div>
-              <p className="text-center text-gray-600 text-xl font-bold font-sans">
+              <p className="text-center text-gray-600 text-lg sm:text-xl font-bold font-sans">
                 My Account
               </p>
             </div>
@@ -115,8 +115,10 @@ export default function RootLayout({ children }) {
             } m-4 cursor-pointer items-center`}
             onClick={navigateToMyAccount}
           >
-            <BsFillPersonFill className="text-2xl mr-2" />
-            <p className="font-bold truncate">Personal info</p>
+            <BsFillPersonFill className="text-xl sm:text-2xl mr-2" />
+            <p className="font-bold truncate text-sm sm:text-base">
+              Personal info
+            </p>
           </div>
           <div
             className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
@@ -126,8 +128,10 @@ export default function RootLayout({ children }) {
             } m-4 cursor-pointer items-center`}
             onClick={navigateToNotifications}
           >
-            <IoNotifications className="text-2xl mr-2" />
-            <p className="font-bold truncate">Notifications</p>
+            <IoNotifications className="text-xl sm:text-2xl mr-2" />
+            <p className="font-bold truncate text-sm sm:text-base">
+              Notifications
+            </p>
           </div>
           <Password />
         </div>

@@ -50,8 +50,10 @@ const MenuDialog = ({ isAdd, menu }) => {
               setImage(null);
             }}
           >
-            <IoMdAddCircle className="text-2xl mr-2" />
-            <p className="font-bold truncate">Add New Menu</p>
+            <IoMdAddCircle className="text-xl sm:text-2xl mr-2" />
+            <p className="font-bold truncate text-sm sm:text-base">
+              Add New Menu
+            </p>
           </div>
         ) : (
           <div
