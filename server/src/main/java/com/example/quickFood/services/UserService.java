@@ -1,10 +1,8 @@
 package com.example.quickFood.services;
 
-import com.example.quickFood.dto.GoogleAuth;
-import com.example.quickFood.dto.LoginDto;
-import com.example.quickFood.dto.SignupDto;
-import com.example.quickFood.dto.UpdateProfileDto;
+import com.example.quickFood.dto.*;
 import com.example.quickFood.models.User;
+import java.util.*;
 import org.springframework.http.ResponseEntity;
 
 public interface UserService {
@@ -19,4 +17,6 @@ public interface UserService {
     ResponseEntity<Integer> profilePercentage(String userId);
 
     ResponseEntity<User> getUser(String userId);
+
+    List<IdNameImgDto> getAllRiders();
 }

@@ -32,4 +32,6 @@ public interface RestaurantService {
     List<Pair<String, Double>> getMonthlyRestaurantSale(String restaurantId);
 
     List<Pair<String, Double>> getPendingOrdersToday(String restaurantId);
+
+    List<IdNameImgDto> getAllRestaurants();
 }

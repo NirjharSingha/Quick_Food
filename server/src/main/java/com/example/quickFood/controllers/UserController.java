@@ -1,5 +1,6 @@
 package com.example.quickFood.controllers;
 
+import com.example.quickFood.dto.IdNameImgDto;
 import com.example.quickFood.dto.LoginDto;
 import com.example.quickFood.dto.UpdateProfileDto;
 import com.example.quickFood.models.User;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -52,5 +54,10 @@ public class UserController {
     @GetMapping("/getUser")
     public ResponseEntity<User> getUser(@RequestParam String userId) {
         return userService.getUser(userId);
+    }
+
+    @GetMapping("/getAllRiders")
+    public ResponseEntity<List<IdNameImgDto>> getAllRiders() {
+        return ResponseEntity.ok(userService.getAllRiders());
     }
 }

@@ -234,7 +234,7 @@ const NavBar = () => {
             )}
             {isLoggedIn && role === "ADMIN" && (
               <Link
-                href="/delivery"
+                href="/admin"
                 className={`cursor-pointer hover:underline ${
                   windowWidth < 530 ? "text-[0.8rem]" : ""
                 }`}

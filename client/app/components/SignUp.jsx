@@ -9,8 +9,9 @@ import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { useGlobals } from "../contexts/Globals";
 import { jwtDecode } from "jwt-decode";
+import { usePathname } from "next/navigation";
 
-const SignUp = ({ setShowLogin, setShowSignUp }) => {
+const SignUp = ({ setShowLogin, setShowSignUp, setRiders }) => {
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [warning, setWarning] = useState("");
@@ -20,6 +21,7 @@ const SignUp = ({ setShowLogin, setShowSignUp }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const containerRef = useRef(null);
   const { setIsLoggedIn, setToastMessage, setRole, windowWidth } = useGlobals();
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -50,7 +52,7 @@ const SignUp = ({ setShowLogin, setShowSignUp }) => {
       id: id,
       name: username,
       password: password,
-      role: "USER",
+      role: !pathname.includes("/admin/riders") ? "USER" : "RIDER",
     };
     try {
       const response = await axios.post(
@@ -58,6 +60,14 @@ const SignUp = ({ setShowLogin, setShowSignUp }) => {
         postData
       );
       if (response.status == 200) {
+        if (pathname.includes("/admin/riders")) {
+          setToastMessage("Rider added successfully");
+          setShowSignUp(false);
+          setRiders((prev) => {
+            return [...prev, { id: id, name: username, image: null }];
+          });
+          return;
+        }
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("isLoggedIn", true);
         setIsLoggedIn(true);
@@ -117,12 +127,16 @@ const SignUp = ({ setShowLogin, setShowSignUp }) => {
       </button>
       <div className="flex justify-center items-center mb-3 mt-2">
         <BsFillPersonFill className="mr-2 text-3xl text-gray-700" />
-        <p className="font-serif text-2xl font-bold text-gray-700">Sign up</p>
+        <p className="font-serif text-2xl font-bold text-gray-700">
+          {!pathname.includes("/admin/riders") ? "Sign up" : "Add Rider"}
+        </p>
       </div>
       <input
-        type="email"
+        type={!pathname.includes("/admin/riders") ? "email" : "text"}
         className="indent-2 rounded-b-none border-b-2 rounded-2xl w-full mb-4 outline-none p-1 font-sans cursor-pointer bg-white"
-        placeholder="Enter email"
+        placeholder={
+          !pathname.includes("/admin/riders") ? "Enter email" : "Enter rider Id"
+        }
         required={true}
         value={id}
         onChange={(e) => {
@@ -133,7 +147,11 @@ const SignUp = ({ setShowLogin, setShowSignUp }) => {
       <input
         type="text"
         className="indent-2 rounded-b-none border-b-2 rounded-2xl w-full mb-4 outline-none p-1 font-sans cursor-pointer bg-white"
-        placeholder="Enter username"
+        placeholder={
+          !pathname.includes("/admin/riders")
+            ? "Enter username"
+            : "Enter rider name"
+        }
         value={username}
         required={true}
         onChange={(e) => {
@@ -195,40 +213,46 @@ const SignUp = ({ setShowLogin, setShowSignUp }) => {
           />
         )}
       </div>
-      <p className="font-sans text-sm text-red-600 w-full text-center mt-2">
+      <p className="font-sans text-sm text-red-600 w-full text-center mt-5">
         {warning}
       </p>
       <button
         type="submit"
         className="w-full h-8 bg-gray-300 font-sans font-bold mt-2 rounded-2xl hover:bg-gray-500"
       >
-        Sign up
+        {!pathname.includes("/admin/riders") ? "Sign up" : "Add Rider"}
       </button>
-      <div className="font-sans text-sm w-full text-center mt-3 text-gray-700">
-        Already have an account?
-        <span
-          className="font-bold ml-1 hover:underline cursor-pointer text-gray-700"
-          onClick={() => {
-            setShowSignUp(false);
-            setShowLogin(true);
-          }}
-        >
-          Log in
-        </span>
-      </div>
-      <div className="mt-4 w-full flex justify-center items-center">
-        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_OAUTH_CLIENT_ID}>
-          <GoogleLogin
-            onSuccess={(credentialResponse) => {
-              const details = jwtDecode(credentialResponse.credential);
-              handleGoogleAuth(details);
+      {!pathname.includes("/admin/riders") && (
+        <div className="font-sans text-sm w-full text-center mt-3 text-gray-700">
+          Already have an account?
+          <span
+            className="font-bold ml-1 hover:underline cursor-pointer text-gray-700"
+            onClick={() => {
+              setShowSignUp(false);
+              setShowLogin(true);
             }}
-            onError={() => {
-              console.log("Login Failed");
-            }}
-          />
-        </GoogleOAuthProvider>
-      </div>
+          >
+            Log in
+          </span>
+        </div>
+      )}
+      {!pathname.includes("/admin/riders") && (
+        <div className="mt-4 w-full flex justify-center items-center">
+          <GoogleOAuthProvider
+            clientId={process.env.NEXT_PUBLIC_OAUTH_CLIENT_ID}
+          >
+            <GoogleLogin
+              onSuccess={(credentialResponse) => {
+                const details = jwtDecode(credentialResponse.credential);
+                handleGoogleAuth(details);
+              }}
+              onError={() => {
+                console.log("Login Failed");
+              }}
+            />
+          </GoogleOAuthProvider>
+        </div>
+      )}
     </form>
   );
 };

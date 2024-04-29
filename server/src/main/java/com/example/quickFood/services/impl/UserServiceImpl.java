@@ -1,14 +1,12 @@
 package com.example.quickFood.services.impl;
 
-import com.example.quickFood.dto.GoogleAuth;
-import com.example.quickFood.dto.LoginDto;
-import com.example.quickFood.dto.SignupDto;
-import com.example.quickFood.dto.UpdateProfileDto;
+import com.example.quickFood.dto.*;
 import com.example.quickFood.enums.Role;
 import com.example.quickFood.models.User;
 import com.example.quickFood.repositories.UserRepository;
 import com.example.quickFood.services.UserService;
 import lombok.RequiredArgsConstructor;
+import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -129,6 +127,11 @@ public class UserServiceImpl implements UserService {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @Override
+    public List<IdNameImgDto> getAllRiders() {
+        return userRepository.findAllRiders();
     }
 
 }

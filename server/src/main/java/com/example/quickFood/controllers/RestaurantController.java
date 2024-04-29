@@ -103,4 +103,9 @@ public class RestaurantController {
     public ResponseEntity<List<Pair<String, Double>>> getPendingOrdersToday(@RequestParam("restaurantId") String restaurantId) {
         return ResponseEntity.ok(restaurantService.getPendingOrdersToday(restaurantId));
     }
+
+    @GetMapping("/getAllRestaurants")
+    public ResponseEntity<List<IdNameImgDto>> getAllRestaurants() {
+        return ResponseEntity.ok(restaurantService.getAllRestaurants());
+    }
 }

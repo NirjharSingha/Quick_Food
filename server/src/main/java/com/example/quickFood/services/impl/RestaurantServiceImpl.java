@@ -238,4 +238,9 @@ public class RestaurantServiceImpl implements RestaurantService {
             return Arrays.asList(Pair.of("Prepared", preparedOrders), Pair.of("Unprepared", unPreparedOrders));
         }
     }
+
+    @Override
+    public List<IdNameImgDto> getAllRestaurants() {
+        return restaurantRepository.getAllRestaurants();
+    }
 }
