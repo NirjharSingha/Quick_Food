@@ -51,4 +51,20 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, String> 
 
     @Query("SELECT NEW com.example.quickFood.dto.IdNameImgDto(r.id, r.name, r.image) FROM Restaurant r")
     List<IdNameImgDto> getAllRestaurants();
+
+    @Query("SELECT SUM(o.price) FROM Order o " +
+            "WHERE o.orderPlaced BETWEEN :startOfDay AND :endOfDay")
+    Double getSale(@Param("startOfDay") Timestamp startOfDay,
+                   @Param("endOfDay") Timestamp endOfDay);
+
+    @Query("SELECT NEW org.springframework.data.util.Pair(o.restaurant.name, SUM(o.price)) FROM Order o " +
+            "GROUP BY o.restaurant.name " +
+            "ORDER BY SUM(o.price) DESC")
+    List<Pair<String, Double>> topSellingRestaurants();
+
+    @Query("SELECT NEW org.springframework.data.util.Pair(r.menu.restaurant.name, AVG(r.rating)) " +
+            "FROM Review r " +
+            "GROUP BY r.menu.restaurant.name " +
+            "ORDER BY AVG(r.rating) DESC")
+    List<Pair<String, Double>> topReviewedRestaurants();
 }

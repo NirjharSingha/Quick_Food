@@ -12,6 +12,7 @@ import { MdDataset } from "react-icons/md";
 import DeliveryHeader from "../components/DeliveryHeader";
 import OrderDetailsTable from "../components/OrderDetailsTable";
 import OrderDetailsCard from "../components/OrderDetailsCard";
+import StackedBarChart from "../components/charts/StackedBarChart";
 
 const page = () => {
   const router = useRouter();
@@ -25,7 +26,17 @@ const page = () => {
           <Loading />
         </div>
       )}
-      {!showLoading && <div div className="w-full overflow-y-auto"></div>}
+      {!showLoading && (
+        <div div className="w-full overflow-y-auto">
+          <StackedBarChart
+            allLabels={["sat", "sun", "mon"]}
+            noIssue={[1, 2, 3]}
+            lateDelivery={[4, 5, 6]}
+            complaint={[7, 8, 9]}
+            both={[10, 11, 12]}
+          />
+        </div>
+      )}
     </>
   );
 };
