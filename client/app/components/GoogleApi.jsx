@@ -1,132 +1,178 @@
 "use client";
-import { useRef, useState, useEffect } from "react";
+
+import React, { useEffect, useState, useRef } from "react";
 import {
   GoogleMap,
-  useLoadScript,
+  LoadScript,
+  Autocomplete,
   Marker,
-  DirectionsService,
-  DirectionsRenderer,
 } from "@react-google-maps/api";
 
-const center = { lat: 23.7270478, lng: 90.4031032 };
+const DeliveryAddress = () => {
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [locationType, setLocationType] = useState(""); // Default to 'currentLocation'
+  const autocompleteRef = useRef(null);
 
-export default function GoogleApi({ setPlace }) {
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_MAP_API_KEY,
-    libraries: ["places"],
-  });
+  // Handler for when the user selects a place from the autocomplete suggestions
+  const onPlaceSelected = () => {
+    const place = autocompleteRef.current.getPlace(); // Access the place object from the Autocomplete component
+    console.log("Place selected:", place);
 
-  const [map, setMap] = useState(null);
-  const [location, setLocation] = useState("");
-  const [sourceMarker, setSourceMarker] = useState(null);
-  const [destinationMarker, setDestinationMarker] = useState(null);
-  const [directions, setDirections] = useState(null);
-  const originRef = useRef();
+    if (!place.geometry) {
+      console.error("Place does not have geometry");
+      return;
+    }
 
-  const getUserLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setSourceMarker({ lat: latitude, lng: longitude });
-          center.lat = latitude;
-          center.lng = longitude;
-          console.log("User location:", latitude, longitude);
-          // Set the source location here
-          calculateRoute({ lat: latitude, lng: longitude }, dummyDestination);
-        },
-        (error) => {
-          console.error("Error getting user location:", error);
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser");
+    const newLocation = {
+      latitude: place.geometry.location.lat(),
+      longitude: place.geometry.location.lng(),
+      address: place.formatted_address,
+    };
+
+    if (locationType === "searchLocation") {
+      setSelectedLocation(newLocation);
     }
   };
 
   useEffect(() => {
-    getUserLocation();
+    setTimeout(() => {
+      setLocationType("currentLocation");
+    }, 1000);
   }, []);
 
-  const dummyDestination = { lat: 23.728097, lng: 90.392567 };
+  // Handler for radio button change
+  const handleLocationTypeChange = () => {
+    if (locationType === "currentLocation") {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            // Create a LatLng object from the coordinates
+            const latLng = new google.maps.LatLng(latitude, longitude);
 
-  const calculateRoute = (origin, destination) => {
-    if (window.google && window.google.maps) {
-      const directionsService = new window.google.maps.DirectionsService();
-      directionsService.route(
-        {
-          origin,
-          destination,
-          travelMode: window.google.maps.TravelMode.DRIVING,
-        },
-        (result, status) => {
-          if (status === window.google.maps.DirectionsStatus.OK) {
-            setDirections(result);
-          } else {
-            console.error("Error fetching directions:", status);
+            // Initialize a Geocoder object
+            const geocoder = new google.maps.Geocoder();
+
+            // Perform reverse geocoding to get the formatted address
+            geocoder.geocode({ location: latLng }, (results, status) => {
+              if (status === "OK") {
+                if (results[0]) {
+                  // Extract the formatted address from the first result
+                  const formattedAddress = results[0].formatted_address;
+                  // Set the selected location state with latitude, longitude, and formatted address
+                  setSelectedLocation({
+                    latitude,
+                    longitude,
+                    address: formattedAddress,
+                  });
+                } else {
+                  console.error("No results found");
+                }
+              } else {
+                console.error("Geocoder failed due to: " + status);
+              }
+            });
+          },
+          (error) => {
+            console.error("Error getting user location:", error);
           }
-        }
-      );
-    } else {
-      console.error("Google Maps API not loaded");
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser");
+      }
     }
   };
 
-  const handleMarkerDragEnd = (markerType, event) => {
-    const newMarkerPosition = {
-      lat: event.latLng.lat(),
-      lng: event.latLng.lng(),
-    };
-
-    if (markerType === "source") {
-      setSourceMarker(newMarkerPosition);
-    } else if (markerType === "destination") {
-      setDestinationMarker(newMarkerPosition);
-    }
-
-    if (sourceMarker && destinationMarker) {
-      calculateRoute(sourceMarker, destinationMarker);
-    }
-  };
+  useEffect(() => {
+    handleLocationTypeChange();
+  }, [locationType]);
 
   return (
-    <div className="w-full h-[80svh]">
-      <div className="w-full h-full m-auto rounded-md overflow-hidden">
-        {isLoaded && (
-          <GoogleMap
-            center={center}
-            zoom={15}
-            mapContainerStyle={{ width: "100%", height: "100%" }}
-            options={{
-              mapTypeControl: false,
-              fullscreenControl: false,
-              zoomControl: false,
-            }}
-            onLoad={(map) => setMap(map)}
-          >
-            {sourceMarker && (
-              <Marker
-                position={sourceMarker}
-                draggable={true}
-                onDragEnd={(event) => handleMarkerDragEnd("source", event)}
-              />
-            )}
-            {destinationMarker && (
-              <Marker
-                position={destinationMarker}
-                draggable={true}
-                onDragEnd={(event) => handleMarkerDragEnd("destination", event)}
-              />
-            )}
-            {directions && (
-              <DirectionsRenderer
-                directions={directions}
-                options={{ suppressMarkers: true }}
-              />
-            )}
-          </GoogleMap>
-        )}
+    <div>
+      {/* Radio buttons for selecting the method */}
+      <div className="flex items-center p-2 justify-center gap-x-8 font-sans">
+        <div className="flex items-center">
+          <input
+            type="radio"
+            id="currentLocation"
+            name="locationType"
+            value="currentLocation"
+            className="cursor-pointer"
+            checked={locationType === "currentLocation"}
+            onChange={(e) => setLocationType(e.target.value)}
+          />
+          <label htmlFor="currentLocation">Use Current Location</label>
+        </div>
+        <div className="flex items-center">
+          <input
+            type="radio"
+            id="searchLocation"
+            name="locationType"
+            value="searchLocation"
+            className="cursor-pointer"
+            checked={locationType === "searchLocation"}
+            onChange={(e) => setLocationType(e.target.value)}
+          />
+          <label htmlFor="searchLocation">Search Location</label>
+        </div>
       </div>
+
+      {locationType === "searchLocation" && (
+        <div className="w-full flex justify-center items-center">
+          <Autocomplete
+            onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)} // Save Autocomplete instance to ref
+            onPlaceChanged={onPlaceSelected}
+          >
+            <input
+              type="text"
+              placeholder="Enter Your Location"
+              className="w-full mx-auto rounded-full border py-3 px-6 mt-3 mb-6 max-w-[300px] text-base text-body-color placeholder-body-color shadow-one outline-none focus:border-primary focus-visible:shadow-none"
+            />
+          </Autocomplete>
+        </div>
+      )}
+      {/* Google Maps with Autocomplete */}
+      <LoadScript
+        googleMapsApiKey={process.env.NEXT_PUBLIC_MAP_API_KEY}
+        libraries={["places"]} // Specify the "places" library
+      >
+        <GoogleMap
+          center={
+            selectedLocation
+              ? {
+                  lat: selectedLocation.latitude,
+                  lng: selectedLocation.longitude,
+                }
+              : { lat: 0, lng: 0 }
+          }
+          zoom={selectedLocation ? 15 : 1}
+          mapContainerStyle={{
+            height: "500px",
+            width: "100%",
+            minHeight: "calc(100% - 8rem)",
+          }}
+        >
+          {selectedLocation && (
+            <Marker
+              position={{
+                lat: selectedLocation.latitude,
+                lng: selectedLocation.longitude,
+              }}
+            />
+          )}
+        </GoogleMap>
+      </LoadScript>
+
+      {/* Display selected location */}
+      {selectedLocation && (
+        <div className="text-right mt-4 mb-3 font-sans p-3 text-sm">
+          <p>Latitude: {selectedLocation.latitude}</p>
+          <p>Longitude: {selectedLocation.longitude}</p>
+          <p>Address: {selectedLocation.address}</p>
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default DeliveryAddress;

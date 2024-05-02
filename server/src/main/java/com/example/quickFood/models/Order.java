@@ -47,4 +47,7 @@ public class Order {
     @Lob
     @Column(length = 1024)
     private String complain;
+
+    private double latitude;
+    private double longitude;
 }

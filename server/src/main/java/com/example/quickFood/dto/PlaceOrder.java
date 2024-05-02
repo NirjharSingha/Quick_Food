@@ -20,4 +20,6 @@ public class PlaceOrder {
     private double price;
     private PaymentMethod paymentMethod;
     private List<OrderQuantity> orderQuantities;
+    private double latitude;
+    private double longitude;
 }

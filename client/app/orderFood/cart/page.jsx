@@ -25,55 +25,59 @@ const page = () => {
   const [alertTitle, setAlertTitle] = useState("");
 
   const handlePlaceOrder = async () => {
-    let dataToSend = [];
-    let cart = JSON.parse(localStorage.getItem("cart"));
-    const selectedMenu = cart.selectedMenu;
-
-    selectedMenu.forEach((menu) => {
-      dataToSend.push({
-        id: menu.selectedMenuId,
-        quantity: menu.selectedMenuQuantity,
-      });
-    });
-
-    const placeOrderData = {
-      userId: jwtDecode(localStorage.getItem("token")).sub,
-      restaurantId: cart.restaurantId,
-      deliveryAddress: "",
-      deliveryTime: 30,
-      paymentMethod: "COD",
-      price: total,
-      deliveryFee: total * 0.1,
-      orderQuantities: dataToSend,
-    };
-
-    const token = localStorage.getItem("token");
-    try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/order/placeOrder`,
-        placeOrderData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.status === 200) {
-        localStorage.removeItem("cart");
-        setCartCount(0);
-        router.push("/orderFood");
-        setToastMessage("Order Placed Successfully");
-      }
-    } catch (error) {
-      if (error.response.status === 400) {
-        setAlertTitle(error.response.data);
-        alertRef.current.click();
-      }
-      if (error.response.status === 401) {
-        handleUnauthorized(setIsLoggedIn, setToastMessage, router);
-      }
-    }
+    router.push("/orderFood/cart/deliveryAddress");
   };
+
+  // const handlePlaceOrder = async () => {
+  //   let dataToSend = [];
+  //   let cart = JSON.parse(localStorage.getItem("cart"));
+  //   const selectedMenu = cart.selectedMenu;
+
+  //   selectedMenu.forEach((menu) => {
+  //     dataToSend.push({
+  //       id: menu.selectedMenuId,
+  //       quantity: menu.selectedMenuQuantity,
+  //     });
+  //   });
+
+  //   const placeOrderData = {
+  //     userId: jwtDecode(localStorage.getItem("token")).sub,
+  //     restaurantId: cart.restaurantId,
+  //     deliveryAddress: "",
+  //     deliveryTime: 30,
+  //     paymentMethod: "COD",
+  //     price: total,
+  //     deliveryFee: total * 0.1,
+  //     orderQuantities: dataToSend,
+  //   };
+
+  //   const token = localStorage.getItem("token");
+  //   try {
+  //     const response = await axios.post(
+  //       `${process.env.NEXT_PUBLIC_SERVER_URL}/order/placeOrder`,
+  //       placeOrderData,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     if (response.status === 200) {
+  //       localStorage.removeItem("cart");
+  //       setCartCount(0);
+  //       router.push("/orderFood");
+  //       setToastMessage("Order Placed Successfully");
+  //     }
+  //   } catch (error) {
+  //     if (error.response.status === 400) {
+  //       setAlertTitle(error.response.data);
+  //       alertRef.current.click();
+  //     }
+  //     if (error.response.status === 401) {
+  //       handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+  //     }
+  //   }
+  // };
 
   useEffect(() => {
     const getCart = async () => {
@@ -111,6 +115,8 @@ const page = () => {
                   tempTotal += menu.price * tempQuantity[index];
                 });
                 setTotal(tempTotal);
+                cart = { ...cart, total: tempTotal };
+                localStorage.setItem("cart", JSON.stringify(cart));
               }
             }
           } catch (error) {
@@ -158,7 +164,7 @@ const page = () => {
           No Items in Cart
         </p>
       )}
-      <Alert
+      {/* <Alert
         buttonRef={alertRef}
         title={alertTitle}
         message={`Sorry, we are unable to place your order because of ${alertTitle.toLowerCase()}. Please try again later.`}
@@ -169,7 +175,7 @@ const page = () => {
           router.push(`/orderFood`);
         }}
         flag={true}
-      />
+      /> */}
       {!showMessage && (
         <div className="bg-slate-100 h-full w-full">
           {showLoading && (

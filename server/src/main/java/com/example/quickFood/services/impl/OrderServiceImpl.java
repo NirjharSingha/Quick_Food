@@ -88,6 +88,8 @@ public class OrderServiceImpl implements OrderService {
                 .deliveryTime(placeOrder.getDeliveryTime())
                 .paymentMethod(placeOrder.getPaymentMethod())
                 .orderPlaced(new Timestamp(System.currentTimeMillis()))
+                .latitude(placeOrder.getLatitude())
+                .longitude(placeOrder.getLongitude())
                 .build();
 
         Order savedOrder = orderRepository.save(order);

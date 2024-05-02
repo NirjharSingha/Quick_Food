@@ -2,7 +2,9 @@ package com.example.quickFood.services.impl;
 
 import com.example.quickFood.dto.*;
 import com.example.quickFood.enums.Role;
+import com.example.quickFood.models.RiderStatus;
 import com.example.quickFood.models.User;
+import com.example.quickFood.repositories.RiderStatusRepository;
 import com.example.quickFood.repositories.UserRepository;
 import com.example.quickFood.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     @Autowired
     private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private final RiderStatusRepository riderStatusRepository;
 
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
@@ -45,6 +49,10 @@ public class UserServiceImpl implements UserService {
         User user = new User(signupDto.getId(), signupDto.getName(), signupDto.getPassword(), signupDto.getRole(), null,
                 null, new Timestamp(System.currentTimeMillis()), null);
         userRepository.save(user);
+
+        if (signupDto.getRole() == Role.RIDER) {
+            riderStatusRepository.save(new RiderStatus(signupDto.getId(), true));
+        }
     }
 
     @Override
