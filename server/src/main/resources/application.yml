@@ -9,7 +9,7 @@ spring:
     datasource:
         url: jdbc:mysql://localhost:3306/Quick_Food_Database
         username: root
-        password: 20NS01
+        password: Hello$
         driver-class-name: com.mysql.cj.jdbc.Driver
     jpa:
         hibernate:
