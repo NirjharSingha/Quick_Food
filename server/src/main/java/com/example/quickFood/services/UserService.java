@@ -3,6 +3,8 @@ package com.example.quickFood.services;
 import com.example.quickFood.dto.*;
 import com.example.quickFood.models.User;
 import java.util.*;
+
+import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 
 public interface UserService {
@@ -24,7 +26,5 @@ public interface UserService {
 
     List<DeliveryAnalytics> getMonthlyDeliveryStatus(String riderId);
 
-
-
-
+    List<Pair<String, Integer>> allDelivery(String riderId);
 }

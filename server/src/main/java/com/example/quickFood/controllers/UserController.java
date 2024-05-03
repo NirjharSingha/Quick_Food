@@ -1,11 +1,13 @@
 package com.example.quickFood.controllers;
 
+import com.example.quickFood.dto.DeliveryAnalytics;
 import com.example.quickFood.dto.IdNameImgDto;
 import com.example.quickFood.dto.LoginDto;
 import com.example.quickFood.dto.UpdateProfileDto;
 import com.example.quickFood.models.User;
 import com.example.quickFood.services.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -59,5 +61,20 @@ public class UserController {
     @GetMapping("/getAllRiders")
     public ResponseEntity<List<IdNameImgDto>> getAllRiders() {
         return ResponseEntity.ok(userService.getAllRiders());
+    }
+
+    @GetMapping("/monthlyDeliveryStatus")
+    public ResponseEntity<List<DeliveryAnalytics>> monthlyDeliveryStatus(@RequestParam String riderId) {
+        return ResponseEntity.ok(userService.getMonthlyDeliveryStatus(riderId));
+    }
+
+    @GetMapping("/weeklyDeliveryStatus")
+    public ResponseEntity<List<DeliveryAnalytics>> weeklyDeliveryStatus(@RequestParam String timestampString, @RequestParam String riderId) {
+        return ResponseEntity.ok(userService.getWeeklyDeliveryStatus(riderId, timestampString));
+    }
+
+    @GetMapping("/allDelivery")
+    public ResponseEntity<List<Pair<String, Integer>>> allDelivery(@RequestParam String riderId) {
+        return ResponseEntity.ok(userService.allDelivery(riderId));
     }
 }

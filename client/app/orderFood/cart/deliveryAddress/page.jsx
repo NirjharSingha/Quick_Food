@@ -12,6 +12,8 @@ import {
 import { useRouter } from "next/navigation";
 import { useGlobals } from "@/app/contexts/Globals";
 
+const libraries = ["places"];
+
 const page = () => {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [locationType, setLocationType] = useState(""); // Default to 'currentLocation'
@@ -172,7 +174,7 @@ const page = () => {
             {/* Google Maps with Autocomplete */}
             <LoadScript
               googleMapsApiKey={process.env.NEXT_PUBLIC_MAP_API_KEY}
-              libraries={["places"]} // Specify the "places" library
+              libraries={libraries} // Specify the "places" library
             >
               <GoogleMap
                 center={

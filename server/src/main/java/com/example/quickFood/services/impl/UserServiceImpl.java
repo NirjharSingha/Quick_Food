@@ -4,11 +4,8 @@ import com.example.quickFood.dto.*;
 import com.example.quickFood.enums.Role;
 import com.example.quickFood.models.RiderStatus;
 import com.example.quickFood.models.User;
-
 import com.example.quickFood.repositories.OrderRepository;
-
 import com.example.quickFood.repositories.RiderStatusRepository;
-
 import com.example.quickFood.repositories.UserRepository;
 import com.example.quickFood.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +14,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -153,7 +151,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public List<DeliveryAnalytics> getWeeklyDeliveryStatus(String riderId,String timestampString) {
+    public List<DeliveryAnalytics> getWeeklyDeliveryStatus(String riderId, String timestampString) {
         List<DeliveryAnalytics> deliveryAnalyticsList = new ArrayList<>();
 
         for (int i = 0; i < 7; i++) {
@@ -262,4 +260,44 @@ public class UserServiceImpl implements UserService {
         return deliveryAnalyticsList;
     }
 
+    @Override
+    public List<Pair<String, Integer>> allDelivery(String riderId) {
+        List<DeliveryTimes> deliveryTimesList = orderRepository.getAllDeliveryById(riderId);
+        List<Pair<String, Integer>> result = new ArrayList<>();
+
+        int successOrders = 0;
+        int lateOrders = 0;
+        int complaint = 0;
+        int bothIssues = 0;
+
+        for (DeliveryTimes deliveryTimes : deliveryTimesList) {
+            Timestamp orderPlaced = deliveryTimes.getOrderPlaced();
+            Timestamp deliveryCompleted = deliveryTimes.getDeliveryCompleted();
+
+            Long orderPlacedTime = orderPlaced.getTime();
+            Long deliveryCompletedTime = deliveryCompleted.getTime();
+
+            long diff = deliveryCompletedTime - orderPlacedTime;
+            long deliveryTime = deliveryTimes.getDeliveryTime() * 60 * 1000L;
+
+            String complain = deliveryTimes.getComplain();
+
+            if(diff <= deliveryTime && (complain == null || complain.isEmpty())) {
+                successOrders++;
+            } else if(diff > deliveryTime && (complain == null || complain.isEmpty())) {
+                lateOrders++;
+            } else if(diff <= deliveryTime) {
+                complaint++;
+            } else {
+                bothIssues++;
+            }
+        }
+
+        result.add(Pair.of("No issues", successOrders));
+        result.add(Pair.of("Late delivery", lateOrders));
+        result.add(Pair.of("Complaint", complaint));
+        result.add(Pair.of("Late+Complaint", bothIssues));
+
+        return result;
+    }
 }
