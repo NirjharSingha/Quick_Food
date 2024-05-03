@@ -459,3 +459,5 @@ const ResAnalytics = ({ resId }) => {
 };
 
 export default ResAnalytics;
+
+// responsive

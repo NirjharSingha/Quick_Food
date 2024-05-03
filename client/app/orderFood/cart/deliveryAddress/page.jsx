@@ -10,12 +10,14 @@ import {
   Marker,
 } from "@react-google-maps/api";
 import { useRouter } from "next/navigation";
+import { useGlobals } from "@/app/contexts/Globals";
 
 const page = () => {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [locationType, setLocationType] = useState(""); // Default to 'currentLocation'
   const autocompleteRef = useRef(null);
   const router = useRouter();
+  const { windowWidth } = useGlobals();
 
   // Handler for when the user selects a place from the autocomplete suggestions
   const onPlaceSelected = () => {
@@ -106,17 +108,21 @@ const page = () => {
 
   return (
     <div div className="w-full overflow-y-auto">
-      <div className="p-4 w-full">
+      <div className="pt-4 pb-4 pl-1 pr-1 md:pl-3 md:pr-3 w-full">
         <div className="flex justify-center items-center mb-5">
-          <FaMapMarkerAlt className="mr-2 text-4xl text-gray-700" />
-          <p className="font-serif text-3xl font-bold text-gray-700 mt-2">
+          <FaMapMarkerAlt className="mr-2 text-3xl sm:text-4xl text-gray-700" />
+          <p className="font-serif text-2xl sm:text-3xl font-bold text-gray-700 mt-2">
             Delivery Address
           </p>
         </div>
-        <div className="w-[90%] mx-auto shadow-md shadow-gray-400 rounded-lg bg-slate-100">
+        <div className="w-[100%] mx-auto shadow-md shadow-gray-400 rounded-lg bg-slate-100">
           <div>
             {/* Radio buttons for selecting the method */}
-            <div className="flex items-center p-2 justify-center gap-x-8 font-sans">
+            <div
+              className={`flex ${
+                windowWidth > 400 ? "" : "flex-col"
+              } items-center p-2 justify-center gap-x-8 font-sans mb-4`}
+            >
               <div className="flex items-center">
                 <input
                   type="radio"
@@ -127,7 +133,9 @@ const page = () => {
                   checked={locationType === "currentLocation"}
                   onChange={(e) => setLocationType(e.target.value)}
                 />
-                <label htmlFor="currentLocation">Use Current Location</label>
+                <label htmlFor="currentLocation" className="font-bold">
+                  Use Current Location
+                </label>
               </div>
               <div className="flex items-center">
                 <input
@@ -139,12 +147,14 @@ const page = () => {
                   checked={locationType === "searchLocation"}
                   onChange={(e) => setLocationType(e.target.value)}
                 />
-                <label htmlFor="searchLocation">Search Location</label>
+                <label htmlFor="searchLocation" className="font-bold">
+                  Search Location
+                </label>
               </div>
             </div>
 
             {locationType === "searchLocation" && (
-              <div className="w-full flex justify-center items-center">
+              <div className="w-full pl-1 pr-1 flex justify-center items-center">
                 <Autocomplete
                   onLoad={(autocomplete) =>
                     (autocompleteRef.current = autocomplete)
@@ -154,7 +164,7 @@ const page = () => {
                   <input
                     type="text"
                     placeholder="Enter Your Location"
-                    className="w-full mx-auto rounded-full border py-3 px-6 mt-3 mb-6 max-w-[300px] text-base text-body-color placeholder-body-color shadow-one outline-none focus:border-primary focus-visible:shadow-none"
+                    className="w-full mx-auto rounded-full border py-3 px-6 max-h-[2.3rem] mb-6 max-w-[300px] text-base text-body-color placeholder-body-color shadow-one outline-none focus:border-primary focus-visible:shadow-none"
                   />
                 </Autocomplete>
               </div>
@@ -202,7 +212,7 @@ const page = () => {
           </div>
         </div>
         <div
-          className={`w-[90%] mx-auto h-8 bg-gray-300 font-sans font-bold mt-5 rounded-2xl hover:bg-gray-400 text-gray-700 flex justify-center items-center cursor-pointer`}
+          className={`w-[99%] mx-auto h-8 bg-gray-300 font-sans font-bold mt-5 rounded-2xl hover:bg-gray-400 text-gray-700 flex justify-center items-center cursor-pointer`}
           onClick={handleClick}
         >
           Go for payment
@@ -213,3 +223,5 @@ const page = () => {
 };
 
 export default page;
+
+// responsive
