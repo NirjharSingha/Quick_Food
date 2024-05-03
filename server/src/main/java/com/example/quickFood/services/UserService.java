@@ -19,4 +19,12 @@ public interface UserService {
     ResponseEntity<User> getUser(String userId);
 
     List<IdNameImgDto> getAllRiders();
+
+    List<DeliveryAnalytics> getWeeklyDeliveryStatus(String riderId,String timestampString);
+
+    List<DeliveryAnalytics> getMonthlyDeliveryStatus(String riderId);
+
+
+
+
 }

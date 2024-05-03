@@ -63,4 +63,10 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     List<DeliveryTimes> getDeliveryTimes(@Param("startOfDay") Timestamp startOfDay,
                                          @Param("endOfDay") Timestamp endOfDay);
 
+    @Query("SELECT NEW com.example.quickFood.dto.DeliveryTimes(o.id,o.orderPlaced, o.deliveryCompleted, o.complain, o.deliveryTime) FROM Order o WHERE o.rider.id = :riderId and o.deliveryCompleted IS NOT NULL AND o.orderPlaced BETWEEN :startOfDay AND :endOfDay")
+    List<DeliveryTimes> getDeliveryTimesById(
+            @Param("riderId") String riderId,
+            @Param("startOfDay") Timestamp startOfDay,
+            @Param("endOfDay") Timestamp endOfDay);
+
 }
