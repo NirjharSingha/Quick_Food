@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,9 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     @Query(value = "SELECT o.id FROM orders o WHERE o.rider_id = :riderId AND o.delivery_completed IS NULL LIMIT 1", nativeQuery = true)
     Integer getDeliveryOfRider(@Param("riderId") String riderId);
+
+    @Query("SELECT NEW org.springframework.data.util.Pair(o.latitude, o.longitude) FROM Order o WHERE o.id = :orderId")
+    Pair<Double, Double> getDeliveryAddress(int orderId);
 
     @Modifying
     @Transactional

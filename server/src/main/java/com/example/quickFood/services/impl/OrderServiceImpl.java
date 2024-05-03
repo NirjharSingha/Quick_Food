@@ -6,6 +6,7 @@ import com.example.quickFood.repositories.*;
 import com.example.quickFood.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,6 +89,8 @@ public class OrderServiceImpl implements OrderService {
                 .deliveryTime(placeOrder.getDeliveryTime())
                 .paymentMethod(placeOrder.getPaymentMethod())
                 .orderPlaced(new Timestamp(System.currentTimeMillis()))
+                .latitude(placeOrder.getLatitude())
+                .longitude(placeOrder.getLongitude())
                 .build();
 
         Order savedOrder = orderRepository.save(order);
@@ -141,8 +144,12 @@ public class OrderServiceImpl implements OrderService {
     public ResponseEntity<RiderDelivery> getDeliveryOfRider(String riderId) {
         Integer orderId = orderRepository.getDeliveryOfRider(riderId);
         if (orderId != null) {
+            Pair<Double, Double> address = orderRepository.getDeliveryAddress(orderId);
+
             return ResponseEntity.ok(RiderDelivery.builder()
-                    .orderId(orderId.intValue())
+                    .orderId(orderId)
+                    .latitude(address.getFirst())
+                    .longitude(address.getSecond())
                     .build());
         } else {
             // Handle the case when no order is found for the rider

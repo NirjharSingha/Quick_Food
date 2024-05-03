@@ -40,7 +40,7 @@ const page = () => {
             setShowMessage(true);
             setShowLoading(false);
           } else {
-            const orderId = response.data.orderId;
+            const { orderId, latitude, longitude } = response.data;
             const res = await axios.get(
               `${process.env.NEXT_PUBLIC_SERVER_URL}/order/getOrderDataPage?orderId=${orderId}`,
               {
@@ -80,7 +80,12 @@ const page = () => {
               }
               localStorage.setItem(
                 "deliveryStatus",
-                JSON.stringify({ orderId: orderId, step: step })
+                JSON.stringify({
+                  orderId: orderId,
+                  step: step,
+                  latitude: latitude,
+                  longitude: longitude,
+                })
               );
 
               setShowLoading(false);
