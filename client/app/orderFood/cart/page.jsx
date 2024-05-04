@@ -5,12 +5,10 @@ import Loading from "@/app/components/Loading";
 import { useState } from "react";
 import Cart from "@/app/components/Cart";
 import { useGlobals } from "@/app/contexts/Globals";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { handleUnauthorized } from "@/app/utils/unauthorized";
-import { jwtDecode } from "jwt-decode";
-import Alert from "@/app/components/Alert";
 
 const page = () => {
   const [showLoading, setShowLoading] = useState(false);
@@ -21,63 +19,10 @@ const page = () => {
   const [total, setTotal] = useState(0);
   const [restaurantName, setRestaurantName] = useState("");
   const [showMessage, setShowMessage] = useState(false);
-  const alertRef = useRef(null);
-  const [alertTitle, setAlertTitle] = useState("");
 
   const handlePlaceOrder = async () => {
     router.push("/orderFood/cart/deliveryAddress");
   };
-
-  // const handlePlaceOrder = async () => {
-  //   let dataToSend = [];
-  //   let cart = JSON.parse(localStorage.getItem("cart"));
-  //   const selectedMenu = cart.selectedMenu;
-
-  //   selectedMenu.forEach((menu) => {
-  //     dataToSend.push({
-  //       id: menu.selectedMenuId,
-  //       quantity: menu.selectedMenuQuantity,
-  //     });
-  //   });
-
-  //   const placeOrderData = {
-  //     userId: jwtDecode(localStorage.getItem("token")).sub,
-  //     restaurantId: cart.restaurantId,
-  //     deliveryAddress: "",
-  //     deliveryTime: 30,
-  //     paymentMethod: "COD",
-  //     price: total,
-  //     deliveryFee: total * 0.1,
-  //     orderQuantities: dataToSend,
-  //   };
-
-  //   const token = localStorage.getItem("token");
-  //   try {
-  //     const response = await axios.post(
-  //       `${process.env.NEXT_PUBLIC_SERVER_URL}/order/placeOrder`,
-  //       placeOrderData,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-  //     if (response.status === 200) {
-  //       localStorage.removeItem("cart");
-  //       setCartCount(0);
-  //       router.push("/orderFood");
-  //       setToastMessage("Order Placed Successfully");
-  //     }
-  //   } catch (error) {
-  //     if (error.response.status === 400) {
-  //       setAlertTitle(error.response.data);
-  //       alertRef.current.click();
-  //     }
-  //     if (error.response.status === 401) {
-  //       handleUnauthorized(setIsLoggedIn, setToastMessage, router);
-  //     }
-  //   }
-  // };
 
   useEffect(() => {
     const getCart = async () => {
@@ -164,18 +109,6 @@ const page = () => {
           No Items in Cart
         </p>
       )}
-      {/* <Alert
-        buttonRef={alertRef}
-        title={alertTitle}
-        message={`Sorry, we are unable to place your order because of ${alertTitle.toLowerCase()}. Please try again later.`}
-        continueHandler={() => {
-          localStorage.removeItem("cart");
-          setCartCount(0);
-          alertRef.current.click();
-          router.push(`/orderFood`);
-        }}
-        flag={true}
-      /> */}
       {!showMessage && (
         <div className="bg-slate-100 h-full w-full">
           {showLoading && (
@@ -192,10 +125,10 @@ const page = () => {
                 restaurantName={restaurantName}
               />
               <div
-                className={`w-full max-w-[42.5rem] mx-auto h-8 bg-gray-300 font-sans font-bold mt-5 mb-5 rounded-2xl hover:bg-gray-400 text-gray-700 flex justify-center items-center cursor-pointer`}
+                className={`w-full max-w-[45rem] mx-auto h-8 bg-gray-300 font-sans font-bold mt-5 mb-5 rounded-2xl hover:bg-gray-400 text-gray-700 flex justify-center items-center cursor-pointer`}
                 onClick={handlePlaceOrder}
               >
-                Place Order
+                Complete Order
               </div>
             </div>
           )}

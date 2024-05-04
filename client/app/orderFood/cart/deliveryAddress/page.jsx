@@ -11,6 +11,7 @@ import {
 } from "@react-google-maps/api";
 import { useRouter } from "next/navigation";
 import { useGlobals } from "@/app/contexts/Globals";
+import Stepper2 from "@/app/components/Stepper2";
 
 const libraries = ["places"];
 
@@ -110,7 +111,10 @@ const page = () => {
 
   return (
     <div div className="w-full overflow-y-auto">
-      <div className="pt-4 pb-4 pl-1 pr-1 md:pl-3 md:pr-3 w-full">
+      <div className="pt-4 pb-4 pl-1 pr-1 md:pl-3 md:pr-3 w-full max-w-[50rem] mx-auto">
+        <div className="overflow-x-auto">
+          <Stepper2 step={1} />
+        </div>
         <div className="flex justify-center items-center mb-5">
           <FaMapMarkerAlt className="mr-2 text-3xl sm:text-4xl text-gray-700" />
           <p className="font-serif text-2xl sm:text-3xl font-bold text-gray-700 mt-2">
@@ -122,8 +126,8 @@ const page = () => {
             {/* Radio buttons for selecting the method */}
             <div
               className={`flex ${
-                windowWidth > 400 ? "" : "flex-col"
-              } items-center p-2 justify-center gap-x-8 font-sans mb-4`}
+                windowWidth > 500 ? "" : "flex-col"
+              } items-center p-2 justify-center gap-x-10 font-sans mb-4`}
             >
               <div className="flex items-center">
                 <input
@@ -131,11 +135,11 @@ const page = () => {
                   id="currentLocation"
                   name="locationType"
                   value="currentLocation"
-                  className="cursor-pointer"
+                  className="cursor-pointer h-5 w-5 mr-1"
                   checked={locationType === "currentLocation"}
                   onChange={(e) => setLocationType(e.target.value)}
                 />
-                <label htmlFor="currentLocation" className="font-bold">
+                <label htmlFor="currentLocation" className="font-bold text-lg">
                   Use Current Location
                 </label>
               </div>
@@ -145,11 +149,11 @@ const page = () => {
                   id="searchLocation"
                   name="locationType"
                   value="searchLocation"
-                  className="cursor-pointer"
+                  className="cursor-pointer h-5 w-5 mr-1"
                   checked={locationType === "searchLocation"}
                   onChange={(e) => setLocationType(e.target.value)}
                 />
-                <label htmlFor="searchLocation" className="font-bold">
+                <label htmlFor="searchLocation" className="font-bold text-lg">
                   Search Location
                 </label>
               </div>

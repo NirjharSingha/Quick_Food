@@ -1,13 +1,17 @@
 import React from "react";
 import { FaShoppingCart } from "react-icons/fa";
 import OrderDetailsTable from "./OrderDetailsTable";
+import Stepper2 from "./Stepper2";
 
 const Cart = ({ data, quantity, total, restaurantName }) => {
   return (
     <div
-      className="max-w-[42.5rem] mt-1 rounded-md mx-auto overflow-y-auto shadow-md shadow-gray-400 p-5 pl-1 pr-1 md:pl-5 md:pr-5"
+      className="max-w-[45rem] mt-1 rounded-md mx-auto overflow-y-auto shadow-md shadow-gray-400 p-5 pl-1 pr-1 md:pl-5 md:pr-5"
       style={{ height: "calc(100% - 4.75rem)" }}
     >
+      <div className="overflow-x-auto">
+        <Stepper2 step={0} />
+      </div>
       <div className="flex justify-center items-center mb-3">
         <FaShoppingCart className="mr-2 text-4xl text-gray-700" />
         <p className="font-serif text-3xl font-bold text-gray-700">Cart</p>
