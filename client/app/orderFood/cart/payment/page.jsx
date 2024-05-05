@@ -45,8 +45,6 @@ const page = () => {
       });
     });
 
-    console.log(cart.address);
-
     const placeOrderData = {
       userId: jwtDecode(localStorage.getItem("token")).sub,
       restaurantId: cart.restaurantId,
@@ -56,6 +54,7 @@ const page = () => {
       deliveryTime: 30,
       paymentMethod: paymentMethod,
       price: cart.total,
+      riderTip: tipAmounts[tipIndex],
       deliveryFee: cart.total * 0.1,
       orderQuantities: dataToSend,
     };
@@ -229,7 +228,43 @@ const page = () => {
           </div>
           <div
             className={`w-full mx-auto h-8 bg-gray-300 font-sans font-bold mt-5 rounded-2xl hover:bg-gray-400 text-gray-700 flex justify-center items-center cursor-pointer`}
-            onClick={handleConfirmOrder}
+            onClick={async () => {
+              if (paymentMethod === "ONLINE") {
+                const token = localStorage.getItem("token");
+                const amount =
+                  parseInt(foodCost.toFixed(0)) +
+                  parseInt((foodCost * 0.1).toFixed(0)) +
+                  parseInt(tipAmounts[tipIndex]);
+
+                try {
+                  const response = await axios.post(
+                    `${process.env.NEXT_PUBLIC_SERVER_URL}/order/payment`,
+                    { amount },
+                    {
+                      headers: {
+                        Authorization: `Bearer ${token}`,
+                      },
+                    }
+                  );
+                  if (response.status === 200) {
+                    const cart = JSON.parse(localStorage.getItem("cart"));
+                    const updatedCart = {
+                      ...cart,
+                      riderTip: tipAmounts[tipIndex],
+                    };
+
+                    localStorage.setItem("cart", JSON.stringify(updatedCart));
+                    window.location.href = response.data;
+                  }
+                } catch (error) {
+                  if (error.response.status === 401) {
+                    handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+                  }
+                }
+              } else {
+                handleConfirmOrder();
+              }
+            }}
           >
             Confirm Order
           </div>

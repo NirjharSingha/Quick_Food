@@ -91,6 +91,7 @@ public class OrderServiceImpl implements OrderService {
                 .orderPlaced(new Timestamp(System.currentTimeMillis()))
                 .latitude(placeOrder.getLatitude())
                 .longitude(placeOrder.getLongitude())
+                .riderTip(placeOrder.getRiderTip())
                 .build();
 
         Order savedOrder = orderRepository.save(order);

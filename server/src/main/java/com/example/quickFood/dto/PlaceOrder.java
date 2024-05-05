@@ -22,4 +22,5 @@ public class PlaceOrder {
     private List<OrderQuantity> orderQuantities;
     private double latitude;
     private double longitude;
+    private double riderTip;
 }

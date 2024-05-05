@@ -1,10 +1,9 @@
 package com.example.quickFood.controllers;
 
-import com.example.quickFood.dto.OrderCard;
-import com.example.quickFood.dto.OrderDataPage;
-import com.example.quickFood.dto.PlaceOrder;
-import com.example.quickFood.dto.RiderDelivery;
+import com.example.quickFood.dto.*;
 import com.example.quickFood.services.impl.OrderServiceImpl;
+import com.example.quickFood.services.impl.PaymentServiceImpl;
+import com.stripe.exception.StripeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +16,9 @@ import java.util.List;
 public class OrderController {
     @Autowired
     private OrderServiceImpl orderService;
+
+    @Autowired
+    private PaymentServiceImpl paymentService;
 
     @GetMapping("/getOrderCard")
     ResponseEntity<List<OrderCard>> getOrderCard(@RequestParam String id, @RequestParam String flag) {
@@ -51,5 +53,10 @@ public class OrderController {
     @PutMapping("/complaint")
     ResponseEntity<String> complaint(@RequestParam int orderId, @RequestParam String complain) {
         return orderService.complaint(orderId, complain);
+    }
+
+    @PostMapping("/payment")
+    ResponseEntity<String> payment(@RequestBody Payment payment) throws StripeException {
+        return ResponseEntity.ok(paymentService.createPaymentLink(payment.getAmount()));
     }
 }

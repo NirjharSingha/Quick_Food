@@ -50,4 +50,5 @@ public class Order {
 
     private double latitude;
     private double longitude;
+    private double riderTip;
 }
