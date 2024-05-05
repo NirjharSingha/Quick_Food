@@ -61,7 +61,7 @@ const page = () => {
         const response = await axios.get(
           `${
             process.env.NEXT_PUBLIC_SERVER_URL
-          }/menu/getMenuByResId?resId=${resId}&page=${page}&size=${7}`,
+          }/menu/getMenuByResId?resId=${resId}&page=${page}&size=${9}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,

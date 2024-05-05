@@ -63,7 +63,7 @@ const page = ({ params }) => {
         const response = await axios.get(
           `${
             process.env.NEXT_PUBLIC_SERVER_URL
-          }/menu/getFilteredMenu?name=${nameFilter}&resId=${resId}&category=${categoryFilter}&price=${priceFilter}&rating=${ratingFilter}&page=${page}&size=${7}`,
+          }/menu/getFilteredMenu?name=${nameFilter}&resId=${resId}&category=${categoryFilter}&price=${priceFilter}&rating=${ratingFilter}&page=${page}&size=${9}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,

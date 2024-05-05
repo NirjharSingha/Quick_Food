@@ -58,7 +58,7 @@ const page = () => {
         const response = await axios.get(
           `${
             process.env.NEXT_PUBLIC_SERVER_URL
-          }/restaurant/getRestaurantsByPagination?size=${7}&page=${page}`,
+          }/restaurant/getRestaurantsByPagination?size=${9}&page=${page}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
