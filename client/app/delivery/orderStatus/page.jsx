@@ -27,6 +27,7 @@ const page = () => {
   useEffect(() => {
     let status = JSON.parse(localStorage.getItem("deliveryStatus"));
     if (status) {
+      console.log(status.orderId);
       setStep(status.step);
     }
   }, []);
@@ -48,24 +49,31 @@ const page = () => {
           }
         );
         if (response.status == 200) {
-          if (step < 2) {
-            setStep((prev) => prev + 1);
-            localStorage.setItem(
-              "deliveryStatus",
-              JSON.stringify({ orderId: orderId, step: step + 1 })
-            );
-            setShowAnimation(true);
-            setTimeout(() => {
-              setShowAnimation(false);
-            }, 3000);
-          } else {
-            setShowAnimation(true);
-            setTimeout(() => {
-              setShowAnimation(false);
-              localStorage.removeItem("deliveryStatus");
-              router.push("/delivery");
-              setToastMessage("Order delivered successfully");
-            }, 3000);
+          console.log(response.data);
+          if (response.data === "Status updated") {
+            if (step < 2) {
+              setStep((prev) => prev + 1);
+              localStorage.setItem(
+                "deliveryStatus",
+                JSON.stringify({ orderId: orderId, step: step + 1 })
+              );
+              setShowAnimation(true);
+              setTimeout(() => {
+                setShowAnimation(false);
+              }, 3000);
+            } else {
+              setShowAnimation(true);
+              setTimeout(() => {
+                setShowAnimation(false);
+                localStorage.removeItem("deliveryStatus");
+                router.push("/delivery");
+                setToastMessage("Order delivered successfully");
+              }, 3000);
+            }
+          } else if (response.data === "Cancelled order") {
+            localStorage.removeItem("deliveryStatus");
+            router.push("/delivery");
+            setToastMessage("The order has been cancelled");
           }
         }
       } catch (error) {

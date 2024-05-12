@@ -34,6 +34,7 @@ const page = () => {
         if (response.status == 200) {
           setShowLoading(false);
           setPendingOrders(response.data);
+          console.log(response.data);
           if (response.data.length === 0) {
             setShowMessage(true);
           }
@@ -64,7 +65,11 @@ const page = () => {
           : "grid-cols-1"
       } gap-x-2 gap-y-4 overflow-y-auto`}
     >
-      <OrderDetailsDialog buttonRef={buttonRef} selectedOrder={selectedOrder} />
+      <OrderDetailsDialog
+        buttonRef={buttonRef}
+        selectedOrder={selectedOrder}
+        setData={setPendingOrders}
+      />
       {showMessage && (
         <p className="text-md col-span-4 font-serif text-gray-700 w-full h-full flex justify-center items-center">
           No Pending Orders

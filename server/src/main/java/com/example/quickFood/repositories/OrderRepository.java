@@ -21,18 +21,21 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     @Query("SELECT o.id FROM Order o LEFT JOIN Review r ON o.id = r.order.id WHERE o.user.id = :userId AND o.deliveryCompleted IS NOT NULL AND r.id IS NULL")
     List<Integer> findOrdersToReview(@Param("userId") String userId);
 
-    @Query("SELECT o.id FROM Order o WHERE o.restaurant.id = :restaurantId AND o.deliveryTaken IS NULL")
+    @Query("SELECT o.id FROM Order o WHERE o.restaurant.id = :restaurantId AND o.deliveryTaken IS NULL AND o.cancelled IS NULL")
     List<Integer> findPendingOrderOfRestaurant(@Param("restaurantId") String restaurantId);
 
 
-    @Query("SELECT o.id FROM Order o WHERE o.user.id = :userId AND o.complain IS NULL")
+    @Query("SELECT o.id FROM Order o WHERE o.user.id = :userId AND o.complain IS NULL AND o.cancelled IS NULL")
     List<Integer> findPendingOrderOfUser(@Param("userId") String userId);
 
-    @Query(value = "SELECT o.id FROM orders o WHERE o.rider_id = :riderId AND o.delivery_completed IS NULL LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT o.id FROM orders o WHERE o.rider_id = :riderId AND o.delivery_completed IS NULL AND o.cancelled IS NULL LIMIT 1", nativeQuery = true)
     Integer getDeliveryOfRider(@Param("riderId") String riderId);
 
     @Query("SELECT NEW org.springframework.data.util.Pair(o.latitude, o.longitude) FROM Order o WHERE o.id = :orderId")
     Pair<Double, Double> getDeliveryAddress(int orderId);
+
+    @Query("SELECT o.cancelled FROM Order o WHERE o.id = :orderId")
+    Timestamp getCancellationStatus(@Param("orderId") int orderId);
 
     @Modifying
     @Transactional

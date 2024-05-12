@@ -18,7 +18,12 @@ import OrderDetailsTable from "./OrderDetailsTable";
 import { usePathname } from "next/navigation";
 import Stepper from "./Stepper";
 
-const OrderDetailsDialog = ({ buttonRef, selectedOrder, complaintRef }) => {
+const OrderDetailsDialog = ({
+  buttonRef,
+  selectedOrder,
+  complaintRef,
+  setData,
+}) => {
   const [orderDetails, setOrderDetails] = useState({});
   const { setToastMessage, setIsLoggedIn, windowWidth } = useGlobals();
   const [tableData, setTableData] = useState([]);
@@ -100,9 +105,15 @@ const OrderDetailsDialog = ({ buttonRef, selectedOrder, complaintRef }) => {
         }
       );
       if (response.status === 200) {
-        setOrderDetails((prev) => {
-          return { ...prev, isPrepared: true };
-        });
+        if (response.data === "Cancelled order") {
+          setData((prev) => prev.filter((order) => order.id !== selectedOrder));
+          setToastMessage("The order has been cancelled");
+          buttonRef.current.click();
+        } else {
+          setOrderDetails((prev) => {
+            return { ...prev, isPrepared: true };
+          });
+        }
       }
     } catch (error) {
       console.log(error);
@@ -222,6 +233,22 @@ const OrderDetailsDialog = ({ buttonRef, selectedOrder, complaintRef }) => {
                   ? "Marked as Prepared"
                   : "Mark as Prepared"}
               </Button>
+            )}
+            {pathname.includes("/orderFood/orderStatus") && orderStatus < 3 && (
+              <div className="w-full mt-2 p-3 shadow-md shadow-gray-400">
+                <p className="font-sans font-bold text-2xl mb-4 text-gray-700 text-center">
+                  Order is not completed yet!
+                </p>
+                <Button
+                  className="w-full font-bold"
+                  onClick={() => {
+                    buttonRef.current.click();
+                    complaintRef.current.click();
+                  }}
+                >
+                  Do you want to cancel?
+                </Button>
+              </div>
             )}
             {pathname.includes("/orderFood/orderStatus") &&
               orderStatus == 3 && (

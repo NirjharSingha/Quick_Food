@@ -42,6 +42,7 @@ public class Order {
     private Timestamp deliveryTaken;
     private Timestamp userNotified;
     private Timestamp deliveryCompleted;
+    private Timestamp cancelled;
     private boolean isPrepared;
 
     @Lob

@@ -137,8 +137,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public ResponseEntity<String> markAsPrepared(int orderId) {
-        orderRepository.markAsPrepared(orderId);
-        return ResponseEntity.ok("Order marked as prepared");
+        Timestamp cancelled = orderRepository.getCancellationStatus(orderId);
+
+        if(cancelled == null) {
+            orderRepository.markAsPrepared(orderId);
+            return ResponseEntity.ok("Order marked as prepared");
+        } else {
+            return ResponseEntity.ok("Cancelled order");
+        }
     }
 
     @Override
@@ -162,23 +168,29 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public ResponseEntity<String> updateStatus(int orderId, int status) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        if (status == 0) {
-            orderRepository.deliveryTaken(orderId, timestamp);
-            notificationService.addNotification(orderRepository.findById(orderId).get().getUser().getId(), "Your order has been taken by the rider");
-            notificationService.sendNotificationToUser(orderRepository.findById(orderId).get().getUser().getId(), "Your order has been taken by the rider");
-        } else if (status == 1) {
-            orderRepository.userNotified(orderId, timestamp);
-            notificationService.addNotification(orderRepository.findById(orderId).get().getUser().getId(), "The rider has reached to the delivery location with the order");
-            notificationService.sendNotificationToUser(orderRepository.findById(orderId).get().getUser().getId(), "The rider has reached to the delivery location with the order");
-        } else if (status == 2) {
-            orderRepository.deliveryCompleted(orderId, timestamp);
-            notificationService.addNotification(orderRepository.findById(orderId).get().getUser().getId(), "Your order has been delivered successfully");
-            notificationService.sendNotificationToUser(orderRepository.findById(orderId).get().getUser().getId(), "Your order has been delivered successfully");
+        Timestamp cancelled = orderRepository.getCancellationStatus(orderId);
 
-            String riderId = orderRepository.findById(orderId).get().getRider().getId();
-            riderStatusRepository.save(new RiderStatus(riderId, true));
+        if (cancelled == null) {
+            if (status == 0) {
+                orderRepository.deliveryTaken(orderId, timestamp);
+                notificationService.addNotification(orderRepository.findById(orderId).get().getUser().getId(), "Your order has been taken by the rider");
+                notificationService.sendNotificationToUser(orderRepository.findById(orderId).get().getUser().getId(), "Your order has been taken by the rider");
+            } else if (status == 1) {
+                orderRepository.userNotified(orderId, timestamp);
+                notificationService.addNotification(orderRepository.findById(orderId).get().getUser().getId(), "The rider has reached to the delivery location with the order");
+                notificationService.sendNotificationToUser(orderRepository.findById(orderId).get().getUser().getId(), "The rider has reached to the delivery location with the order");
+            } else if (status == 2) {
+                orderRepository.deliveryCompleted(orderId, timestamp);
+                notificationService.addNotification(orderRepository.findById(orderId).get().getUser().getId(), "Your order has been delivered successfully");
+                notificationService.sendNotificationToUser(orderRepository.findById(orderId).get().getUser().getId(), "Your order has been delivered successfully");
+
+                String riderId = orderRepository.findById(orderId).get().getRider().getId();
+                riderStatusRepository.save(new RiderStatus(riderId, true));
+            }
+            return ResponseEntity.ok("Status updated");
+        } else {
+            return ResponseEntity.ok("Cancelled order");
         }
-        return ResponseEntity.ok("Status updated");
     }
 
     @Override
