@@ -5,6 +5,7 @@ import com.example.quickFood.services.impl.OrderServiceImpl;
 import com.example.quickFood.services.impl.PaymentServiceImpl;
 import com.stripe.exception.StripeException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,5 +59,15 @@ public class OrderController {
     @PostMapping("/payment")
     ResponseEntity<String> payment(@RequestBody Payment payment) throws StripeException {
         return ResponseEntity.ok(paymentService.createPaymentLink(payment.getAmount()));
+    }
+
+    @GetMapping("/isRefundable")
+    ResponseEntity<Integer> isRefundable(@RequestParam int orderId) {
+        return ResponseEntity.ok(orderService.isRefundable(orderId));
+    }
+
+    @PutMapping("/cancelOrder")
+    ResponseEntity<String> cancelOrder(@RequestBody Pair<Integer, Boolean> data) {
+        return ResponseEntity.ok(orderService.cancelOrder(data));
     }
 }

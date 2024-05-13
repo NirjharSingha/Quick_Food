@@ -4,6 +4,7 @@ import com.example.quickFood.dto.OrderCard;
 import com.example.quickFood.dto.OrderDataPage;
 import com.example.quickFood.dto.PlaceOrder;
 import com.example.quickFood.dto.RiderDelivery;
+import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -22,4 +23,8 @@ public interface OrderService {
     ResponseEntity<String> updateStatus(int orderId, int status);
 
     ResponseEntity<String> complaint(int orderId, String complain);
+
+    Integer isRefundable(int orderId);
+
+    String cancelOrder(Pair<Integer, Boolean> data);
 }

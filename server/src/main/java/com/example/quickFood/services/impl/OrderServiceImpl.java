@@ -1,6 +1,7 @@
 package com.example.quickFood.services.impl;
 
 import com.example.quickFood.dto.*;
+import com.example.quickFood.enums.PaymentMethod;
 import com.example.quickFood.models.*;
 import com.example.quickFood.repositories.*;
 import com.example.quickFood.services.OrderService;
@@ -197,5 +198,58 @@ public class OrderServiceImpl implements OrderService {
     public ResponseEntity<String> complaint(int orderId, String complain) {
         orderRepository.complain(orderId, complain);
         return ResponseEntity.ok("Complaint registered");
+    }
+
+    @Override
+    public Integer isRefundable(int orderId) {
+        Order order = orderRepository.findById(orderId).get();
+        Timestamp orderPlaced = order.getOrderPlaced();
+        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+        int deliveryTime = order.getDeliveryTime();
+        long diff = currentTime.getTime() - orderPlaced.getTime();
+        long diffMinutes = diff / (60 * 1000);
+
+        boolean isLate = diffMinutes > deliveryTime;
+        PaymentMethod paymentMethod = order.getPaymentMethod();
+
+        // 1 for late delivery and online payment, so get refund
+        // 2 for late delivery and cash on delivery, so no need to pay
+        // 3 for on time delivery and online payment, so no refund
+        // 4 for on time delivery and cash on delivery, so cannot cancel
+
+        if (isLate && paymentMethod == PaymentMethod.ONLINE) {
+            return 1;
+        } else if (isLate && paymentMethod == PaymentMethod.COD) {
+            return 2;
+        } else if (!isLate && paymentMethod == PaymentMethod.ONLINE) {
+            return 3;
+        } else {
+            return 4;
+        }
+    }
+
+    @Override
+    public String cancelOrder(Pair<Integer, Boolean> data) {
+        int orderId = data.getFirst();
+        boolean isRefundable = data.getSecond();
+
+        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+        orderRepository.cancelOrder(orderId, currentTime);
+
+        if (isRefundable) {
+            orderRepository.refund(orderId, PaymentMethod.REFUNDED);
+        }
+
+        Order savedOrder = orderRepository.findById(orderId).get();
+
+        String riderNotification = "The order you are delivering is cancelled";
+        notificationService.addNotification(savedOrder.getRider().getId(), riderNotification);
+        notificationService.sendNotificationToUser(savedOrder.getRider().getId(), "You have a new delivery");
+
+        String restaurantNotification = "An order placed in your restaurant " + savedOrder.getRestaurant().getName() + " by the customer " + savedOrder.getUser().getName() + " is cancelled";
+        notificationService.addNotification(savedOrder.getRestaurant().getOwner().getId(), restaurantNotification);
+        notificationService.sendNotificationToUser(savedOrder.getRestaurant().getOwner().getId(), restaurantNotification);
+
+        return "Order cancelled successfully";
     }
 }

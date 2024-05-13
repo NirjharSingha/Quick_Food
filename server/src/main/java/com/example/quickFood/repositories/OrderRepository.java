@@ -1,6 +1,7 @@
 package com.example.quickFood.repositories;
 
 import com.example.quickFood.dto.DeliveryTimes;
+import com.example.quickFood.enums.PaymentMethod;
 import com.example.quickFood.models.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -61,6 +62,16 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     @Transactional
     @Query("UPDATE Order o SET o.complain = :complain WHERE o.id = :orderId")
     void complain(@Param("orderId") int orderId, @Param("complain") String complain);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Order o SET o.cancelled = :timestamp WHERE o.id = :orderId")
+    void cancelOrder(@Param("orderId") int orderId, @Param("timestamp") Timestamp timestamp);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Order o SET o.paymentMethod = :paymentMethod WHERE o.id = :orderId")
+    void refund(@Param("orderId") int orderId, @Param("paymentMethod") PaymentMethod paymentMethod);
 
     @Query("SELECT NEW com.example.quickFood.dto.DeliveryTimes(o.id, o.orderPlaced, o.deliveryCompleted, o.complain, o.deliveryTime) FROM Order o WHERE o.deliveryCompleted IS NOT NULL AND o.orderPlaced BETWEEN :startOfDay AND :endOfDay")
     List<DeliveryTimes> getDeliveryTimes(@Param("startOfDay") Timestamp startOfDay,

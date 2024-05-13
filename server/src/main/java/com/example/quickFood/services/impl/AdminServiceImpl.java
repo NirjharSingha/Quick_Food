@@ -2,6 +2,7 @@ package com.example.quickFood.services.impl;
 
 import com.example.quickFood.dto.DeliveryAnalytics;
 import com.example.quickFood.dto.DeliveryTimes;
+import com.example.quickFood.enums.PaymentMethod;
 import com.example.quickFood.repositories.OrderRepository;
 import com.example.quickFood.repositories.RestaurantRepository;
 import com.example.quickFood.services.AdminService;
@@ -46,7 +47,7 @@ public class AdminServiceImpl implements AdminService {
             Timestamp startTimestamp = Timestamp.valueOf(startOfDay);
             Timestamp endTimestamp = Timestamp.valueOf(endOfDay);
 
-            Double value = restaurantRepository.getSale(startTimestamp, endTimestamp);
+            Double value = restaurantRepository.getSale(startTimestamp, endTimestamp, PaymentMethod.REFUNDED);
             if (value ==  null) {
                 value = 0.0;
             }
@@ -77,7 +78,7 @@ public class AdminServiceImpl implements AdminService {
             Timestamp endTimestamp = Timestamp.valueOf(endOfMonth);
 
             // Get the total sale for the month
-            Double value = restaurantRepository.getSale(startTimestamp, endTimestamp);
+            Double value = restaurantRepository.getSale(startTimestamp, endTimestamp, PaymentMethod.REFUNDED);
             if (value == null) {
                 value = 0.0;
             }
@@ -91,7 +92,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<Pair<String, Double>> topSellingRestaurants() {
-        List<Pair<String, Double>> topSellingRestaurants = restaurantRepository.topSellingRestaurants();
+        List<Pair<String, Double>> topSellingRestaurants = restaurantRepository.topSellingRestaurants(PaymentMethod.REFUNDED);
         List<Pair<String, Double>> topSellingRestaurantsCopy = new ArrayList<>();
 
         int ct = 0;

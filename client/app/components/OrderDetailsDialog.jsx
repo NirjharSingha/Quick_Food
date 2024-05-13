@@ -22,6 +22,8 @@ const OrderDetailsDialog = ({
   buttonRef,
   selectedOrder,
   complaintRef,
+  cancelRef,
+  setCancelMessage,
   setData,
 }) => {
   const [orderDetails, setOrderDetails] = useState({});
@@ -113,6 +115,44 @@ const OrderDetailsDialog = ({
           setOrderDetails((prev) => {
             return { ...prev, isPrepared: true };
           });
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response.status === 401) {
+        handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+      }
+    }
+  };
+
+  const isRefundable = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/order/isRefundable?orderId=${selectedOrder}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        if (response.data == 1) {
+          setCancelMessage(
+            "The delivery time is already passed. As you already paid the bill, you will get refund if you cancel the order now. Press continue to cancel the order."
+          );
+        } else if (response.data == 2) {
+          setCancelMessage(
+            "The delivery time is already passed. As you choose Cash On Delivery, you don't need to pay if you cancel the order now. Press continue to cancel the order."
+          );
+        } else if (response.data == 3) {
+          setCancelMessage(
+            "The delivery time is not passed yet. If you cancel the order now, you will not get refund. Press continue to cancel the order."
+          );
+        } else if (response.data == 4) {
+          setCancelMessage(
+            "The delivery time is not passed yet. As you choose Cash On Delivery, you cannot cancel the order now."
+          );
         }
       }
     } catch (error) {
@@ -242,8 +282,9 @@ const OrderDetailsDialog = ({
                 <Button
                   className="w-full font-bold"
                   onClick={() => {
+                    isRefundable();
                     buttonRef.current.click();
-                    complaintRef.current.click();
+                    cancelRef.current.click();
                   }}
                 >
                   Do you want to cancel?

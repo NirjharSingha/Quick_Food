@@ -2,6 +2,7 @@ package com.example.quickFood.services.impl;
 
 import com.example.quickFood.dto.IdNameImgDto;
 import com.example.quickFood.dto.RestaurantDto;
+import com.example.quickFood.enums.PaymentMethod;
 import com.example.quickFood.models.Restaurant;
 import com.example.quickFood.models.User;
 import com.example.quickFood.repositories.RestaurantRepository;
@@ -137,7 +138,7 @@ public class RestaurantServiceImpl implements RestaurantService {
             Timestamp startTimestamp = Timestamp.valueOf(startOfDay);
             Timestamp endTimestamp = Timestamp.valueOf(endOfDay);
 
-            Double value = restaurantRepository.getRestaurantSale(resId, startTimestamp, endTimestamp);
+            Double value = restaurantRepository.getRestaurantSale(resId, startTimestamp, endTimestamp, PaymentMethod.REFUNDED);
             if (value ==  null) {
                 value = 0.0;
             }
@@ -150,7 +151,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public List<Pair<String, Double>> findTopSoldItems(String restaurantId) {
-        List<Pair<String, Double>> topSoldItems = restaurantRepository.findTopSoldItems(restaurantId);
+        List<Pair<String, Double>> topSoldItems = restaurantRepository.findTopSoldItems(restaurantId, PaymentMethod.REFUNDED);
         List<Pair<String, Double>> topSoldItemsCopy = new ArrayList<>();
         double total = 0.0;
 
@@ -215,7 +216,7 @@ public class RestaurantServiceImpl implements RestaurantService {
             Timestamp endTimestamp = Timestamp.valueOf(endOfMonth);
 
             // Get the total sale for the month
-            Double value = restaurantRepository.getRestaurantSale(resId, startTimestamp, endTimestamp);
+            Double value = restaurantRepository.getRestaurantSale(resId, startTimestamp, endTimestamp, PaymentMethod.REFUNDED);
             if (value == null) {
                 value = 0.0;
             }

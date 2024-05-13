@@ -13,6 +13,7 @@ import FavIcon from "@/public/favicon.ico";
 import Image from "next/image";
 import OrderDetailsDialog from "@/app/components/OrderDetailsDialog";
 import Complaint from "@/app/components/Complaint";
+import Alert from "@/app/components/Alert";
 
 const page = () => {
   const { setToastMessage, setIsLoggedIn, windowWidth } = useGlobals();
@@ -22,7 +23,9 @@ const page = () => {
   const [showLoading, setShowLoading] = useState(true);
   const buttonRef = useRef(null);
   const complaintRef = useRef(null);
+  const cancelRef = useRef(null);
   const [selectedOrder, setSelectedOrder] = useState(0);
+  const [cancelMessage, setCancelMessage] = useState("");
 
   useEffect(() => {
     const getOrderCards = async () => {
@@ -59,11 +62,56 @@ const page = () => {
         buttonRef={buttonRef}
         selectedOrder={selectedOrder}
         complaintRef={complaintRef}
+        cancelRef={cancelRef}
+        setCancelMessage={setCancelMessage}
       />
       <Complaint
         buttonRef={complaintRef}
         orderId={selectedOrder}
         setOrderCards={setOrderCards}
+      />
+      <Alert
+        buttonRef={cancelRef}
+        title={"Cancel Order"}
+        message={cancelMessage}
+        continueHandler={async () => {
+          if (cancelMessage.includes("cannot cancel")) {
+            return;
+          }
+
+          try {
+            const response = await axios.put(
+              `${process.env.NEXT_PUBLIC_SERVER_URL}/order/cancelOrder`,
+              {
+                first: selectedOrder,
+                second: cancelMessage.includes("already passed"),
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              }
+            );
+            if (response.status === 200) {
+              setToastMessage("Order Cancelled Successfully");
+              setOrderCards((prev) => {
+                const filteredOrderCards = prev.filter(
+                  (card) => card.id !== selectedOrder
+                );
+                return filteredOrderCards;
+              });
+            }
+          } catch (error) {
+            console.log("Error:", error);
+            if (error.response.status === 401) {
+              handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+            }
+          }
+        }}
+        cancelHandler={() => {
+          cancelRef.current.click();
+        }}
+        flag={cancelMessage.includes("cannot cancel")}
       />
       <div
         className={`w-full flex items-center justify-between bg-gray-700 p-2 pl-4 pr-4 min-h-[4rem] shadow-md shadow-gray-400 ${
