@@ -250,6 +250,8 @@ public class OrderServiceImpl implements OrderService {
         notificationService.addNotification(savedOrder.getRestaurant().getOwner().getId(), restaurantNotification);
         notificationService.sendNotificationToUser(savedOrder.getRestaurant().getOwner().getId(), restaurantNotification);
 
+        riderStatusRepository.save(new RiderStatus(savedOrder.getRider().getId(), true));
+
         return "Order cancelled successfully";
     }
 }
