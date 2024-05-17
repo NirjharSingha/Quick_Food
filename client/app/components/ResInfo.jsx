@@ -11,8 +11,10 @@ import { handleUnauthorized } from "@/app/utils/unauthorized";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import Loading from "./Loading";
+import { usePathname } from "next/navigation";
 
 const ResInfo = ({ resId }) => {
+  const pathname = usePathname();
   const router = useRouter();
   const [id, setId] = useState(
     resId !== undefined && resId !== null ? resId : ""
@@ -65,15 +67,9 @@ const ResInfo = ({ resId }) => {
       }
     };
 
-    setIsAddRes(
-      window.location.href ===
-        `${process.env.NEXT_PUBLIC_CLIENT_URL}/yourRes/addNewRes`
-    );
+    setIsAddRes(pathname === `/yourRes/addNewRes`);
 
-    if (
-      window.location.href !==
-      `${process.env.NEXT_PUBLIC_CLIENT_URL}/yourRes/addNewRes`
-    ) {
+    if (pathname !== `/yourRes/addNewRes`) {
       getResInfo();
     }
   }, []);
