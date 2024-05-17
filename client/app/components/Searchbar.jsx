@@ -6,11 +6,14 @@ import { useState, useRef } from "react";
 import SearchResult from "./SearchResult";
 import { useGlobals } from "../contexts/Globals";
 import axios from "axios";
+import { handleUnauthorized } from "../utils/unauthorized";
+import { useRouter } from "next/navigation";
 
 const Searchbar = () => {
+  const router = useRouter();
   const [fetchedData, setFetchedData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const { windowWidth } = useGlobals();
+  const { setToastMessage, setIsLoggedIn, windowWidth } = useGlobals();
   const [inputValue, setInputValue] = useState("");
   const [showResult, setShowResult] = useState(false);
   const containerRef = useRef(null);
@@ -23,17 +26,24 @@ const Searchbar = () => {
       setShowResult(false);
     }
     if (value.length === 1) {
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/restaurant/searchRestaurant?name=${value}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/restaurant/searchRestaurant?name=${value}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        if (response) {
+          setFetchedData(response.data);
+          setFilteredData(response.data);
         }
-      );
-      if (response) {
-        setFetchedData(response.data);
-        setFilteredData(response.data);
+      } catch (error) {
+        console.log(error);
+        if (error.response.status === 401) {
+          handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+        }
       }
     } else if (value.length === 0) {
       setFilteredData([]);
