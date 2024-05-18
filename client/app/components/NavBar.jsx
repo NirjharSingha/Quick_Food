@@ -17,6 +17,7 @@ import axios from "axios";
 import { IoMdMenu } from "react-icons/io";
 import Cross from "./Cross";
 import { handleUnauthorized } from "../utils/unauthorized";
+import NotificationPopUp from "./NotificationPopUp";
 
 const NavBar = () => {
   const router = useRouter();
@@ -38,6 +39,10 @@ const NavBar = () => {
     showSideBar,
   } = useGlobals();
   const pathname = usePathname();
+  const [showPopUp, setShowPopUp] = useState(false);
+  const [title, setTitle] = useState("New Notification!");
+  const [text, setText] = useState("");
+  const [redirectUrl, setRedirectUrl] = useState("/myAccount/notifications");
 
   const getUnseenNotifications = async () => {
     if (localStorage.getItem("token")) {
@@ -77,7 +82,8 @@ const NavBar = () => {
             stompClient.subscribe(
               "/user/" + userId + "/notifications",
               function (notification) {
-                alert(notification.body);
+                setText(notification.body);
+                setShowPopUp(true);
                 setUnSeenNotifications((prev) => prev + 1);
               }
             );
@@ -143,6 +149,16 @@ const NavBar = () => {
       <div style={{ display: "none" }}>
         <Toast />
       </div>
+      {showPopUp && (
+        <div className="absolute top-[4.01rem] left-0 right-0 min-w-[75%] lg:min-w-[60%] sm:left-1/2 sm:transform sm:-translate-x-1/2 z-50">
+          <NotificationPopUp
+            title={title}
+            text={text}
+            setShow={setShowPopUp}
+            redirectUrl={redirectUrl}
+          />
+        </div>
+      )}
       <div
         className="navbar h-[4rem] bg-base-100 sticky"
         style={{ backgroundColor: "#d6c5b7" }}

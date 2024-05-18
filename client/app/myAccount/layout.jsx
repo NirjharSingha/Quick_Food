@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import { useGlobals } from "@/app/contexts/Globals";
 import { jwtDecode } from "jwt-decode";
@@ -9,9 +9,11 @@ import { useRouter } from "next/navigation";
 import { BsFillPersonFill } from "react-icons/bs";
 import { IoNotifications } from "react-icons/io5";
 import Password from "@/app/components/Password";
+import { usePathname } from "next/navigation";
 
 export default function RootLayout({ children }) {
   const router = useRouter();
+  const pathname = usePathname();
   const {
     windowWidth,
     setIsLoggedIn,
@@ -21,7 +23,6 @@ export default function RootLayout({ children }) {
     showSideBar,
     sideBarRef,
   } = useGlobals();
-  const [selected, setSelected] = useState("Personal info");
 
   useEffect(() => {
     const profilePercentage = async () => {
@@ -55,12 +56,10 @@ export default function RootLayout({ children }) {
 
   const navigateToMyAccount = () => {
     router.push("/myAccount");
-    setSelected("Personal info");
   };
 
   const navigateToNotifications = () => {
     router.push("/myAccount/notifications");
-    setSelected("Notifications");
   };
 
   return (
@@ -95,10 +94,13 @@ export default function RootLayout({ children }) {
             </div>
             <div className="w-[90%] mx-auto h-[0.5rem] rounded-xl bg-white">
               <div
-                className={`h-full w-[${profilePercentage}%] rounded-xl ${
+                className={`h-full rounded-xl ${
                   profilePercentage !== 100 ? "rounded-r-none" : ""
                 }`}
-                style={{ backgroundColor: "#1BC4BF" }}
+                style={{
+                  backgroundColor: "#1BC4BF",
+                  width: `${profilePercentage}%`,
+                }}
               ></div>
             </div>
             <p className="text-center text-slate-500 mt-2 text-sm font-sans truncate">
@@ -109,7 +111,7 @@ export default function RootLayout({ children }) {
           </div>
           <div
             className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
-              selected === "Personal info"
+              pathname === "/myAccount"
                 ? "bg-blue-400"
                 : "bg-slate-200 hover:bg-slate-300"
             } m-4 cursor-pointer items-center`}
@@ -122,7 +124,7 @@ export default function RootLayout({ children }) {
           </div>
           <div
             className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
-              selected === "Notifications"
+              pathname.includes("/myAccount/notifications")
                 ? "bg-blue-400"
                 : "bg-slate-200 hover:bg-slate-300"
             } m-4 cursor-pointer items-center`}
