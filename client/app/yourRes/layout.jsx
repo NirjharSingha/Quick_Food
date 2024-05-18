@@ -92,7 +92,7 @@ export default function RootLayout({ children }) {
           {pathname === "/yourRes" || pathname === "/yourRes/addNewRes" ? (
             <>
               <div
-                className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
+                className={`flex font-sans text-gray-700 p-3 pt-2 pb-2 md:pt-3 md:pb-3 rounded-full shadow-md shadow-gray-400 ${
                   pathname === "/yourRes"
                     ? "bg-blue-400"
                     : "bg-slate-200 hover:bg-slate-300"
@@ -105,7 +105,7 @@ export default function RootLayout({ children }) {
                 </p>
               </div>
               <div
-                className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
+                className={`flex font-sans text-gray-700 p-3 pt-2 pb-2 md:pt-3 md:pb-3 rounded-full shadow-md shadow-gray-400 ${
                   pathname === "/yourRes/addNewRes"
                     ? "bg-blue-400"
                     : "bg-slate-200 hover:bg-slate-300"
@@ -121,7 +121,7 @@ export default function RootLayout({ children }) {
           ) : (
             <>
               <div
-                className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
+                className={`flex font-sans text-gray-700 p-3 pt-2 pb-2 md:pt-3 md:pb-3 rounded-full shadow-md shadow-gray-400 ${
                   pathname !== "/yourRes" &&
                   pathname !== "/yourRes/addNewRes" &&
                   !pathname.includes("/menu") &&
@@ -138,7 +138,7 @@ export default function RootLayout({ children }) {
                 </p>
               </div>
               <div
-                className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
+                className={`flex font-sans text-gray-700 p-3 pt-2 pb-2 md:pt-3 md:pb-3 rounded-full shadow-md shadow-gray-400 ${
                   pathname.includes("/menu")
                     ? "bg-blue-400"
                     : "bg-slate-200 hover:bg-slate-300"
@@ -152,7 +152,7 @@ export default function RootLayout({ children }) {
               </div>
               <MenuDialog isAdd={true} menu={{}} />
               <div
-                className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
+                className={`flex font-sans text-gray-700 p-3 pt-2 pb-2 md:pt-3 md:pb-3 rounded-full shadow-md shadow-gray-400 ${
                   pathname.includes("/pendingOrders")
                     ? "bg-blue-400"
                     : "bg-slate-200 hover:bg-slate-300"
@@ -165,7 +165,7 @@ export default function RootLayout({ children }) {
                 </p>
               </div>
               <div
-                className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
+                className={`flex font-sans text-gray-700 p-3 pt-2 pb-2 md:pt-3 md:pb-3 rounded-full shadow-md shadow-gray-400 ${
                   pathname.includes("/analytics")
                     ? "bg-blue-400"
                     : "bg-slate-200 hover:bg-slate-300"

@@ -15,7 +15,7 @@ const RestaurantCard = ({ restaurant }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [rating, setRating] = useState(0);
-  const { setToastMessage, setIsLoggedIn, windowWidth } = useGlobals();
+  const { setToastMessage, setIsLoggedIn } = useGlobals();
 
   const handleNavigate = () => {
     if (pathname.includes("/yourRes")) {
@@ -52,17 +52,7 @@ const RestaurantCard = ({ restaurant }) => {
 
   return (
     <div
-      className={`${
-        windowWidth > 900 && windowWidth < 1130
-          ? "w-[32vw]"
-          : windowWidth > 810
-          ? "w-[26vw]"
-          : windowWidth > 550
-          ? "w-[40vw]"
-          : windowWidth > 370
-          ? "w-[80vw]"
-          : "w-[90vw]"
-      } min-w-[16rem] max-w-[21rem] h-[16.8rem] rounded-lg shadow-md bg-base-100 border-2 border-gray-200 cursor-pointer hover:border-gray-300 hover:shadow-lg`}
+      className={`w-full max-w-[19.8rem] h-[16.8rem] rounded-lg shadow-md bg-base-100 border-2 border-gray-200 cursor-pointer hover:border-gray-300 hover:shadow-lg`}
       onClick={handleNavigate}
     >
       {restaurant.image ? (

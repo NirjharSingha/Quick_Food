@@ -42,7 +42,7 @@ const Password = () => {
     <Dialog>
       <DialogTrigger asChild>
         <div
-          className="flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 bg-slate-200 hover:bg-slate-300 m-4 cursor-pointer items-center"
+          className="flex font-sans text-gray-700 p-3 pt-2 pb-2 md:pt-3 md:pb-3 rounded-full shadow-md shadow-gray-400 bg-slate-200 hover:bg-slate-300 m-4 cursor-pointer items-center"
           ref={buttonRef}
           onClick={resetValue}
         >

@@ -89,7 +89,7 @@ export default function RootLayout({ children }) {
             </p>
           </div>
           <div
-            className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
+            className={`flex font-sans text-gray-700 p-3 pt-2 pb-2 md:pt-3 md:pb-3 rounded-full shadow-md shadow-gray-400 ${
               pathname.includes("/orderFood") &&
               !pathname.includes("/orderFood/orderStatus") &&
               !pathname.includes("/orderFood/submitRating") &&
@@ -105,7 +105,7 @@ export default function RootLayout({ children }) {
             </p>
           </div>
           <div
-            className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
+            className={`flex font-sans text-gray-700 p-3 pt-2 pb-2 md:pt-3 md:pb-3 rounded-full shadow-md shadow-gray-400 ${
               pathname.includes("/orderFood/orderStatus")
                 ? "bg-blue-400"
                 : "bg-slate-200 hover:bg-slate-300"
@@ -118,7 +118,7 @@ export default function RootLayout({ children }) {
             </p>
           </div>
           <div
-            className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
+            className={`flex font-sans text-gray-700 p-3 pt-2 pb-2 md:pt-3 md:pb-3 rounded-full shadow-md shadow-gray-400 ${
               pathname.includes("/orderFood/submitRating")
                 ? "bg-blue-400"
                 : "bg-slate-200 hover:bg-slate-300"
@@ -131,7 +131,7 @@ export default function RootLayout({ children }) {
             </p>
           </div>
           <div
-            className={`flex font-sans text-gray-700 p-3 rounded-full shadow-md shadow-gray-400 ${
+            className={`flex font-sans text-gray-700 p-3 pt-2 pb-2 md:pt-3 md:pb-3 rounded-full shadow-md shadow-gray-400 ${
               pathname.includes("/orderFood/cart")
                 ? "bg-blue-400"
                 : "bg-slate-200 hover:bg-slate-300"
