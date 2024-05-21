@@ -58,7 +58,6 @@ const NavBar = () => {
         );
         if (response.status === 200) {
           setUnSeenNotifications(response.data);
-          console.log(response.data);
         }
       } catch (error) {
         console.log("Error:", error);
@@ -80,11 +79,17 @@ const NavBar = () => {
           stompClient.connect({}, function () {
             const userId = jwtDecode(localStorage.getItem("token")).sub;
             stompClient.subscribe(
-              "/user/" + userId + "/notifications",
-              function (notification) {
-                setText(notification.body);
+              "/user/" + userId + "/queue",
+              function (response) {
+                const data = JSON.parse(response.body);
+                setTitle(data.title);
+                setText(data.body);
+                setRedirectUrl(data.redirectUrl);
                 setShowPopUp(true);
-                setUnSeenNotifications((prev) => prev + 1);
+
+                if (data.title === "New Notification!") {
+                  setUnSeenNotifications((prev) => prev + 1);
+                }
               }
             );
           });
@@ -100,7 +105,6 @@ const NavBar = () => {
 
   useEffect(() => {
     setWindowWidth(window.innerWidth);
-    console.log(window.innerWidth);
     if (window.innerWidth < 900) {
       setShowSideBar(false);
     } else {

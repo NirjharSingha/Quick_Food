@@ -1,6 +1,7 @@
 package com.example.quickFood.services.impl;
 
 import com.example.quickFood.dto.NotificationDto;
+import com.example.quickFood.dto.SocketResponse;
 import com.example.quickFood.models.Notification;
 import com.example.quickFood.models.User;
 import com.example.quickFood.repositories.NotificationRepository;
@@ -116,8 +117,9 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     public void sendNotificationToUser(String userId, String message) {
-        String destination = "/user/" + userId + "/notifications";
-        simpMessagingTemplate.convertAndSend(destination, message);
+        String destination = "/user/" + userId + "/queue";
+        SocketResponse socketResponse = SocketResponse.builder().title("New Notification!").body(message).redirectUrl("/myAccount/notifications").build();
+        simpMessagingTemplate.convertAndSend(destination, socketResponse);
     }
 
 }
