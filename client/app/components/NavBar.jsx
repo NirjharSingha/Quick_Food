@@ -37,6 +37,7 @@ const NavBar = () => {
     setUnSeenNotifications,
     setShowSideBar,
     showSideBar,
+    setIsTyping,
   } = useGlobals();
   const pathname = usePathname();
   const [showPopUp, setShowPopUp] = useState(false);
@@ -82,13 +83,17 @@ const NavBar = () => {
               "/user/" + userId + "/queue",
               function (response) {
                 const data = JSON.parse(response.body);
-                setTitle(data.title);
-                setText(data.body);
-                setRedirectUrl(data.redirectUrl);
-                setShowPopUp(true);
 
-                if (data.title === "New Notification!") {
+                if (data.title === "Notification") {
+                  setTitle("New Notification!");
+                  setText(data.notification);
+                  setRedirectUrl("/myAccount/notifications");
+                  setShowPopUp(true);
                   setUnSeenNotifications((prev) => prev + 1);
+                }
+
+                if (data.title === "Typing") {
+                  setIsTyping(data.typing);
                 }
               }
             );

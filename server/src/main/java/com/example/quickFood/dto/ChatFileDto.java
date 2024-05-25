@@ -8,8 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class SocketResponse {
-    String title;
-    String notification;
-    ChatDto chatDto;
+public class ChatFileDto {
+    private int id;
+    private byte[] data;
 }

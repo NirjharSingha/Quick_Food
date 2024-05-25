@@ -29,7 +29,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final UserRepository userRepository;
 
     @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
 
     @Override
@@ -118,7 +118,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     public void sendNotificationToUser(String userId, String message) {
         String destination = "/user/" + userId + "/queue";
-        SocketResponse socketResponse = SocketResponse.builder().title("New Notification!").body(message).redirectUrl("/myAccount/notifications").build();
+        SocketResponse socketResponse = SocketResponse.builder().title("Notification").notification(message).build();
         simpMessagingTemplate.convertAndSend(destination, socketResponse);
     }
 

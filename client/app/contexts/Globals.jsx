@@ -23,6 +23,7 @@ const GlobalsProvider = ({ children }) => {
   const [unSeenNotifications, setUnSeenNotifications] = useState(0);
   const [showSideBar, setShowSideBar] = useState(false);
   const sideBarRef = useRef(null);
+  const [isTyping, setIsTyping] = useState(false);
 
   return (
     <GlobalsContext.Provider
@@ -52,6 +53,8 @@ const GlobalsProvider = ({ children }) => {
         showSideBar,
         setShowSideBar,
         sideBarRef,
+        isTyping,
+        setIsTyping,
       }}
     >
       {children}
