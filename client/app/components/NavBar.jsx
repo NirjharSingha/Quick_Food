@@ -212,7 +212,7 @@ const NavBar = () => {
               href="/"
               className={`cursor-pointer hover:underline ${
                 windowWidth < 530 ? "text-[0.8rem]" : ""
-              }`}
+              } ${pathname === "/" ? "text-blue-600" : ""}`}
             >
               Home
             </Link>
@@ -222,7 +222,7 @@ const NavBar = () => {
                   href="/orderFood"
                   className={`cursor-pointer hover:underline ${
                     windowWidth < 530 ? "text-[0.8rem]" : ""
-                  }`}
+                  } ${pathname.includes("/orderFood") ? "text-blue-600" : ""}`}
                   onClick={() => {
                     if (!pathname.includes("/orderFood")) {
                       localStorage.removeItem("cart");
@@ -236,7 +236,7 @@ const NavBar = () => {
                   href="/yourRes"
                   className={`cursor-pointer hover:underline ${
                     windowWidth < 530 ? "text-[0.8rem]" : ""
-                  }`}
+                  } ${pathname.includes("/yourRes") ? "text-blue-600" : ""}`}
                 >
                   Your Restaurant
                 </Link>
@@ -247,7 +247,7 @@ const NavBar = () => {
                 href="/delivery"
                 className={`cursor-pointer hover:underline ${
                   windowWidth < 530 ? "text-[0.8rem]" : ""
-                }`}
+                } ${pathname.includes("/delivery") ? "text-blue-600" : ""}`}
                 onClick={() => {
                   if (!pathname.includes("/delivery")) {
                     localStorage.removeItem("deliveryStatus");
@@ -262,7 +262,7 @@ const NavBar = () => {
                 href="/admin"
                 className={`cursor-pointer hover:underline ${
                   windowWidth < 530 ? "text-[0.8rem]" : ""
-                }`}
+                } ${pathname.includes("/admin") ? "text-blue-600" : ""}`}
               >
                 Admin Dashboard
               </Link>
