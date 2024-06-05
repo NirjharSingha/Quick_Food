@@ -62,7 +62,7 @@ const emojis = [
   "\u{1F637}", // Face with Medical Mask
 ];
 
-const Emoji = ({ setInputValue, inputRef, Ref, setShowEmojis }) => {
+const Emoji = ({ setInputValue, inputRef, Ref, setShowEmojis, flag }) => {
   const emojiRef = useRef(null);
   const handleOutsideClick = (event) => {
     if (emojiRef.current && !emojiRef.current.contains(event.target)) {
@@ -104,7 +104,13 @@ const Emoji = ({ setInputValue, inputRef, Ref, setShowEmojis }) => {
 
   return (
     <div ref={emojiRef}>
-      <div className="bg-slate-100 z-10 rounded-sm shadow-sm p-1 w-[11.8rem] h-[9.7rem] overflow-y-auto shadow-gray-400">
+      <div
+        className={`bg-slate-100 z-10 rounded-sm shadow-sm p-1 ${
+          flag ? "w-[10rem]" : "w-[11.8rem]"
+        } ${
+          flag ? "h-[7.5rem]" : "h-[9.7rem]"
+        } overflow-y-auto shadow-gray-400`}
+      >
         {emojis.map((emoji, index) => (
           <span
             key={index}
