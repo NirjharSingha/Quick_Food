@@ -17,9 +17,9 @@ public class ChatDto {
     private int id;
     private int roomId;
     private String message;
-    private Long senderId;
-    private Long receiverId;
-    private Timestamp timeStamp;
+    private String senderId;
+    private String receiverId;
+    private Timestamp timestamp;
     @JsonProperty("isEdited")
     private boolean isEdited;
     @JsonProperty("isSeen")

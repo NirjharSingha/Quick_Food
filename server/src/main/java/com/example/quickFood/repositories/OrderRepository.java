@@ -1,5 +1,6 @@
 package com.example.quickFood.repositories;
 
+import com.example.quickFood.dto.ChatUserDto;
 import com.example.quickFood.dto.DeliveryTimes;
 import com.example.quickFood.enums.PaymentMethod;
 import com.example.quickFood.models.Order;
@@ -85,4 +86,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     @Query("SELECT NEW com.example.quickFood.dto.DeliveryTimes(o.id,o.orderPlaced, o.deliveryCompleted, o.complain, o.deliveryTime) FROM Order o WHERE o.rider.id = :riderId AND o.deliveryCompleted IS NOT NULL")
     List<DeliveryTimes> getAllDeliveryById(@Param("riderId") String riderId);
+
+    @Query("SELECT NEW com.example.quickFood.dto.ChatUserDto(o.id, o.rider.id, o.rider.name, o.rider.profilePic) FROM Order o WHERE o.user.id = :userId AND o.deliveryCompleted IS NULL AND o.cancelled IS NULL")
+    List<ChatUserDto> getChatUsers(@Param("userId") String userId);
 }

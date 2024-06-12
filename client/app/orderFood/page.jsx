@@ -68,7 +68,7 @@ const page = () => {
         if (response.status == 200) {
           setShowLoading(false);
           setRestaurants((prev) => [...prev, ...response.data]);
-          if (response.data.length < 7) {
+          if (response.data.length < 9) {
             setSendRequest(false);
           }
         }

@@ -53,7 +53,6 @@ public class MenuController {
     @GetMapping("/getMenuByResId")
     public ResponseEntity<List<MenuDto>> getMenuByResId(@RequestParam String resId, @RequestParam int page,
             @RequestParam int size) {
-        System.out.println("request received");
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         List<MenuDto> menuDtoList = menuService.getMenuByResId(resId, pageable);
         return ResponseEntity.ok(menuDtoList);

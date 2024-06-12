@@ -8,7 +8,7 @@ const ChatDialog = () => {
   const [showEmojis, setShowEmojis] = useState(true);
   return (
     <div className="absolute top-0 left-0 w-[100vw] h-[100svh] bg-slate-200 bg-opacity-70 z-10 flex justify-center items-center">
-      <div className="w-full max-w-[450px] rounded bg-white shadow-md shadow-gray-500 max-h-[100svh]">
+      <div className="w-full max-w-[430px] rounded bg-white shadow-md shadow-gray-500 max-h-[100svh]">
         <div className="w-full h-[2.3rem] bg-slate-500 flex items-center justify-end rounded-t">
           <div className="font-bold text-sm text-white h-[1.8rem] w-[1.8rem] mr-2 hover:bg-red-600 hover:rounded-full flex justify-center items-center cursor-pointer">
             X
@@ -16,9 +16,9 @@ const ChatDialog = () => {
         </div>
         <div className="w-full pl-1 pr-1 mt-1 mb-1">
           <div className="w-full h-[7rem] flex overflow-x-auto gap-2">
-            <div className="min-w-[8rem] h-full bg-slate-400 relative rounded">
-              <div className="absolute top-0 right-0 w-[1.3rem] h-[1.3rem] bg-gray-500 rounded-full text-white flex justify-center items-center cursor-pointer">
-                ×
+            <div className="min-w-[8rem] h-full bg-slate-200 relative rounded">
+              <div className="absolute top-0 right-0 w-[1.5rem] h-[1.5rem] bg-gray-400 hover:bg-gray-500 rounded-full text-white flex justify-center items-center cursor-pointer text-sm">
+                x
               </div>
             </div>
           </div>

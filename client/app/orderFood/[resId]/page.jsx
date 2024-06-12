@@ -86,7 +86,7 @@ const page = ({ params }) => {
               return [...prev, ...filteredData];
             });
           }
-          if (response.data.length < 7) {
+          if (response.data.length < 9) {
             setSendRequest(false);
           }
         }
