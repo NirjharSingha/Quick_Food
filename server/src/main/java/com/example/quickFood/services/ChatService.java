@@ -1,6 +1,7 @@
 package com.example.quickFood.services;
 
 import com.example.quickFood.dto.ChatDto;
+import com.example.quickFood.dto.ChatRoomInit;
 import com.example.quickFood.dto.ChatUserDto;
 import org.springframework.http.ResponseEntity;
 
@@ -14,4 +15,6 @@ public interface ChatService {
     ResponseEntity<ChatDto> addChat(ChatDto chatDto, List<byte[]> chatFiles);
 
     ResponseEntity<List<ChatUserDto>> getChatUsers(String userId);
+
+    ResponseEntity<ChatRoomInit> chatUsersData(int roomId, String userId);
 }

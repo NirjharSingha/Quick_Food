@@ -12,8 +12,13 @@ import Loading from "@/app/components/Loading";
 
 const page = () => {
   const router = useRouter();
-  const { setIsLoggedIn, setToastMessage, windowWidth } = useGlobals();
-  const [chatUsers, setChatUsers] = useState([]);
+  const {
+    setIsLoggedIn,
+    setToastMessage,
+    windowWidth,
+    chatUsers,
+    setChatUsers,
+  } = useGlobals();
   const [showLoading, setShowLoading] = useState(false);
 
   const getChatUsers = async () => {
@@ -100,6 +105,9 @@ const page = () => {
               className={`flex p-2 shadow-md shadow-slate-300 rounded-md hover:bg-slate-200 cursor-pointer items-center mb-4`}
               style={{ gridAutoColumns: "34px auto 30px" }}
               key={chatUser.roomId}
+              onClick={() => {
+                router.push(`/chat/${chatUser.roomId}`);
+              }}
             >
               <div
                 className="bg-white flex justify-center items-center rounded-full border-[1px] border-solid border-gray-500"

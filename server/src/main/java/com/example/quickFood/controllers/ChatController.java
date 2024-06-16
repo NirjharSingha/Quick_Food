@@ -1,6 +1,7 @@
 package com.example.quickFood.controllers;
 
 import com.example.quickFood.dto.ChatDto;
+import com.example.quickFood.dto.ChatRoomInit;
 import com.example.quickFood.dto.ChatUserDto;
 import com.example.quickFood.services.impl.ChatServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,5 +51,10 @@ public class ChatController {
             e.printStackTrace();
             return ResponseEntity.status(500).build();
         }
+    }
+
+    @GetMapping("/chatRoomInit")
+    public ResponseEntity<ChatRoomInit> chatUsersData(@RequestParam int roomId, @RequestParam String userId) {
+        return chatService.chatUsersData(roomId, userId);
     }
 }

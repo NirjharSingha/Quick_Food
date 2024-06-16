@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 import { MdDeliveryDining } from "react-icons/md";
 import { IoMdAnalytics } from "react-icons/io";
 import { useGlobals } from "../contexts/Globals";
+import { HiMiniChatBubbleOvalLeftEllipsis } from "react-icons/hi2";
 
 export default function RootLayout({ children }) {
   const router = useRouter();
@@ -23,6 +24,10 @@ export default function RootLayout({ children }) {
 
   const navigateAnalytics = () => {
     router.push("/delivery/analytics");
+  };
+
+  const navigateChatRoom = () => {
+    router.push("/delivery/chat");
   };
 
   return (
@@ -71,7 +76,8 @@ export default function RootLayout({ children }) {
           <div
             className={`flex font-sans text-gray-700 p-3 pt-2 pb-2 md:pt-3 md:pb-3 rounded-full shadow-md shadow-gray-400 ${
               pathname.includes("/delivery") &&
-              !pathname.includes("/delivery/analytics")
+              !pathname.includes("/delivery/analytics") &&
+              !pathname.includes("/delivery/chat")
                 ? "bg-blue-400"
                 : "bg-slate-200 hover:bg-slate-300"
             } m-4 cursor-pointer items-center`}
@@ -94,6 +100,17 @@ export default function RootLayout({ children }) {
             <p className="font-bold truncate text-sm sm:text-base">
               Performance Analytics
             </p>
+          </div>
+          <div
+            className={`flex font-sans text-gray-700 p-3 pt-2 pb-2 md:pt-3 md:pb-3 rounded-full shadow-md shadow-gray-400 ${
+              pathname.includes("/delivery/chat")
+                ? "bg-blue-400"
+                : "bg-slate-200 hover:bg-slate-300"
+            } m-4 cursor-pointer items-center`}
+            onClick={navigateChatRoom}
+          >
+            <HiMiniChatBubbleOvalLeftEllipsis className="text-xl sm:text-2xl mr-2" />
+            <p className="font-bold truncate text-sm sm:text-base">Chat Room</p>
           </div>
         </div>
       )}

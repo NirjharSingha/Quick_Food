@@ -1,8 +1,6 @@
 package com.example.quickFood.services.impl;
 
-import com.example.quickFood.dto.ChatDto;
-import com.example.quickFood.dto.ChatFileDto;
-import com.example.quickFood.dto.ChatUserDto;
+import com.example.quickFood.dto.*;
 import com.example.quickFood.models.Chat;
 import com.example.quickFood.models.ChatFile;
 import com.example.quickFood.models.Order;
@@ -155,5 +153,29 @@ public class ChatServiceImpl implements ChatService {
         }
 
         return ResponseEntity.ok(chatUserDtoList);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<ChatRoomInit> chatUsersData(int roomId, String userId) {
+        Order order = orderRepository.findById(roomId).get();
+        User customer = order.getUser();
+        User rider = order.getRider();
+
+        IdNameImgDto firstUser, secondUser;
+        if(customer.getId().equals(userId)) {
+            firstUser = new IdNameImgDto(customer.getId(), customer.getName(), customer.getProfilePic());
+            secondUser = new IdNameImgDto(rider.getId(), rider.getName(), rider.getProfilePic());
+        } else {
+            secondUser = new IdNameImgDto(customer.getId(), customer.getName(), customer.getProfilePic());
+            firstUser = new IdNameImgDto(rider.getId(), rider.getName(), rider.getProfilePic());
+        }
+
+        int unseenCount = chatRepository.getUnseenCount(roomId, userId);
+        if(unseenCount > 0) {
+            chatRepository.makeSeen(roomId, userId);
+        }
+
+        return ResponseEntity.ok(new ChatRoomInit(firstUser, secondUser, unseenCount));
     }
 }
