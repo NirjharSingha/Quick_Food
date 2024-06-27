@@ -116,7 +116,7 @@ const page = () => {
                 <img
                   src={
                     chatUser.image === null
-                      ? "/chatUser.svg"
+                      ? "/user.svg"
                       : `data:image/jpeg;base64,${chatUser.image}`
                   }
                   alt="logo"

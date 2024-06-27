@@ -54,7 +54,7 @@ public class ChatController {
     }
 
     @GetMapping("/chatRoomInit")
-    public ResponseEntity<ChatRoomInit> chatUsersData(@RequestParam int roomId, @RequestParam String userId) {
-        return chatService.chatUsersData(roomId, userId);
+    public ResponseEntity<ChatRoomInit> chatRoomInit(@RequestParam int roomId, @RequestParam String userId) {
+        return chatService.chatRoomInit(roomId, userId);
     }
 }

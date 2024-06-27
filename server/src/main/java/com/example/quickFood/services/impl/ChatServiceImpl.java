@@ -157,7 +157,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Transactional
-    public ResponseEntity<ChatRoomInit> chatUsersData(int roomId, String userId) {
+    public ResponseEntity<ChatRoomInit> chatRoomInit(int roomId, String userId) {
         Order order = orderRepository.findById(roomId).get();
         User customer = order.getUser();
         User rider = order.getRider();

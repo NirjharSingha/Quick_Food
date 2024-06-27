@@ -16,5 +16,5 @@ public interface ChatService {
 
     ResponseEntity<List<ChatUserDto>> getChatUsers(String userId);
 
-    ResponseEntity<ChatRoomInit> chatUsersData(int roomId, String userId);
+    ResponseEntity<ChatRoomInit> chatRoomInit(int roomId, String userId);
 }

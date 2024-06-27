@@ -6,8 +6,6 @@ import ChatCard from "@/app/components/ChatCard";
 import { BsEmojiSmile } from "react-icons/bs";
 import { IoAttachOutline } from "react-icons/io5";
 import { BiSolidSend } from "react-icons/bi";
-import Image from "next/image";
-import FavIcon from "@/public/favicon.ico";
 import { useGlobals } from "@/app/contexts/Globals";
 import Emoji from "@/app/components/Emoji";
 import ChatDialog from "@/app/components/ChatDialog";
@@ -15,6 +13,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { handleUnauthorized } from "@/app/utils/unauthorized";
 import Loading from "@/app/components/Loading";
+import { jwtDecode } from "jwt-decode";
 
 const ChatRoom = ({ roomId }) => {
   const router = useRouter();
@@ -25,6 +24,10 @@ const ChatRoom = ({ roomId }) => {
   const { stompClient, isTyping, setToastMessage, setIsLoggedIn } =
     useGlobals();
   const [inputValue, setInputValue] = useState("");
+  const [childInput, setChildInput] = useState("");
+  const [chatAttachments, setChatAttachments] = useState([]);
+  const [previewFiles, setPreviewFiles] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
   const [iAmTyping, setIAmTyping] = useState(false);
   const [showEmojis, setShowEmojis] = useState(false);
   const [chats, setChats] = useState([]);
@@ -36,7 +39,8 @@ const ChatRoom = ({ roomId }) => {
   const [destination, setDestination] = useState("");
   const [mySelf, setMySelf] = useState({});
   const [myTarget, setMyTarget] = useState({});
-  const [unseenChatOfSelectedUser, setUnseenChatOfSelectedUser] = useState(-1);
+  const [unseenChatCount, setUnseenChatCount] = useState(-1);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,7 +60,7 @@ const ChatRoom = ({ roomId }) => {
           setMySelf(firstUser);
           setMyTarget(secondUser);
           setDestination(secondUser.id);
-          setUnseenChatOfSelectedUser(unseenCount);
+          setUnseenChatCount(unseenCount);
         }
       } catch (error) {
         console.log("Error:", error);
@@ -72,15 +76,15 @@ const ChatRoom = ({ roomId }) => {
   }, [roomId]);
 
   useEffect(() => {
-    if (unseenChatOfSelectedUser > 0) {
-      const pageNum = Math.ceil(unseenChatOfSelectedUser / size) - 1;
+    if (unseenChatCount > 0) {
+      const pageNum = Math.ceil(unseenChatCount / size) - 1;
       if (pageNum >= 0) {
         setPage(pageNum);
       } else {
         setPage(0);
       }
     }
-  }, [unseenChatOfSelectedUser]);
+  }, [unseenChatCount]);
 
   useEffect(() => {
     const getAllChats = async ({ currentPage }) => {
@@ -124,7 +128,7 @@ const ChatRoom = ({ roomId }) => {
 
     if (sendRequest && page >= 0) {
       if (chats.length === 0) {
-        const pageNum = Math.ceil(unseenChatOfSelectedUser / size) - 1;
+        const pageNum = Math.ceil(unseenChatCount / size) - 1;
         for (let i = 0; i <= pageNum; i++) {
           getAllChats(i);
         }
@@ -156,6 +160,12 @@ const ChatRoom = ({ roomId }) => {
       };
     }
   }, []);
+
+  useEffect(() => {
+    if (chatAttachments.length === 0) {
+      setInputValue(childInput);
+    }
+  }, [chatAttachments]);
 
   const sendTypingNotification = (typing) => {
     if (stompClient && stompClient.connected) {
@@ -201,23 +211,57 @@ const ChatRoom = ({ roomId }) => {
     lastTypingTimeRef.current = new Date().getTime();
   };
 
+  const handleFileChange = (event) => {
+    const files = event.target.files;
+    const filesArray = Array.from(files);
+    setChatAttachments((prevFiles) => [...prevFiles, ...filesArray]);
+
+    filesArray.forEach((file) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        setPreviewFiles((prevFiles) => [...prevFiles, reader.result]);
+      };
+    });
+  };
+
   return (
     <>
-      <ChatDialog />
+      {(chatAttachments.length > 0 || isEditing) && (
+        <ChatDialog
+          parentInput={inputValue}
+          setParentInput={setInputValue}
+          setIAmTyping={setIAmTyping}
+          lastTypingTimeRef={lastTypingTimeRef}
+          chatAttachments={chatAttachments}
+          setChatAttachments={setChatAttachments}
+          previewFiles={previewFiles}
+          setPreviewFiles={setPreviewFiles}
+          inputValue={childInput}
+          setInputValue={setChildInput}
+        />
+      )}
       <div
         className="w-full max-w-[50rem] mx-auto shadow-lg shadow-gray-400 h-[100%] grid"
         style={{ gridTemplateRows: "3.4rem auto 2.7rem" }}
       >
         <div className={`flex items-center bg-gray-700 p-1`}>
           <div className="bg-white p-[0.5rem] flex justify-center items-center mr-2 rounded-full border-[1px] border-solid border-gray-500">
-            <Image src={FavIcon} alt="logo" width={26} />
+            {
+              <img
+                src={myTarget.image !== null ? myTarget.image : "/user.svg"}
+                alt="logo"
+                width={26}
+                height={26}
+              />
+            }
           </div>
           <p className="ml-1 text-xl text-white font-bold truncate">
-            Select Food
+            {myTarget.name}
           </p>
         </div>
         <div
-          className="h-[calc(100% - .75rem)] pl-1 pr-1 mt-1 mb-2 sm:pl-4 sm:pr-4 overflow-y-auto"
+          className="h-[calc(100% - 0.75rem)] pl-1 pr-1 mt-1 mb-2 sm:pl-4 sm:pr-4 overflow-y-auto"
           ref={chatScrollRef}
         >
           <ChatCard />
@@ -261,11 +305,16 @@ const ChatRoom = ({ roomId }) => {
                 name="chatAttachments"
                 multiple
                 className="hidden"
-                // ref={fileInputRef}
-                // onChange={handleFileChange}
+                ref={fileInputRef}
+                onChange={handleFileChange}
                 accept="image/*, video/*"
               />
-              <IoAttachOutline className="text-gray-400 text-[1.2rem]" />
+              <IoAttachOutline
+                className="text-gray-400 text-[1.2rem] cursor-pointer"
+                onClick={() => {
+                  fileInputRef.current.click();
+                }}
+              />
             </div>
           </div>
           <BiSolidSend className={`text-[1.4rem] text-gray-600`} />
