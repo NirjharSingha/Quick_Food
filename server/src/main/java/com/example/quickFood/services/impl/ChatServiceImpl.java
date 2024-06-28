@@ -37,9 +37,9 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public ResponseEntity<List<ChatDto>> getChats(int page, int size, int roomId) {
         Order order = orderRepository.findById(roomId).get();
-        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
-            return ResponseEntity.notFound().build();
-        }
+//        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
+//            return ResponseEntity.notFound().build();
+//        }
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Page<Chat> chatPage = chatRepository.findByRoomId(roomId, pageable);
@@ -55,6 +55,7 @@ public class ChatServiceImpl implements ChatService {
                     ChatFileDto chatFileDto = ChatFileDto.builder()
                             .id(chatFile.getId())
                             .data(chatFile.getData())
+                            .fileType(chatFile.getFileType())
                             .build();
                     chatFileDtoList.add(chatFileDto);
                 }

@@ -44,6 +44,7 @@ const ChatCard = ({ chat }) => {
   useEffect(() => {
     const userId = jwtDecode(window.localStorage.getItem("token")).sub;
     setFlag(chat.senderId === userId);
+    console.log(chat.id);
   }, []);
 
   useEffect(() => {
@@ -75,11 +76,11 @@ const ChatCard = ({ chat }) => {
         <div style={{ maxWidth: "calc(100% - 2rem)" }}>
           <div className="chat-header">
             <p
-              className={`text-sm ${
+              className={`text-[0.8rem] ${
                 flag ? "mr-3 text-right" : "ml-3"
               } opacity-50`}
             >
-              Edited
+              {chat.isEdited ? "Edited" : ""}
             </p>
           </div>
           <div
@@ -88,34 +89,42 @@ const ChatCard = ({ chat }) => {
             } ${flag ? "bg-blue-700" : ""}`}
             style={{ minWidth: "100%" }}
           >
-            <p className="w-full">Lorem</p>
             {chat &&
               chat.files &&
               chat.files.map((file, index) => (
                 <div key={index}>
-                  {file.type.startsWith("image/") && (
+                  {file.fileType.startsWith("image/") && (
                     <img
-                      src={`data:${file.type};base64,${file.data}`}
+                      src={`data:${file.fileType};base64,${file.data}`}
                       alt="file"
-                      className="w-full h-full object-cover"
+                      ref={(el) => (imageRef.current[index] = el)}
+                      onClick={() => toggleFullscreen(index)}
+                      className={`cursor-pointer ${
+                        windowWidth < 320
+                          ? "w-[200px] h-[160px]"
+                          : "w-[240px] h-[190px]"
+                      }`}
                     />
                   )}
-                  {file.type.startsWith("video/") && (
+                  {file.fileType.startsWith("video/") && (
                     <video
-                      src={`data:${file.type};base64,${file.data}`}
+                      src={`data:${file.fileType};base64,${file.data}`}
                       controls
-                      className="w-full h-full object-cover"
+                      className={`cursor-pointer ${
+                        windowWidth < 320 ? "w-[200px]" : "w-[240px]"
+                      }`}
                     />
                   )}
-                  {!file.type.startsWith("image/") &&
-                    !file.type.startsWith("video/") && (
+                  {!file.fileType.startsWith("image/") &&
+                    !file.fileType.startsWith("video/") && (
                       <span className="w-full h-full flex items-center justify-center">
                         Unsupported File Type
                       </span>
                     )}
                 </div>
               ))}
-            {flag === true && (
+            <p className="w-full min-w-[150px]">{chat.message}</p>
+            {flag === true && chat.isSeen && (
               <IoCheckmarkDoneOutline className="text-lg cursor-pointer ml-auto" />
             )}
             {selectedLike !== null && (
@@ -141,8 +150,12 @@ const ChatCard = ({ chat }) => {
               </div>
             )}
           </div>
-          <div className={`chat-footer opacity-50 ${flag ? "text-right" : ""}`}>
-            {new Date().toLocaleTimeString()}
+          <div
+            className={`text-[0.8rem] chat-footer opacity-50 ${
+              flag ? "text-right" : ""
+            }`}
+          >
+            {new Date(chat.timestamp).toLocaleTimeString()}
           </div>
         </div>
         {!flag && (

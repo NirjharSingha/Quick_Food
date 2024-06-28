@@ -18,7 +18,7 @@ import { jwtDecode } from "jwt-decode";
 const ChatRoom = ({ roomId }) => {
   const router = useRouter();
   const [page, setPage] = useState(-1);
-  const size = useState(15);
+  const size = 10;
   const [showLoading, setShowLoading] = useState(false);
   const [sendRequest, setSendRequest] = useState(true);
   const { stompClient, isTyping, setToastMessage, setIsLoggedIn } =
@@ -76,20 +76,15 @@ const ChatRoom = ({ roomId }) => {
   }, [roomId]);
 
   useEffect(() => {
-    console.log("Unseen Chat Count:", unseenChatCount);
     if (unseenChatCount >= 0) {
-      const pageNum = Math.ceil(unseenChatCount / size) - 1;
-      if (pageNum >= 0) {
-        setPage(pageNum);
-      } else {
-        setPage(0);
-      }
+      let pageNum = Math.ceil(unseenChatCount / size) - 1;
+      pageNum = Math.max(pageNum, 0);
+      setPage(pageNum);
     }
   }, [unseenChatCount]);
 
   useEffect(() => {
-    console.log("Page:", page);
-    const getAllChats = async ({ currentPage }) => {
+    const getAllChats = async (currentPage) => {
       try {
         setShowLoading(true);
         const response = await axios.get(
@@ -101,7 +96,6 @@ const ChatRoom = ({ roomId }) => {
           }
         );
         if (response.status == 200) {
-          console.log("Response:", response.data);
           setShowLoading(false);
           if (page === 0) {
             setChats(response.data);
@@ -131,13 +125,8 @@ const ChatRoom = ({ roomId }) => {
 
     if (sendRequest && page >= 0) {
       if (chats.length === 0) {
-        console.log("inside fetch");
-        const pageNum = Math.ceil(unseenChatCount / size) - 1;
-        if (pageNum >= 0) {
-          setPage(pageNum);
-        } else {
-          setPage(0);
-        }
+        let pageNum = Math.ceil(unseenChatCount / size) - 1;
+        pageNum = Math.max(pageNum, 0);
         for (let i = 0; i <= pageNum; i++) {
           getAllChats(i);
         }
@@ -315,7 +304,7 @@ const ChatRoom = ({ roomId }) => {
           </p>
         </div>
         <div
-          className="h-[calc(100% - 0.75rem)] pl-1 pr-1 mt-1 mb-2 sm:pl-4 sm:pr-4 overflow-y-auto"
+          className="h-[calc(100% - 0.75rem)] pl-1 pr-1 mt-1 mb-2 sm:pl-4 sm:pr-4 overflow-y-auto flex flex-col-reverse"
           ref={chatScrollRef}
         >
           {chats.map((chat, index) => (
@@ -326,6 +315,11 @@ const ChatRoom = ({ roomId }) => {
               target={myTarget}
             />
           ))}
+          {showLoading && (
+            <div className="w-full flex justify-center items-center">
+              <Loading />
+            </div>
+          )}
         </div>
         <form
           className="flex items-center w-full gap-2 mb-4 p-1 sm:p-4"
