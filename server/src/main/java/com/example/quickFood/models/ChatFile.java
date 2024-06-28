@@ -22,4 +22,6 @@ public class ChatFile {
     @Lob
     @Column(name = "data", columnDefinition = "LONGBLOB")
     private byte[] data;
+
+    private String fileType;
 }

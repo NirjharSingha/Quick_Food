@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { BsEmojiSmile } from "react-icons/bs";
 import Emoji from "./Emoji";
+import axios from "axios";
 
 const ChatDialog = ({
   parentInput,
@@ -15,6 +16,8 @@ const ChatDialog = ({
   setPreviewFiles,
   inputValue,
   setInputValue,
+  setChatToEdit,
+  handleSubmit,
 }) => {
   const [showEmojis, setShowEmojis] = useState(false);
   const inputRef = useRef(null);
@@ -67,11 +70,27 @@ const ChatDialog = ({
     }
   };
 
+  const handleCancel = () => {
+    setPreviewFiles([]);
+    setChatToEdit(-1);
+    setChatAttachments([]);
+  };
+
   return (
     <div className="absolute top-0 left-0 w-[100vw] h-[100svh] bg-slate-200 bg-opacity-70 z-10 flex justify-center items-center">
-      <div className="w-full max-w-[430px] rounded bg-white shadow-md shadow-gray-500 max-h-[100svh]">
+      <form
+        encType="multipart/form-data"
+        className="w-full max-w-[430px] rounded bg-white shadow-md shadow-gray-500 max-h-[100svh]"
+        onSubmit={async (e) => {
+          e.preventDefault();
+          handleSubmit(inputValue);
+        }}
+      >
         <div className="w-full h-[2.3rem] bg-slate-500 flex items-center justify-end rounded-t">
-          <div className="font-bold text-sm text-white h-[1.8rem] w-[1.8rem] mr-2 hover:bg-red-600 hover:rounded-full flex justify-center items-center cursor-pointer">
+          <div
+            className="font-bold text-sm text-white h-[1.8rem] w-[1.8rem] mr-2 hover:bg-red-600 hover:rounded-full flex justify-center items-center cursor-pointer"
+            onClick={handleCancel}
+          >
             X
           </div>
         </div>
@@ -133,14 +152,12 @@ const ChatDialog = ({
             onClick={() => {
               fileInputRef.current.click();
             }}
+            type="button"
           >
             Add File
           </button>
         </div>
-        <form
-          className="flex items-center w-full mb-1 p-1 relative"
-          encType="multipart/form-data"
-        >
+        <div className="flex items-center w-full mb-1 p-1 relative">
           {showEmojis && (
             <div className="absolute bottom-full right-3">
               <Emoji
@@ -168,16 +185,23 @@ const ChatDialog = ({
           >
             <BsEmojiSmile className="text-blue-500 cursor-pointer text-[1.1rem]" />
           </div>
-        </form>
+        </div>
         <div className="flex justify-around mb-2 mt-2">
-          <button className="text-[0.8rem] text-blue-500 font-bold hover:bg-gray-300 p-[0.2rem] px-2 rounded-sm">
+          <button
+            className="text-[0.8rem] text-blue-500 font-bold hover:bg-gray-300 p-[0.2rem] px-2 rounded-sm"
+            onClick={handleCancel}
+            type="button"
+          >
             Cancel
           </button>
-          <button className="text-[0.8rem] text-blue-500 font-bold hover:bg-gray-300 p-[0.1rem] px-2 rounded-sm">
+          <button
+            className="text-[0.8rem] text-blue-500 font-bold hover:bg-gray-300 p-[0.1rem] px-2 rounded-sm"
+            type="submit"
+          >
             Send
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

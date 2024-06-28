@@ -11,4 +11,5 @@ import lombok.*;
 public class ChatFileDto {
     private int id;
     private byte[] data;
+    private String fileType;
 }

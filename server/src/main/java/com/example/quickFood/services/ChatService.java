@@ -1,6 +1,7 @@
 package com.example.quickFood.services;
 
 import com.example.quickFood.dto.ChatDto;
+import com.example.quickFood.dto.ChatFileDto;
 import com.example.quickFood.dto.ChatRoomInit;
 import com.example.quickFood.dto.ChatUserDto;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,7 @@ public interface ChatService {
 
     ResponseEntity<String> deleteChats(int roomId);
 
-    ResponseEntity<ChatDto> addChat(ChatDto chatDto, List<byte[]> chatFiles);
+    ResponseEntity<ChatDto> addChat(ChatDto chatDto, List<ChatFileDto> chatFiles);
 
     ResponseEntity<List<ChatUserDto>> getChatUsers(String userId);
 

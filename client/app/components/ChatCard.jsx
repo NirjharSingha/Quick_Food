@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import { useGlobals } from "../contexts/Globals";
 import { BsEmojiSmile } from "react-icons/bs";
@@ -11,17 +11,14 @@ import { FaLaughSquint, FaSadCry, FaAngry } from "react-icons/fa";
 import { FcLike } from "react-icons/fc";
 import Likes from "./Likes";
 import EditOrDelete from "./EditOrDelete";
+import { jwtDecode } from "jwt-decode";
 
-const ChatCard = () => {
+const ChatCard = ({ chat }) => {
   const [selectedLike, setSelectedLike] = useState(null);
   const [shouldDisplayAllLikes, setShouldDisplayAllLikes] = useState(false);
   const [showEditOrDelete, setShowEditOrDelete] = useState(false);
-  const flag = false;
+  const [flag, setFlag] = useState(false);
   const imageRef = useRef([]);
-  const messageAttachments = [
-    "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg",
-    "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg",
-  ];
   const { windowWidth } = useGlobals();
 
   const toggleFullscreen = (index) => {
@@ -43,6 +40,15 @@ const ChatCard = () => {
       }
     }
   };
+
+  useEffect(() => {
+    const userId = jwtDecode(window.localStorage.getItem("token")).sub;
+    setFlag(chat.senderId === userId);
+  }, []);
+
+  useEffect(() => {
+    setSelectedLike(chat.reaction);
+  }, [chat.reaction]);
 
   return (
     <div
@@ -83,37 +89,32 @@ const ChatCard = () => {
             style={{ minWidth: "100%" }}
           >
             <p className="w-full">Lorem</p>
-            {messageAttachments.map((attachment, index) => (
-              <div key={index}>
-                {attachment.endsWith(".jpg") ||
-                attachment.endsWith(".png") ||
-                attachment.endsWith(".jpeg") ? (
-                  <img
-                    key={index}
-                    src={attachment}
-                    alt=""
-                    ref={(el) => (imageRef.current[index] = el)}
-                    onClick={() => toggleFullscreen(index)}
-                    className={`cursor-pointer ${
-                      windowWidth < 320
-                        ? "w-[200px] h-[160px]"
-                        : "w-[240px] h-[190px]"
-                    }`}
-                  />
-                ) : attachment.endsWith(".mp4") ? (
-                  <video
-                    controls
-                    className={`cursor-pointer ${
-                      windowWidth < 320 ? "w-[200px]" : "w-[240px]"
-                    }`}
-                  >
-                    <source src={attachment} controls />
-                  </video>
-                ) : (
-                  <p key={index}></p>
-                )}
-              </div>
-            ))}
+            {chat &&
+              chat.files &&
+              chat.files.map((file, index) => (
+                <div key={index}>
+                  {file.type.startsWith("image/") && (
+                    <img
+                      src={`data:${file.type};base64,${file.data}`}
+                      alt="file"
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                  {file.type.startsWith("video/") && (
+                    <video
+                      src={`data:${file.type};base64,${file.data}`}
+                      controls
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                  {!file.type.startsWith("image/") &&
+                    !file.type.startsWith("video/") && (
+                      <span className="w-full h-full flex items-center justify-center">
+                        Unsupported File Type
+                      </span>
+                    )}
+                </div>
+              ))}
             {flag === true && (
               <IoCheckmarkDoneOutline className="text-lg cursor-pointer ml-auto" />
             )}

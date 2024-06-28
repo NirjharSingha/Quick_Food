@@ -90,7 +90,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public ResponseEntity<ChatDto> addChat(ChatDto chatDto, List<byte[]> chatFiles) {
+    public ResponseEntity<ChatDto> addChat(ChatDto chatDto, List<ChatFileDto> chatFiles) {
         Order order = orderRepository.findById(chatDto.getRoomId()).get();
         User customer = order.getUser();
         User rider = order.getRider();
@@ -120,13 +120,14 @@ public class ChatServiceImpl implements ChatService {
         Chat savedChat = chatRepository.save(chat);
         List<ChatFileDto> savedFiles = new ArrayList<>();
 
-        for (byte[] chatFile : chatFiles) {
+        for (ChatFileDto chatFile : chatFiles) {
             ChatFile savedFile = chatFileRepository.save(ChatFile.builder()
                     .chat(savedChat)
-                    .data(chatFile)
+                    .data(chatFile.getData())
+                    .fileType(chatFile.getFileType())
                     .build());
 
-            savedFiles.add(new ChatFileDto(savedFile.getId(), savedFile.getData()));
+            savedFiles.add(new ChatFileDto(savedFile.getId(), savedFile.getData(), savedFile.getFileType()));
         }
 
         ChatDto chatDto1 = ChatDto.builder()

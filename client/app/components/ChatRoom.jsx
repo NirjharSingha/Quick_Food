@@ -27,7 +27,7 @@ const ChatRoom = ({ roomId }) => {
   const [childInput, setChildInput] = useState("");
   const [chatAttachments, setChatAttachments] = useState([]);
   const [previewFiles, setPreviewFiles] = useState([]);
-  const [isEditing, setIsEditing] = useState(false);
+  const [chatToEdit, setChatToEdit] = useState(-1);
   const [iAmTyping, setIAmTyping] = useState(false);
   const [showEmojis, setShowEmojis] = useState(false);
   const [chats, setChats] = useState([]);
@@ -76,7 +76,8 @@ const ChatRoom = ({ roomId }) => {
   }, [roomId]);
 
   useEffect(() => {
-    if (unseenChatCount > 0) {
+    console.log("Unseen Chat Count:", unseenChatCount);
+    if (unseenChatCount >= 0) {
       const pageNum = Math.ceil(unseenChatCount / size) - 1;
       if (pageNum >= 0) {
         setPage(pageNum);
@@ -87,6 +88,7 @@ const ChatRoom = ({ roomId }) => {
   }, [unseenChatCount]);
 
   useEffect(() => {
+    console.log("Page:", page);
     const getAllChats = async ({ currentPage }) => {
       try {
         setShowLoading(true);
@@ -99,6 +101,7 @@ const ChatRoom = ({ roomId }) => {
           }
         );
         if (response.status == 200) {
+          console.log("Response:", response.data);
           setShowLoading(false);
           if (page === 0) {
             setChats(response.data);
@@ -128,7 +131,13 @@ const ChatRoom = ({ roomId }) => {
 
     if (sendRequest && page >= 0) {
       if (chats.length === 0) {
+        console.log("inside fetch");
         const pageNum = Math.ceil(unseenChatCount / size) - 1;
+        if (pageNum >= 0) {
+          setPage(pageNum);
+        } else {
+          setPage(0);
+        }
         for (let i = 0; i <= pageNum; i++) {
           getAllChats(i);
         }
@@ -211,6 +220,12 @@ const ChatRoom = ({ roomId }) => {
     lastTypingTimeRef.current = new Date().getTime();
   };
 
+  useEffect(() => {
+    if (chatToEdit === -1) {
+      setInputValue("");
+    }
+  }, [chatToEdit]);
+
   const handleFileChange = (event) => {
     const files = event.target.files;
     const filesArray = Array.from(files);
@@ -225,9 +240,46 @@ const ChatRoom = ({ roomId }) => {
     });
   };
 
+  const handleSubmit = async (messageToSend) => {
+    const formData = new FormData();
+    formData.append("roomId", roomId);
+    formData.append("senderId", mySelf.id);
+    formData.append("receiverId", destination);
+    formData.append("message", messageToSend);
+    chatAttachments.forEach((file) => {
+      formData.append("chatAttachments", file);
+    });
+
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/chat/addChat`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setChatAttachments([]);
+        setPreviewFiles([]);
+        setInputValue("");
+        setChildInput("");
+        setChatToEdit(-1);
+
+        console.log(response.data);
+      }
+    } catch (error) {
+      console.log("Error:", error);
+      if (error.response.status === 401) {
+        // handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+      }
+    }
+  };
+
   return (
     <>
-      {(chatAttachments.length > 0 || isEditing) && (
+      {(chatAttachments.length > 0 || chatToEdit >= 0) && (
         <ChatDialog
           parentInput={inputValue}
           setParentInput={setInputValue}
@@ -239,6 +291,8 @@ const ChatRoom = ({ roomId }) => {
           setPreviewFiles={setPreviewFiles}
           inputValue={childInput}
           setInputValue={setChildInput}
+          setChatToEdit={setChatToEdit}
+          handleSubmit={handleSubmit}
         />
       )}
       <div
@@ -264,13 +318,25 @@ const ChatRoom = ({ roomId }) => {
           className="h-[calc(100% - 0.75rem)] pl-1 pr-1 mt-1 mb-2 sm:pl-4 sm:pr-4 overflow-y-auto"
           ref={chatScrollRef}
         >
-          <ChatCard />
-          <ChatCard />
-          <ChatCard />
+          {chats.map((chat, index) => (
+            <ChatCard
+              key={index}
+              chat={chat}
+              mySelf={mySelf}
+              target={myTarget}
+            />
+          ))}
         </div>
         <form
           className="flex items-center w-full gap-2 mb-4 p-1 sm:p-4"
           encType="multipart/form-data"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            if (inputValue === "" && chatAttachments.length === 0) {
+              return;
+            }
+            handleSubmit(inputValue);
+          }}
         >
           <div className="flex w-full relative">
             {showEmojis && (
@@ -294,7 +360,7 @@ const ChatRoom = ({ roomId }) => {
               type="text"
               className="border-2 border-gray-500 border-l-0 border-r-0 h-8 focus:outline-none focus:border-gray-500 w-auto flex-grow"
               placeholder="Type here"
-              style={{ maxWidth: "calc(100vw - 7rem)" }}
+              style={{ maxWidth: "calc(100vw - 7.4rem)" }}
               value={inputValue}
               onChange={handleInputChange}
               ref={inputRef}
@@ -317,7 +383,16 @@ const ChatRoom = ({ roomId }) => {
               />
             </div>
           </div>
-          <BiSolidSend className={`text-[1.4rem] text-gray-600`} />
+          <button
+            type="submit"
+            className={`text-gray-600 ${
+              chatAttachments.length === 0 && inputValue === ""
+                ? "cursor-not-allowed"
+                : "hover:p-[0.3rem] hover:rounded-full hover:bg-slate-300 cursor-pointer"
+            }`}
+          >
+            <BiSolidSend className={`text-[1.4rem] text-gray-600`} />
+          </button>
         </form>
       </div>
     </>
