@@ -219,4 +219,56 @@ public class ChatServiceImpl implements ChatService {
         }
         return ResponseEntity.ok("Reaction updated successfully");
     }
+
+    @Override
+    @Transactional
+    public ResponseEntity<ChatDto> updateChat(ChatDto chatDto, List<ChatFileDto> chatFiles) {
+        Order order = orderRepository.findById(chatDto.getRoomId()).get();
+//        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
+//            return ResponseEntity.notFound().build();
+//        }
+
+        Chat chat = chatRepository.findById(chatDto.getId()).get();
+        chat.setMessage(chatDto.getMessage());
+        chat.setEdited(true);
+        chatRepository.save(chat);
+
+        List<Integer> prevAttachments = chatFileRepository.getPrevFilesByChatId(chat.getId());
+        for (Integer prevAttachment : prevAttachments) {
+            if (!chatDto.getPrevFiles().contains(prevAttachment)) {
+                chatFileRepository.deleteById(prevAttachment);
+            }
+        }
+
+        List<ChatFile> filesNotDeleted = chatFileRepository.findByChatId(chat.getId());
+        List<ChatFileDto> savedFiles = new ArrayList<>();
+        for (ChatFile file : filesNotDeleted) {
+            savedFiles.add(new ChatFileDto(file.getId(), file.getData(), file.getFileType()));
+        }
+
+        for (ChatFileDto chatFile : chatFiles) {
+            ChatFile savedFile = chatFileRepository.save(ChatFile.builder()
+                    .chat(chat)
+                    .data(chatFile.getData())
+                    .fileType(chatFile.getFileType())
+                    .build());
+
+            savedFiles.add(new ChatFileDto(savedFile.getId(), savedFile.getData(), savedFile.getFileType()));
+        }
+
+        ChatDto chatDto1 = ChatDto.builder()
+                .id(chat.getId())
+                .roomId(chat.getRoom().getId())
+                .senderId(chat.getSender().getId())
+                .receiverId(chat.getReceiver().getId())
+                .message(chat.getMessage())
+                .timestamp(chat.getTimestamp())
+                .isEdited(chat.isEdited())
+                .isSeen(chat.isSeen())
+                .reaction(chat.getReaction())
+                .files(savedFiles)
+                .build();
+
+        return ResponseEntity.ok(chatDto1);
+    }
 }

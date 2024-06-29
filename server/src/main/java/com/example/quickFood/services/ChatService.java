@@ -23,4 +23,6 @@ public interface ChatService {
     ResponseEntity<String> deleteChatById(int chatId, int roomId);
 
     ResponseEntity<String> updateReaction(int chatId, int roomId, Reaction reaction);
+
+    ResponseEntity<ChatDto> updateChat(ChatDto chatDto, List<ChatFileDto> chatFiles);
 }

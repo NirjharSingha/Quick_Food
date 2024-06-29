@@ -73,4 +73,26 @@ public class ChatController {
     public ResponseEntity<String> updateReaction(@RequestParam int chatId, @RequestParam int roomId, @RequestParam Reaction reaction) {
         return chatService.updateReaction(chatId, roomId, reaction);
     }
+
+    @PutMapping("/updateChat")
+    public ResponseEntity<ChatDto> updateChat(@RequestParam(value = "chatAttachments", required = false) MultipartFile[] files,
+                                           @ModelAttribute ChatDto chatDto) {
+        try {
+            List<ChatFileDto> chatFiles = new ArrayList<>();
+            if (files != null) {
+                for (MultipartFile file : files) {
+                    if (!file.isEmpty()) {
+                        chatFiles.add(ChatFileDto.builder()
+                                .data(file.getBytes())
+                                .fileType(file.getContentType())
+                                .build());
+                    }
+                }
+            }
+            return chatService.updateChat(chatDto, chatFiles);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
+    }
 }

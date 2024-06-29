@@ -36,7 +36,7 @@ const ChatRoom = ({ roomId }) => {
   const [childInput, setChildInput] = useState("");
   const [chatAttachments, setChatAttachments] = useState([]);
   const [previewFiles, setPreviewFiles] = useState([]);
-  const [chatToEdit, setChatToEdit] = useState(-1);
+  const [chatToEdit, setChatToEdit] = useState(null);
   const [iAmTyping, setIAmTyping] = useState(false);
   const [showEmojis, setShowEmojis] = useState(false);
   const lastTypingTimeRef = useRef(0);
@@ -246,7 +246,7 @@ const ChatRoom = ({ roomId }) => {
   };
 
   useEffect(() => {
-    if (chatToEdit === -1) {
+    if (chatToEdit === null) {
       setInputValue("");
     }
   }, [chatToEdit]);
@@ -265,44 +265,75 @@ const ChatRoom = ({ roomId }) => {
     });
   };
 
-  const handleSubmit = async (messageToSend) => {
+  const handleSubmit = async (messageToSend, prevAttachments) => {
     const formData = new FormData();
-    formData.append("roomId", roomId);
-    formData.append("senderId", mySelf.id);
-    formData.append("receiverId", destination);
     formData.append("message", messageToSend);
     chatAttachments.forEach((file) => {
       formData.append("chatAttachments", file);
     });
+    formData.append("roomId", roomId);
+
+    if (chatToEdit === null) {
+      formData.append("senderId", mySelf.id);
+      formData.append("receiverId", destination);
+    } else {
+      formData.append("id", chatToEdit.id);
+      prevAttachments.forEach((file) => {
+        formData.append("prevFiles", file.id);
+      });
+    }
 
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/chat/addChat`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      let response;
+      if (chatToEdit === null) {
+        response = await axios.post(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/chat/addChat`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+      } else {
+        response = await axios.put(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/chat/updateChat`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+      }
       if (response.status === 200) {
         setChatAttachments([]);
         setPreviewFiles([]);
         setInputValue("");
         setChildInput("");
-        setChatToEdit(-1);
-
-        setChats((prev) => {
-          const newChat = response.data;
-          return [newChat, ...prev];
-        });
-        if (chatScrollRef && chatScrollRef.current) {
-          chatScrollRef.current.scrollTop = 0;
-        }
-        if (showUnreadBar) {
-          setShowUnreadBar(false);
-        }
         sendTypingNotification(false);
+
+        if (chatToEdit === null) {
+          setChats((prev) => {
+            const newChat = response.data;
+            return [newChat, ...prev];
+          });
+          if (chatScrollRef && chatScrollRef.current) {
+            chatScrollRef.current.scrollTop = 0;
+          }
+          if (showUnreadBar) {
+            setShowUnreadBar(false);
+          }
+        } else {
+          setChats((prev) => {
+            const updatedChat = response.data;
+            return prev.map((chat) =>
+              chat.id === updatedChat.id ? updatedChat : chat
+            );
+          });
+          setChatToEdit(null);
+          setToastMessage("Chat updated successfully");
+        }
       }
     } catch (error) {
       console.log("Error:", error);
@@ -324,7 +355,7 @@ const ChatRoom = ({ roomId }) => {
 
   return (
     <>
-      {(chatAttachments.length > 0 || chatToEdit >= 0) && (
+      {(chatAttachments.length > 0 || chatToEdit !== null) && (
         <ChatDialog
           parentInput={inputValue}
           setParentInput={setInputValue}
@@ -336,6 +367,7 @@ const ChatRoom = ({ roomId }) => {
           setPreviewFiles={setPreviewFiles}
           inputValue={childInput}
           setInputValue={setChildInput}
+          chatToEdit={chatToEdit}
           setChatToEdit={setChatToEdit}
           handleSubmit={handleSubmit}
         />
@@ -389,6 +421,7 @@ const ChatRoom = ({ roomId }) => {
                 mySelf={mySelf}
                 myTarget={myTarget}
                 roomId={roomId}
+                setChatToEdit={setChatToEdit}
               />
               {index === unseenChatCount - 1 && showUnreadBar ? (
                 <p className="mt-3 mb-3 w-full bg-gray-500 text-white font-sans font-bold text-sm p-1 rounded-full text-center">

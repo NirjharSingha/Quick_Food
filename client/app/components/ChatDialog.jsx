@@ -15,6 +15,7 @@ const ChatDialog = ({
   setPreviewFiles,
   inputValue,
   setInputValue,
+  chatToEdit,
   setChatToEdit,
   handleSubmit,
 }) => {
@@ -23,6 +24,8 @@ const ChatDialog = ({
   const emojiIconRef = useRef(null);
   const fileInputRef = useRef(null);
   const imageRef = useRef([]);
+  const imageRef2 = useRef([]);
+  const [prevAttachments, setPrevAttachments] = useState([]);
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
@@ -30,16 +33,21 @@ const ChatDialog = ({
     lastTypingTimeRef.current = new Date().getTime();
   };
 
-  const handleKeyPress = (event) => {
-    if (event.key === "Enter") {
-      return;
-    }
-  };
-
   useEffect(() => {
-    setInputValue(parentInput);
+    if (chatToEdit === null) {
+      setInputValue(parentInput);
+    } else {
+      setInputValue(chatToEdit.message);
+    }
+
     setParentInput("");
   }, []);
+
+  useEffect(() => {
+    if (chatToEdit !== null) {
+      setPrevAttachments(chatToEdit.files);
+    }
+  }, [chatToEdit]);
 
   const handleFileChange = (event) => {
     const files = event.target.files;
@@ -55,9 +63,7 @@ const ChatDialog = ({
     });
   };
 
-  const toggleFullscreen = (index) => {
-    const imageElement = imageRef.current[index];
-
+  const toggleFullscreen = (imageElement) => {
     if (!document.fullscreenElement) {
       if (imageElement.requestFullscreen) {
         imageElement.requestFullscreen();
@@ -77,7 +83,7 @@ const ChatDialog = ({
 
   const handleCancel = () => {
     setPreviewFiles([]);
-    setChatToEdit(-1);
+    setChatToEdit(null);
     setChatAttachments([]);
   };
 
@@ -85,11 +91,7 @@ const ChatDialog = ({
     <div className="absolute top-0 left-0 w-[100vw] h-[100svh] bg-slate-200 bg-opacity-70 z-10 flex justify-center items-center">
       <div
         encType="multipart/form-data"
-        className="w-full max-w-[430px] rounded bg-white shadow-md shadow-gray-500 max-h-[100svh]"
-        onSubmit={async (e) => {
-          e.preventDefault();
-          handleSubmit(inputValue);
-        }}
+        className="w-full max-w-[400px] rounded bg-white shadow-md shadow-gray-500 max-h-[100svh]"
       >
         <div className="w-full h-[2.3rem] bg-slate-500 flex items-center justify-end rounded-t">
           <div
@@ -100,14 +102,53 @@ const ChatDialog = ({
           </div>
         </div>
         <div className="w-full pl-1 pr-1 mt-1 mb-1">
-          <div className="w-full h-[6.8rem] flex overflow-x-auto gap-2">
+          <div className="w-full flex overflow-x-auto gap-2 rounded min-h-[1.5rem]">
+            {prevAttachments.map((file, index) => (
+              <div
+                className="min-w-[7.8rem] max-w-[7.8rem] h-[6.8rem] flex justify-center items-center bg-slate-300 relative rounded"
+                key={file.id}
+              >
+                <div
+                  className="z-10 absolute top-0 right-0 w-[1.6rem] h-[1.6rem] bg-gray-500 hover:bg-gray-600 rounded-full text-white flex justify-center items-center cursor-pointer text-sm"
+                  onClick={() => {
+                    setPrevAttachments((prevFiles) =>
+                      prevFiles.filter((f) => f.id !== file.id)
+                    );
+                  }}
+                >
+                  x
+                </div>
+                {file.fileType.startsWith("image/") && (
+                  <img
+                    src={`data:${file.fileType};base64,${file.data}`}
+                    alt="file"
+                    ref={(el) => (imageRef2.current[index] = el)}
+                    onClick={() => toggleFullscreen(imageRef2.current[index])}
+                    className="w-full h-full min-h-full object-fill rounded"
+                  />
+                )}
+                {file.fileType.startsWith("video/") && (
+                  <video
+                    src={`data:${file.fileType};base64,${file.data}`}
+                    controls
+                    className="w-full h-full object-fill rounded"
+                  />
+                )}
+                {!file.fileType.startsWith("image/") &&
+                  !file.fileType.startsWith("video/") && (
+                    <span className="w-full h-full object-fill rounded">
+                      Unsupported File Type
+                    </span>
+                  )}
+              </div>
+            ))}
             {chatAttachments.map((file, index) => (
               <div
-                className="min-w-[7.8rem] max-w-[7.8rem] h-full flex justify-center items-center bg-slate-200 relative rounded"
+                className="min-w-[7.8rem] max-w-[7.8rem] h-[6.8rem] flex justify-center items-center bg-slate-300 relative rounded"
                 key={index}
               >
                 <div
-                  className="z-10 absolute top-0 right-0 w-[1.6rem] h-[1.6rem] bg-gray-400 hover:bg-gray-500 rounded-full text-white flex justify-center items-center cursor-pointer text-sm"
+                  className="z-10 absolute top-0 right-0 w-[1.6rem] h-[1.6rem] bg-gray-500 hover:bg-gray-600 rounded-full text-white flex justify-center items-center cursor-pointer text-sm"
                   onClick={() => {
                     setChatAttachments((prevFiles) =>
                       prevFiles.filter((_, i) => i !== index)
@@ -125,7 +166,7 @@ const ChatDialog = ({
                       src={previewFiles[index]}
                       alt={file.name}
                       ref={(element) => (imageRef.current[index] = element)}
-                      onClick={() => toggleFullscreen(index)}
+                      onClick={() => toggleFullscreen(imageRef.current[index])}
                       className="w-full h-full min-h-full object-fill rounded"
                     />
                   ) : file.type.startsWith("video/") ? (
@@ -153,7 +194,7 @@ const ChatDialog = ({
             accept="image/*, video/*"
           />
           <button
-            className="ml-auto text-[0.8rem] text-blue-500 font-bold hover:bg-gray-300 p-[0.1rem] px-2 rounded-sm"
+            className="ml-auto text-[0.8rem] text-blue-500 font-bold hover:bg-gray-300 p-[0.2rem] px-2 rounded-sm"
             onClick={() => {
               fileInputRef.current.click();
             }}
@@ -182,7 +223,6 @@ const ChatDialog = ({
             value={inputValue}
             onChange={handleInputChange}
             ref={inputRef}
-            onKeyDown={handleKeyPress}
           />
           <div
             className="flex justify-center items-center h-7 w-8 border-0 border-b-2 border-blue-500"
@@ -201,8 +241,8 @@ const ChatDialog = ({
             Cancel
           </button>
           <button
-            className="text-[0.8rem] text-blue-500 font-bold hover:bg-gray-300 p-[0.1rem] px-2 rounded-sm"
-            type="submit"
+            className="text-[0.8rem] text-blue-500 font-bold hover:bg-gray-300 p-[0.2rem] px-2 rounded-sm"
+            onClick={() => handleSubmit(inputValue, prevAttachments)}
           >
             Send
           </button>

@@ -16,7 +16,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { handleUnauthorized } from "../utils/unauthorized";
 
-const ChatCard = ({ chat, mySelf, myTarget, roomId }) => {
+const ChatCard = ({ chat, mySelf, myTarget, roomId, setChatToEdit }) => {
   const router = useRouter();
   const { setToastMessage, setIsLoggedIn, setChats } = useGlobals();
   const [selectedLike, setSelectedLike] = useState(null);
@@ -128,6 +128,11 @@ const ChatCard = ({ chat, mySelf, myTarget, roomId }) => {
         }
       }
     }
+  };
+
+  const editHandler = async () => {
+    setShowEditOrDelete(false);
+    setChatToEdit(chat);
   };
 
   return (
@@ -277,6 +282,7 @@ const ChatCard = ({ chat, mySelf, myTarget, roomId }) => {
               setShowEditOrDelete={setShowEditOrDelete}
               flag={!chat.isEdited}
               deleteHandler={deleteHandler}
+              editHandler={editHandler}
             />
           </div>
         )}

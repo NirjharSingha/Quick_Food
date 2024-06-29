@@ -26,4 +26,5 @@ public class ChatDto {
     private boolean isSeen;
     private Reaction reaction;
     private List<ChatFileDto> files;
+    private List<Integer> prevFiles;
 }

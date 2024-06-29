@@ -20,4 +20,7 @@ public interface ChatFileRepository extends JpaRepository<ChatFile, Integer> {
     void deleteChatFiles(@Param("roomId") int roomId);
 
     void deleteByChatId(int chatId);
+
+    @Query("SELECT c.id FROM ChatFile c WHERE c.chat.id = :chatId")
+    List<Integer> getPrevFilesByChatId(int chatId);
 }
