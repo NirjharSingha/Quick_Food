@@ -1,6 +1,7 @@
 package com.example.quickFood.services.impl;
 
 import com.example.quickFood.dto.*;
+import com.example.quickFood.enums.Reaction;
 import com.example.quickFood.models.Chat;
 import com.example.quickFood.models.ChatFile;
 import com.example.quickFood.models.Order;
@@ -198,5 +199,24 @@ public class ChatServiceImpl implements ChatService {
         chatFileRepository.deleteByChatId(chatId);
         chatRepository.deleteById(chatId);
         return ResponseEntity.ok("Chat deleted successfully");
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<String> updateReaction(int chatId, int roomId, Reaction reaction) {
+        Order order = orderRepository.findById(roomId).get();
+//        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
+//            return ResponseEntity.notFound().build();
+//        }
+
+        Reaction prevReaction = chatRepository.chatReaction(chatId);
+        System.out.println(prevReaction);
+        System.out.println(reaction);
+        if (prevReaction == reaction) {
+            chatRepository.updateReaction(chatId, null);
+        } else {
+            chatRepository.updateReaction(chatId, reaction);
+        }
+        return ResponseEntity.ok("Reaction updated successfully");
     }
 }

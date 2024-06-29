@@ -90,6 +90,46 @@ const ChatCard = ({ chat, mySelf, myTarget, roomId }) => {
     }
   };
 
+  const likeHandler = async (like) => {
+    console.log("inside like handler");
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/chat/reaction?chatId=${chat.id}&roomId=${roomId}&reaction=${like}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        console.log("like added");
+        console.log(response);
+        setSelectedLike((prev) => {
+          if (prev === like) return null;
+          else return like;
+        });
+        setShouldDisplayAllLikes(false);
+      }
+    } catch (error) {
+      console.error(error);
+      if (error.response.status === 401) {
+        // handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+      } else if (error.response.status === 404) {
+        setToastMessage(
+          "The chat room is already dissolved as the order is delivered"
+        );
+        const role = localStorage.getItem("role");
+        if (role === "USER") {
+          router.push("/orderFood/chat");
+        } else {
+          router.push("/delivery");
+        }
+      }
+    }
+  };
+
   return (
     <div
       className={`chat ${flag ? "chat-end" : "chat-start"}`}
@@ -217,9 +257,9 @@ const ChatCard = ({ chat, mySelf, myTarget, roomId }) => {
           <div className="absolute right-0 top-1/2 -translate-y-1/2">
             <Likes
               selected={selectedLike}
-              setSelected={setSelectedLike}
               setShouldDisplayAllLikes={setShouldDisplayAllLikes}
               flag={!chat.isEdited}
+              likeHandler={likeHandler}
             />
           </div>
         )}

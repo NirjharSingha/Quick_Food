@@ -6,7 +6,7 @@ import { AiFillLike, AiFillDislike } from "react-icons/ai";
 import { FaLaughSquint, FaSadCry, FaAngry } from "react-icons/fa";
 import { FcLike } from "react-icons/fc";
 
-const Likes = ({ selected, setSelected, setShouldDisplayAllLikes, flag }) => {
+const Likes = ({ selected, setShouldDisplayAllLikes, flag, likeHandler }) => {
   const likesRef = useRef(null);
 
   useEffect(() => {
@@ -34,72 +34,48 @@ const Likes = ({ selected, setSelected, setShouldDisplayAllLikes, flag }) => {
         className={`flex items-center text-[1.5rem] hover:text-[1.9rem] text-blue-600 cursor-pointer ${
           selected === "LIKE" ? "bg-gray-400 p-[2px] rounded-sm" : ""
         }`}
-        onClick={() => {
-          setSelected((prev) => {
-            if (prev === "LIKE") return null;
-            else return "LIKE";
-          });
-          setShouldDisplayAllLikes(false);
+        onClick={async () => {
+          likeHandler("LIKE");
         }}
       />
       <AiFillDislike
         className={`flex items-center text-[1.5rem] hover:text-[1.9rem] text-blue-600 cursor-pointer ${
           selected === "DISLIKE" ? "bg-gray-400 p-[2px] rounded-sm" : ""
         }`}
-        onClick={() => {
-          setSelected((prev) => {
-            if (prev === "DISLIKE") return null;
-            else return "DISLIKE";
-          });
-          setShouldDisplayAllLikes(false);
+        onClick={async () => {
+          likeHandler("DISLIKE");
         }}
       />
       <FaLaughSquint
         className={`flex items-center text-[1.5rem] hover:text-[1.9rem] text-yellow-500 cursor-pointer ${
           selected === "LAUGH" ? "bg-gray-400 p-[2px] rounded-sm" : ""
         }`}
-        onClick={() => {
-          setSelected((prev) => {
-            if (prev === "LAUGH") return null;
-            else return "LAUGH";
-          });
-          setShouldDisplayAllLikes(false);
+        onClick={async () => {
+          likeHandler("LAUGH");
         }}
       />
       <FaAngry
         className={`flex items-center text-[1.5rem] hover:text-[1.9rem] text-red-400 cursor-pointer ${
           selected === "ANGRY" ? "bg-gray-400 p-[2px] rounded-sm" : ""
         }`}
-        onClick={() => {
-          setSelected((prev) => {
-            if (prev === "ANGRY") return null;
-            else return "ANGRY";
-          });
-          setShouldDisplayAllLikes(false);
+        onClick={async () => {
+          likeHandler("ANGRY");
         }}
       />
       <FaSadCry
         className={`flex items-center text-[1.5rem] hover:text-[1.9rem] text-yellow-500 cursor-pointer ${
           selected === "SAD" ? "bg-gray-400 p-[2px] rounded-sm" : ""
         }`}
-        onClick={() => {
-          setSelected((prev) => {
-            if (prev === "SAD") return null;
-            else return "SAD";
-          });
-          setShouldDisplayAllLikes(false);
+        onClick={async () => {
+          likeHandler("SAD");
         }}
       />
       <FcLike
         className={`flex items-center text-[1.5rem] hover:text-[1.9rem] cursor-pointer ${
           selected === "LOVE" ? "bg-gray-400 p-[2px] rounded-sm" : ""
         }`}
-        onClick={() => {
-          setSelected((prev) => {
-            if (prev === "LOVE") return null;
-            else return "LOVE";
-          });
-          setShouldDisplayAllLikes(false);
+        onClick={async () => {
+          likeHandler("LOVE");
         }}
       />
     </div>

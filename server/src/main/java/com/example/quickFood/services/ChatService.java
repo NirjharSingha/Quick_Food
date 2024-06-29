@@ -4,6 +4,7 @@ import com.example.quickFood.dto.ChatDto;
 import com.example.quickFood.dto.ChatFileDto;
 import com.example.quickFood.dto.ChatRoomInit;
 import com.example.quickFood.dto.ChatUserDto;
+import com.example.quickFood.enums.Reaction;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -20,4 +21,6 @@ public interface ChatService {
     ResponseEntity<ChatRoomInit> chatRoomInit(int roomId, String userId);
 
     ResponseEntity<String> deleteChatById(int chatId, int roomId);
+
+    ResponseEntity<String> updateReaction(int chatId, int roomId, Reaction reaction);
 }

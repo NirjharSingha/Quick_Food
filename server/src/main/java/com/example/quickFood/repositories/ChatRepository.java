@@ -1,5 +1,6 @@
 package com.example.quickFood.repositories;
 
+import com.example.quickFood.enums.Reaction;
 import com.example.quickFood.models.Chat;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -22,4 +23,12 @@ public interface ChatRepository extends JpaRepository<Chat, Integer> {
     @Transactional
     @Query("UPDATE Chat c SET c.isSeen = true WHERE c.room.id = :roomId AND c.receiver.id = :userId")
     void makeSeen(int roomId, String userId);
+
+    @Query("SELECT c.reaction FROM Chat c WHERE c.id = :chatId")
+    Reaction chatReaction(int chatId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Chat c SET c.reaction = :reaction WHERE c.id = :chatId")
+    void updateReaction(int chatId, Reaction reaction);
 }

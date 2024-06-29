@@ -4,6 +4,7 @@ import com.example.quickFood.dto.ChatDto;
 import com.example.quickFood.dto.ChatFileDto;
 import com.example.quickFood.dto.ChatRoomInit;
 import com.example.quickFood.dto.ChatUserDto;
+import com.example.quickFood.enums.Reaction;
 import com.example.quickFood.services.impl.ChatServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -66,5 +67,10 @@ public class ChatController {
     @GetMapping("/chatRoomInit")
     public ResponseEntity<ChatRoomInit> chatRoomInit(@RequestParam int roomId, @RequestParam String userId) {
         return chatService.chatRoomInit(roomId, userId);
+    }
+
+    @PutMapping("/reaction")
+    public ResponseEntity<String> updateReaction(@RequestParam int chatId, @RequestParam int roomId, @RequestParam Reaction reaction) {
+        return chatService.updateReaction(chatId, roomId, reaction);
     }
 }
