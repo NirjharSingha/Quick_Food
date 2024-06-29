@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { BsEmojiSmile } from "react-icons/bs";
 import Emoji from "./Emoji";
-import axios from "axios";
 
 const ChatDialog = ({
   parentInput,
@@ -29,6 +28,12 @@ const ChatDialog = ({
     setInputValue(e.target.value);
     setIAmTyping(true);
     lastTypingTimeRef.current = new Date().getTime();
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      return;
+    }
   };
 
   useEffect(() => {
@@ -78,7 +83,7 @@ const ChatDialog = ({
 
   return (
     <div className="absolute top-0 left-0 w-[100vw] h-[100svh] bg-slate-200 bg-opacity-70 z-10 flex justify-center items-center">
-      <form
+      <div
         encType="multipart/form-data"
         className="w-full max-w-[430px] rounded bg-white shadow-md shadow-gray-500 max-h-[100svh]"
         onSubmit={async (e) => {
@@ -177,6 +182,7 @@ const ChatDialog = ({
             value={inputValue}
             onChange={handleInputChange}
             ref={inputRef}
+            onKeyDown={handleKeyPress}
           />
           <div
             className="flex justify-center items-center h-7 w-8 border-0 border-b-2 border-blue-500"
@@ -201,7 +207,7 @@ const ChatDialog = ({
             Send
           </button>
         </div>
-      </form>
+      </div>
     </div>
   );
 };

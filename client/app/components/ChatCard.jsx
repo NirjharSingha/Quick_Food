@@ -13,11 +13,11 @@ import Likes from "./Likes";
 import EditOrDelete from "./EditOrDelete";
 import { jwtDecode } from "jwt-decode";
 
-const ChatCard = ({ chat }) => {
+const ChatCard = ({ chat, mySelf, myTarget }) => {
   const [selectedLike, setSelectedLike] = useState(null);
   const [shouldDisplayAllLikes, setShouldDisplayAllLikes] = useState(false);
   const [showEditOrDelete, setShowEditOrDelete] = useState(false);
-  const [flag, setFlag] = useState(false);
+  const [flag, setFlag] = useState(true);
   const imageRef = useRef([]);
   const { windowWidth } = useGlobals();
 
@@ -58,10 +58,18 @@ const ChatCard = ({ chat }) => {
     >
       {windowWidth > 370 && (
         <div className="chat-image avatar">
-          <div className="w-10 rounded-full">
+          <div className="w-10 h-10 rounded-full border-[1.5px] border-solid border-gray-700">
             <img
               alt="Tailwind CSS chat bubble component"
-              src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+              src={
+                flag
+                  ? mySelf.image !== null
+                    ? `data:image/jpg;base64,${mySelf.image}`
+                    : "/user.svg"
+                  : myTarget.image !== null
+                  ? `data:image/jpg;base64,${myTarget.image}`
+                  : "/user.svg"
+              }
             />
           </div>
         </div>
@@ -99,7 +107,7 @@ const ChatCard = ({ chat }) => {
                       alt="file"
                       ref={(el) => (imageRef.current[index] = el)}
                       onClick={() => toggleFullscreen(index)}
-                      className={`cursor-pointer ${
+                      className={`cursor-pointer rounded-md ${
                         windowWidth < 320
                           ? "w-[200px] h-[160px]"
                           : "w-[240px] h-[190px]"
@@ -110,7 +118,7 @@ const ChatCard = ({ chat }) => {
                     <video
                       src={`data:${file.fileType};base64,${file.data}`}
                       controls
-                      className={`cursor-pointer ${
+                      className={`cursor-pointer rounded-md ${
                         windowWidth < 320 ? "w-[200px]" : "w-[240px]"
                       }`}
                     />
@@ -160,7 +168,9 @@ const ChatCard = ({ chat }) => {
         </div>
         {!flag && (
           <BsEmojiSmile
-            className="text-xl cursor-pointer ml-2"
+            className={`text-xl cursor-pointer ml-2 ${
+              !chat.isEdited ? "mb-6" : ""
+            }`}
             onClick={() => setShouldDisplayAllLikes(true)}
           />
         )}
@@ -170,18 +180,24 @@ const ChatCard = ({ chat }) => {
               selected={selectedLike}
               setSelected={setSelectedLike}
               setShouldDisplayAllLikes={setShouldDisplayAllLikes}
+              flag={!chat.isEdited}
             />
           </div>
         )}
         {flag && (
           <BsThreeDots
-            className="text-xl cursor-pointer mr-2"
+            className={`text-xl cursor-pointer mr-2 ${
+              !chat.isEdited ? "mb-6" : ""
+            }`}
             onClick={() => setShowEditOrDelete(true)}
           />
         )}
         {showEditOrDelete && (
           <div className="absolute left-0 top-1/2 -translate-y-1/2">
-            <EditOrDelete setShowEditOrDelete={setShowEditOrDelete} />
+            <EditOrDelete
+              setShowEditOrDelete={setShowEditOrDelete}
+              flag={!chat.isEdited}
+            />
           </div>
         )}
       </div>

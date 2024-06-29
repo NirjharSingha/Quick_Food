@@ -6,7 +6,7 @@ import { AiFillLike, AiFillDislike } from "react-icons/ai";
 import { FaLaughSquint, FaSadCry, FaAngry } from "react-icons/fa";
 import { FcLike } from "react-icons/fc";
 
-const Likes = ({ selected, setSelected, setShouldDisplayAllLikes }) => {
+const Likes = ({ selected, setSelected, setShouldDisplayAllLikes, flag }) => {
   const likesRef = useRef(null);
 
   useEffect(() => {
@@ -25,7 +25,9 @@ const Likes = ({ selected, setSelected, setShouldDisplayAllLikes }) => {
 
   return (
     <div
-      className="flex items-center p-1 justify-around gap-2 z-50 bg-white rounded-md shadow-md shadow-slate-300"
+      className={`flex items-center p-1 justify-around gap-2 z-50 bg-white rounded-md shadow-md shadow-slate-300 ${
+        flag ? "mb-6" : ""
+      }`}
       ref={likesRef}
     >
       <AiFillLike

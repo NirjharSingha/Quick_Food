@@ -5,7 +5,7 @@ import { MdModeEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { useEffect, useRef } from "react";
 
-const EditOrDelete = ({ setShowEditOrDelete }) => {
+const EditOrDelete = ({ setShowEditOrDelete, flag }) => {
   const Ref = useRef(null);
 
   useEffect(() => {
@@ -31,7 +31,9 @@ const EditOrDelete = ({ setShowEditOrDelete }) => {
   };
   return (
     <div
-      className="flex justify-center flex-col p-1 gap-2 z-50 bg-white rounded-md shadow-md shadow-slate-300"
+      className={`flex justify-center flex-col p-1 gap-2 z-50 bg-white rounded-md shadow-md shadow-slate-300 ${
+        flag ? "mb-6" : ""
+      }`}
       ref={Ref}
     >
       <div

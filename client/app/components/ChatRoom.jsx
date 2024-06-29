@@ -14,15 +14,18 @@ import axios from "axios";
 import { handleUnauthorized } from "@/app/utils/unauthorized";
 import Loading from "@/app/components/Loading";
 import { jwtDecode } from "jwt-decode";
+import Typing from "../animations/Typing.json";
+import Lottie from "lottie-react";
 
 const ChatRoom = ({ roomId }) => {
   const router = useRouter();
   const [page, setPage] = useState(-1);
-  const size = 10;
+  const size = 12;
   const [showLoading, setShowLoading] = useState(false);
   const [sendRequest, setSendRequest] = useState(true);
   const { stompClient, isTyping, setToastMessage, setIsLoggedIn } =
     useGlobals();
+  const [showUnreadBar, setShowUnreadBar] = useState(true);
   const [inputValue, setInputValue] = useState("");
   const [childInput, setChildInput] = useState("");
   const [chatAttachments, setChatAttachments] = useState([]);
@@ -85,6 +88,7 @@ const ChatRoom = ({ roomId }) => {
 
   useEffect(() => {
     const getAllChats = async (currentPage) => {
+      console.log("currentPage:", currentPage);
       try {
         setShowLoading(true);
         const response = await axios.get(
@@ -102,13 +106,19 @@ const ChatRoom = ({ roomId }) => {
           } else {
             const responseData = response.data;
             setChats((prev) => {
-              // Filter out elements from responseData that already exist in prev based on their IDs
-              const filteredData = responseData.filter(
-                (newItem) =>
-                  !prev.some((prevItem) => prevItem.id === newItem.id)
+              // Merge the previous state with the new data
+              const mergedData = [...prev, ...responseData];
+
+              // Sort the merged data by id
+              const sortedData = mergedData.sort((a, b) => b.id - a.id);
+
+              // Remove duplicates by iterating through the sorted array
+              const uniqueData = sortedData.filter(
+                (item, index, array) =>
+                  index === 0 || item.id !== array[index - 1].id
               );
-              // Merge the filtered data with the previous state
-              return [...prev, ...filteredData];
+
+              return uniqueData;
             });
           }
           if (response.data.length < size) {
@@ -256,7 +266,17 @@ const ChatRoom = ({ roomId }) => {
         setChildInput("");
         setChatToEdit(-1);
 
-        console.log(response.data);
+        setChats((prev) => {
+          const newChat = response.data;
+          return [newChat, ...prev];
+        });
+        if (chatScrollRef && chatScrollRef.current) {
+          chatScrollRef.current.scrollTop = 0;
+        }
+        if (showUnreadBar) {
+          setShowUnreadBar(false);
+        }
+        sendTypingNotification(false);
       }
     } catch (error) {
       console.log("Error:", error);
@@ -290,14 +310,17 @@ const ChatRoom = ({ roomId }) => {
       >
         <div className={`flex items-center bg-gray-700 p-1`}>
           <div className="bg-white p-[0.5rem] flex justify-center items-center mr-2 rounded-full border-[1px] border-solid border-gray-500">
-            {
+            {myTarget.image !== undefined && (
               <img
-                src={myTarget.image !== null ? myTarget.image : "/user.svg"}
+                src={
+                  myTarget.image !== null
+                    ? `data:image/jpg;base64,${myTarget.image}`
+                    : "/user.svg"
+                }
                 alt="logo"
-                width={26}
-                height={26}
+                className="rounded-full w-[26px] h-[26px]"
               />
-            }
+            )}
           </div>
           <p className="ml-1 text-xl text-white font-bold truncate">
             {myTarget.name}
@@ -307,13 +330,37 @@ const ChatRoom = ({ roomId }) => {
           className="h-[calc(100% - 0.75rem)] pl-1 pr-1 mt-1 mb-2 sm:pl-4 sm:pr-4 overflow-y-auto flex flex-col-reverse"
           ref={chatScrollRef}
         >
-          {chats.map((chat, index) => (
-            <ChatCard
-              key={index}
-              chat={chat}
-              mySelf={mySelf}
-              target={myTarget}
+          {isTyping ? (
+            <Lottie
+              animationData={Typing}
+              loop={true}
+              autoplay={true}
+              style={{
+                width: "2.8rem",
+                height: "1.2rem",
+                marginLeft: "0.2rem",
+                marginTop: "0.2rem",
+              }}
             />
+          ) : (
+            <></>
+          )}
+          {chats.map((chat, index) => (
+            <div key={chat.id}>
+              <ChatCard
+                key={chat.id}
+                chat={chat}
+                mySelf={mySelf}
+                myTarget={myTarget}
+              />
+              {index === unseenChatCount - 1 && showUnreadBar ? (
+                <p className="mt-3 mb-3 w-full bg-gray-500 text-white font-sans font-bold text-sm p-1 rounded-full text-center">
+                  unread messages
+                </p>
+              ) : (
+                <></>
+              )}
+            </div>
           ))}
           {showLoading && (
             <div className="w-full flex justify-center items-center">
