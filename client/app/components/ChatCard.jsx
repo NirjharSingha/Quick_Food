@@ -12,8 +12,13 @@ import { FcLike } from "react-icons/fc";
 import Likes from "./Likes";
 import EditOrDelete from "./EditOrDelete";
 import { jwtDecode } from "jwt-decode";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { handleUnauthorized } from "../utils/unauthorized";
 
-const ChatCard = ({ chat, mySelf, myTarget }) => {
+const ChatCard = ({ chat, mySelf, myTarget, roomId }) => {
+  const router = useRouter();
+  const { setToastMessage, setIsLoggedIn, setChats } = useGlobals();
   const [selectedLike, setSelectedLike] = useState(null);
   const [shouldDisplayAllLikes, setShouldDisplayAllLikes] = useState(false);
   const [showEditOrDelete, setShowEditOrDelete] = useState(false);
@@ -50,6 +55,40 @@ const ChatCard = ({ chat, mySelf, myTarget }) => {
   useEffect(() => {
     setSelectedLike(chat.reaction);
   }, [chat.reaction]);
+
+  const deleteHandler = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.delete(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/chat/deleteChatById?chatId=${chat.id}&roomId=${roomId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setShowEditOrDelete(false);
+        setChats((prevChats) => prevChats.filter((c) => c.id !== chat.id));
+        setToastMessage("Chat deleted successfully");
+      }
+    } catch (error) {
+      console.error(error);
+      if (error.response.status === 401) {
+        handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+      } else if (error.response.status === 404) {
+        setToastMessage(
+          "The chat room is already dissolved as the order is delivered"
+        );
+        const role = localStorage.getItem("role");
+        if (role === "USER") {
+          router.push("/orderFood/chat");
+        } else {
+          router.push("/delivery");
+        }
+      }
+    }
+  };
 
   return (
     <div
@@ -197,6 +236,7 @@ const ChatCard = ({ chat, mySelf, myTarget }) => {
             <EditOrDelete
               setShowEditOrDelete={setShowEditOrDelete}
               flag={!chat.isEdited}
+              deleteHandler={deleteHandler}
             />
           </div>
         )}

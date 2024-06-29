@@ -23,8 +23,14 @@ const ChatRoom = ({ roomId }) => {
   const size = 12;
   const [showLoading, setShowLoading] = useState(false);
   const [sendRequest, setSendRequest] = useState(true);
-  const { stompClient, isTyping, setToastMessage, setIsLoggedIn } =
-    useGlobals();
+  const {
+    stompClient,
+    isTyping,
+    setToastMessage,
+    setIsLoggedIn,
+    chats,
+    setChats,
+  } = useGlobals();
   const [showUnreadBar, setShowUnreadBar] = useState(true);
   const [inputValue, setInputValue] = useState("");
   const [childInput, setChildInput] = useState("");
@@ -33,7 +39,6 @@ const ChatRoom = ({ roomId }) => {
   const [chatToEdit, setChatToEdit] = useState(-1);
   const [iAmTyping, setIAmTyping] = useState(false);
   const [showEmojis, setShowEmojis] = useState(false);
-  const [chats, setChats] = useState([]);
   const lastTypingTimeRef = useRef(0);
   const typingTimeoutRef = useRef(null);
   const inputRef = useRef(null);
@@ -69,6 +74,16 @@ const ChatRoom = ({ roomId }) => {
         console.log("Error:", error);
         if (error.response.status === 401) {
           handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+        } else if (error.response.status === 404) {
+          setToastMessage(
+            "The chat room is already dissolved as the order is delivered"
+          );
+          const role = localStorage.getItem("role");
+          if (role === "USER") {
+            router.push("/orderFood/chat");
+          } else {
+            router.push("/delivery");
+          }
         }
       }
     };
@@ -129,6 +144,16 @@ const ChatRoom = ({ roomId }) => {
         console.log("Error:", error);
         if (error.response.status === 401) {
           handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+        } else if (error.response.status === 404) {
+          setToastMessage(
+            "The chat room is already dissolved as the order is delivered"
+          );
+          const role = localStorage.getItem("role");
+          if (role === "USER") {
+            router.push("/orderFood/chat");
+          } else {
+            router.push("/delivery");
+          }
         }
       }
     };
@@ -165,6 +190,7 @@ const ChatRoom = ({ roomId }) => {
 
       return () => {
         currentDivRef.removeEventListener("scroll", scrollHandler);
+        setChats([]);
       };
     }
   }, []);
@@ -282,6 +308,16 @@ const ChatRoom = ({ roomId }) => {
       console.log("Error:", error);
       if (error.response.status === 401) {
         // handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+      } else if (error.response.status === 404) {
+        setToastMessage(
+          "The chat room is already dissolved as the order is delivered"
+        );
+        const role = localStorage.getItem("role");
+        if (role === "USER") {
+          router.push("/orderFood/chat");
+        } else {
+          router.push("/delivery");
+        }
       }
     }
   };
@@ -352,6 +388,7 @@ const ChatRoom = ({ roomId }) => {
                 chat={chat}
                 mySelf={mySelf}
                 myTarget={myTarget}
+                roomId={roomId}
               />
               {index === unseenChatCount - 1 && showUnreadBar ? (
                 <p className="mt-3 mb-3 w-full bg-gray-500 text-white font-sans font-bold text-sm p-1 rounded-full text-center">

@@ -36,6 +36,11 @@ public class ChatController {
         return chatService.deleteChats(roomId);
     }
 
+    @DeleteMapping("/deleteChatById")
+    public ResponseEntity<String> deleteChatById(@RequestParam int chatId, @RequestParam int roomId) {
+        return chatService.deleteChatById(chatId, roomId);
+    }
+
     @PostMapping("/addChat")
     public ResponseEntity<ChatDto> addChat(@RequestParam(value = "chatAttachments", required = false) MultipartFile[] files,
                                            @ModelAttribute ChatDto chatDto) {

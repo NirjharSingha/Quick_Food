@@ -18,4 +18,6 @@ public interface ChatFileRepository extends JpaRepository<ChatFile, Integer> {
     @Transactional
     @Query(value = "DELETE FROM chat_files WHERE chat_id IN (SELECT chat_id FROM chats WHERE room_id = :roomId)", nativeQuery = true)
     void deleteChatFiles(@Param("roomId") int roomId);
+
+    void deleteByChatId(int chatId);
 }

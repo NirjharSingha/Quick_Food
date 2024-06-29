@@ -25,6 +25,7 @@ const GlobalsProvider = ({ children }) => {
   const sideBarRef = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
   const [chatUsers, setChatUsers] = useState([]);
+  const [chats, setChats] = useState([]);
 
   return (
     <GlobalsContext.Provider
@@ -58,6 +59,8 @@ const GlobalsProvider = ({ children }) => {
         setIsTyping,
         chatUsers,
         setChatUsers,
+        chats,
+        setChats,
       }}
     >
       {children}

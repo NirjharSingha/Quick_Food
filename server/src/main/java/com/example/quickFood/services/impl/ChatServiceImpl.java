@@ -93,6 +93,10 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public ResponseEntity<ChatDto> addChat(ChatDto chatDto, List<ChatFileDto> chatFiles) {
         Order order = orderRepository.findById(chatDto.getRoomId()).get();
+//        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
+//            return ResponseEntity.notFound().build();
+//        }
+
         User customer = order.getUser();
         User rider = order.getRider();
 
@@ -161,6 +165,9 @@ public class ChatServiceImpl implements ChatService {
     @Transactional
     public ResponseEntity<ChatRoomInit> chatRoomInit(int roomId, String userId) {
         Order order = orderRepository.findById(roomId).get();
+//        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
+//            return ResponseEntity.notFound().build();
+//        }
         User customer = order.getUser();
         User rider = order.getRider();
 
@@ -179,5 +186,17 @@ public class ChatServiceImpl implements ChatService {
         }
 
         return ResponseEntity.ok(new ChatRoomInit(firstUser, secondUser, unseenCount));
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<String> deleteChatById(int chatId, int roomId) {
+        Order order = orderRepository.findById(roomId).get();
+        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
+            return ResponseEntity.notFound().build();
+        }
+        chatFileRepository.deleteByChatId(chatId);
+        chatRepository.deleteById(chatId);
+        return ResponseEntity.ok("Chat deleted successfully");
     }
 }
