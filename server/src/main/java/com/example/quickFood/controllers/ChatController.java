@@ -32,11 +32,6 @@ public class ChatController {
         return chatService.getChatUsers(userId);
     }
 
-    @DeleteMapping("/deleteChats")
-    public ResponseEntity<String> deleteChats(@RequestParam int roomId) {
-        return chatService.deleteChats(roomId);
-    }
-
     @DeleteMapping("/deleteChatById")
     public ResponseEntity<String> deleteChatById(@RequestParam int chatId, @RequestParam int roomId) {
         return chatService.deleteChatById(chatId, roomId);

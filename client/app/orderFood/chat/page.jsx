@@ -106,7 +106,7 @@ const page = () => {
               style={{ gridAutoColumns: "34px auto 30px" }}
               key={chatUser.roomId}
               onClick={() => {
-                router.push(`/chat/${chatUser.roomId}`);
+                router.push(`/orderFood/chat/${chatUser.roomId}`);
               }}
             >
               <div
@@ -130,12 +130,14 @@ const page = () => {
               >
                 {chatUser.name}
               </p>
-              <div
-                className="text-xs w-[26px] h-[26px] rounded-full bg-gray-300 flex justify-center items-center"
-                style={{ gridColumn: "3" }}
-              >
-                {chatUser.unseenCount}
-              </div>
+              {chatUser.unseenCount > 0 && (
+                <div
+                  className="text-xs w-[26px] h-[26px] rounded-full bg-gray-300 flex justify-center items-center"
+                  style={{ gridColumn: "3" }}
+                >
+                  {chatUser.unseenCount}
+                </div>
+              )}
             </div>
           ))}
         </div>

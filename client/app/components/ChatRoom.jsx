@@ -389,7 +389,7 @@ const ChatRoom = ({ roomId }) => {
     } catch (error) {
       console.log("Error:", error);
       if (error.response.status === 401) {
-        // handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+        handleUnauthorized(setIsLoggedIn, setToastMessage, router);
       } else if (error.response.status === 404) {
         setToastMessage(
           "The chat room is already dissolved as the order is delivered"

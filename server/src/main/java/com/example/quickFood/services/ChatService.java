@@ -12,7 +12,7 @@ import java.util.List;
 public interface ChatService {
     ResponseEntity<List<ChatDto>> getChats(int page, int size, int roomId);
 
-    ResponseEntity<String> deleteChats(int roomId);
+    void deleteChats(int roomId);
 
     ResponseEntity<ChatDto> addChat(ChatDto chatDto, List<ChatFileDto> chatFiles);
 

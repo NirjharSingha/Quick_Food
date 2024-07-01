@@ -82,7 +82,7 @@ const NavBar = () => {
     } catch (error) {
       console.log("Error:", error);
       if (error.response.status === 401) {
-        //  handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+        handleUnauthorized(setIsLoggedIn, setToastMessage, router);
       } else if (error.response.status === 404) {
         setToastMessage(
           "The chat room is already dissolved as the order is delivered"
@@ -157,6 +157,7 @@ const NavBar = () => {
                       data.topic === "add"
                     ) {
                       setChatUsers((prevChatUsers) => {
+                        const newChat = data.chat;
                         const existingUserIndex = prevChatUsers.findIndex(
                           (chatUser) => chatUser.roomId === newChat.roomId
                         );
@@ -175,16 +176,6 @@ const NavBar = () => {
                             ),
                           ];
                           return updatedChatUsers;
-                        } else {
-                          // Room does not exist
-                          const newChatUser = {
-                            roomId: newChat.roomId,
-                            userId: data.userId,
-                            name: data.name,
-                            image: data.image,
-                            unseenCount: 1,
-                          };
-                          return [newChatUser, ...prevChatUsers];
                         }
                       });
                     }

@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
+
 @Repository
 public interface ChatRepository extends JpaRepository<Chat, Integer> {
     Page<Chat> findByRoomId(Integer roomId, Pageable pageable);
@@ -31,4 +33,7 @@ public interface ChatRepository extends JpaRepository<Chat, Integer> {
     @Transactional
     @Query("UPDATE Chat c SET c.reaction = :reaction WHERE c.id = :chatId")
     void updateReaction(int chatId, Reaction reaction);
+
+    @Query("SELECT c.timestamp FROM Chat c WHERE c.room.id = :roomId ORDER BY c.timestamp DESC LIMIT 1")
+    Timestamp getLastChatTime(int roomId);
 }

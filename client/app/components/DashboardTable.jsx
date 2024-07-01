@@ -58,7 +58,11 @@ const DashboardTable = ({ data }) => {
                     : `data:image/jpeg;base64,${item.image}`
                 }
                 alt="logo"
-                className="w-[6.5rem] min-w-[6.5rem] h-[4.5rem] min-h-[4.5rem] rounded-md shadow-md shadow-gray-400 mx-auto"
+                className={`${
+                  pathname.includes("/admin/restaurants")
+                    ? "w-[6.5rem] min-w-[6.5rem]"
+                    : "w-[4.5rem] min-w-[4.5rem]"
+                } h-[4.5rem] min-h-[4.5rem] rounded-md shadow-md shadow-gray-400 mx-auto`}
               />
             </TableCell>
             <TableCell className="truncate text-xs sm:text-sm text-center">

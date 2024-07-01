@@ -16,12 +16,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,9 +39,9 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public ResponseEntity<List<ChatDto>> getChats(int page, int size, int roomId) {
         Order order = orderRepository.findById(roomId).get();
-//        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
-//            return ResponseEntity.notFound().build();
-//        }
+        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
+            return ResponseEntity.notFound().build();
+        }
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Page<Chat> chatPage = chatRepository.findByRoomId(roomId, pageable);
@@ -85,18 +86,17 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Transactional
-    public ResponseEntity<String> deleteChats(int roomId) {
+    public void deleteChats(int roomId) {
         chatFileRepository.deleteChatFiles(roomId);
         chatRepository.deleteByRoomId(roomId);
-        return ResponseEntity.ok("Chats deleted successfully");
     }
 
     @Override
     public ResponseEntity<ChatDto> addChat(ChatDto chatDto, List<ChatFileDto> chatFiles) {
         Order order = orderRepository.findById(chatDto.getRoomId()).get();
-//        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
-//            return ResponseEntity.notFound().build();
-//        }
+        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
+            return ResponseEntity.notFound().build();
+        }
 
         User customer = order.getUser();
         User rider = order.getRider();
@@ -155,9 +155,25 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public ResponseEntity<List<ChatUserDto>> getChatUsers(String userId) {
         List<ChatUserDto> chatUserDtoList = orderRepository.getChatUsers(userId);
+        List<Pair<Integer, Timestamp>> lastChatTimeList = new ArrayList<>();
         for (ChatUserDto chatUserDto : chatUserDtoList) {
             chatUserDto.setUnseenCount(chatRepository.getUnseenCount(chatUserDto.getRoomId(), userId));
+            Timestamp lastChatTime = chatRepository.getLastChatTime(chatUserDto.getRoomId());
+            lastChatTimeList.add(Pair.of(chatUserDto.getRoomId(), Objects.requireNonNullElseGet(lastChatTime, () -> new Timestamp(0))));
         }
+
+        // Create a map to store roomId and lastChatTime
+        Map<Integer, Timestamp> lastChatTimeMap = new HashMap<>();
+        for (Pair<Integer, Timestamp> pair : lastChatTimeList) {
+            lastChatTimeMap.put(pair.getFirst(), pair.getSecond());
+        }
+
+        // Sort chatUserDtoList based on the lastChatTime in the map
+        chatUserDtoList.sort((dto1, dto2) -> {
+            Timestamp lastChatTime1 = lastChatTimeMap.get(dto1.getRoomId());
+            Timestamp lastChatTime2 = lastChatTimeMap.get(dto2.getRoomId());
+            return lastChatTime2.compareTo(lastChatTime1); // For descending order
+        });
 
         return ResponseEntity.ok(chatUserDtoList);
     }
@@ -166,9 +182,9 @@ public class ChatServiceImpl implements ChatService {
     @Transactional
     public ResponseEntity<ChatRoomInit> chatRoomInit(int roomId, String userId) {
         Order order = orderRepository.findById(roomId).get();
-//        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
-//            return ResponseEntity.notFound().build();
-//        }
+        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
+            return ResponseEntity.notFound().build();
+        }
         User customer = order.getUser();
         User rider = order.getRider();
 
@@ -193,9 +209,9 @@ public class ChatServiceImpl implements ChatService {
     @Transactional
     public ResponseEntity<String> deleteChatById(int chatId, int roomId) {
         Order order = orderRepository.findById(roomId).get();
-//        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
-//            return ResponseEntity.notFound().build();
-//        }
+        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
+            return ResponseEntity.notFound().build();
+        }
         chatFileRepository.deleteByChatId(chatId);
         chatRepository.deleteById(chatId);
         return ResponseEntity.ok("Chat deleted successfully");
@@ -205,9 +221,9 @@ public class ChatServiceImpl implements ChatService {
     @Transactional
     public ResponseEntity<String> updateReaction(int chatId, int roomId, Reaction reaction) {
         Order order = orderRepository.findById(roomId).get();
-//        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
-//            return ResponseEntity.notFound().build();
-//        }
+        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
+            return ResponseEntity.notFound().build();
+        }
 
         Reaction prevReaction = chatRepository.chatReaction(chatId);
         System.out.println(prevReaction);
@@ -224,9 +240,9 @@ public class ChatServiceImpl implements ChatService {
     @Transactional
     public ResponseEntity<ChatDto> updateChat(ChatDto chatDto, List<ChatFileDto> chatFiles) {
         Order order = orderRepository.findById(chatDto.getRoomId()).get();
-//        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
-//            return ResponseEntity.notFound().build();
-//        }
+        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
+            return ResponseEntity.notFound().build();
+        }
 
         Chat chat = chatRepository.findById(chatDto.getId()).get();
         chat.setMessage(chatDto.getMessage());
@@ -276,9 +292,9 @@ public class ChatServiceImpl implements ChatService {
     @Transactional
     public ResponseEntity<ChatDto> getChatById(int chatId, int roomId) {
         Order order = orderRepository.findById(roomId).get();
-//        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
-//            return ResponseEntity.notFound().build();
-//        }
+        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
+            return ResponseEntity.notFound().build();
+        }
 
         Chat chat = chatRepository.findById(chatId).get();
         if (!chat.isSeen()) {

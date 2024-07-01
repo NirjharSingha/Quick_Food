@@ -42,7 +42,10 @@ public class OrderServiceImpl implements OrderService {
     private final MenuServiceImpl menuService;
 
     @Autowired
-    NotificationServiceImpl notificationService;
+    private final NotificationServiceImpl notificationService;
+
+    @Autowired
+    private final ChatServiceImpl chatService;
 
     @Override
     public List<OrderCard> getOrderCard(String id, String flag) {
@@ -187,6 +190,7 @@ public class OrderServiceImpl implements OrderService {
 
                 String riderId = orderRepository.findById(orderId).get().getRider().getId();
                 riderStatusRepository.save(new RiderStatus(riderId, true));
+                chatService.deleteChats(orderId);
             }
             return ResponseEntity.ok("Status updated");
         } else {
@@ -251,6 +255,7 @@ public class OrderServiceImpl implements OrderService {
         notificationService.sendNotificationToUser(savedOrder.getRestaurant().getOwner().getId(), restaurantNotification);
 
         riderStatusRepository.save(new RiderStatus(savedOrder.getRider().getId(), true));
+        chatService.deleteChats(orderId);
 
         return "Order cancelled successfully";
     }

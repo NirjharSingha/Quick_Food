@@ -9,8 +9,7 @@ const page = () => {
 
   useEffect(() => {
     const deliveryStatus = JSON.parse(localStorage.getItem("deliveryStatus"));
-    // const roomId = deliveryStatus.orderId;
-    const roomId = 1;
+    const roomId = deliveryStatus.orderId;
     setRoomId(roomId);
   }, []);
 
