@@ -95,4 +95,9 @@ public class ChatController {
             return ResponseEntity.status(500).build();
         }
     }
+
+    @GetMapping("/getChatById")
+    public ResponseEntity<ChatDto> getChatById(@RequestParam int chatId, @RequestParam int roomId) {
+        return chatService.getChatById(chatId, roomId);
+    }
 }

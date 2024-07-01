@@ -38,12 +38,64 @@ const NavBar = () => {
     setShowSideBar,
     showSideBar,
     setIsTyping,
+    setChatUsers,
+    setChats,
+    setShowUnreadBar,
   } = useGlobals();
   const pathname = usePathname();
   const [showPopUp, setShowPopUp] = useState(false);
-  const [title, setTitle] = useState("New Notification!");
+  const [title, setTitle] = useState("");
   const [text, setText] = useState("");
-  const [redirectUrl, setRedirectUrl] = useState("/myAccount/notifications");
+  const [redirectUrl, setRedirectUrl] = useState("");
+
+  const fetchChatById = async (chatId, roomId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/chat/getChatById?chatId=${chatId}&roomId=${roomId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status == 200) {
+        const fetchedChat = response.data;
+        setChats((prevChats) => {
+          const chatIndex = prevChats.findIndex(
+            (chat) => chat.id === fetchedChat.id
+          );
+
+          if (chatIndex !== -1) {
+            // If chat is found, replace it at the same index
+            return [
+              ...prevChats.slice(0, chatIndex),
+              fetchedChat,
+              ...prevChats.slice(chatIndex + 1),
+            ];
+          } else {
+            // If chat is not found, add it at index 0
+            return [fetchedChat, ...prevChats];
+          }
+        });
+      }
+    } catch (error) {
+      console.log("Error:", error);
+      if (error.response.status === 401) {
+        //  handleUnauthorized(setIsLoggedIn, setToastMessage, router);
+      } else if (error.response.status === 404) {
+        setToastMessage(
+          "The chat room is already dissolved as the order is delivered"
+        );
+        const role = localStorage.getItem("role");
+        if (role === "USER") {
+          router.push("/orderFood/chat");
+        } else {
+          router.push("/delivery");
+        }
+      }
+    }
+  };
 
   const getUnseenNotifications = async () => {
     if (localStorage.getItem("token")) {
@@ -90,10 +142,129 @@ const NavBar = () => {
                   setRedirectUrl("/myAccount/notifications");
                   setShowPopUp(true);
                   setUnSeenNotifications((prev) => prev + 1);
-                }
-
-                if (data.title === "Typing") {
+                } else if (data.title === "Typing") {
                   setIsTyping(data.typing);
+                } else if (data.title === "Chat") {
+                  if (data.redirectUrl !== pathname) {
+                    if (data.topic === "add" || data.topic === "reaction") {
+                      setTitle("Chat Notification!");
+                      setText(data.notificationMessage);
+                      setRedirectUrl(data.redirectUrl);
+                      setShowPopUp(true);
+                    }
+                    if (
+                      pathname === "/orderFood/chat" &&
+                      data.topic === "add"
+                    ) {
+                      setChatUsers((prevChatUsers) => {
+                        const existingUserIndex = prevChatUsers.findIndex(
+                          (chatUser) => chatUser.roomId === newChat.roomId
+                        );
+
+                        if (existingUserIndex !== -1) {
+                          // Room already exists
+                          const updatedChatUser = {
+                            ...prevChatUsers[existingUserIndex],
+                            unseenCount:
+                              prevChatUsers[existingUserIndex].unseenCount + 1,
+                          };
+                          const updatedChatUsers = [
+                            updatedChatUser,
+                            ...prevChatUsers.filter(
+                              (_, index) => index !== existingUserIndex
+                            ),
+                          ];
+                          return updatedChatUsers;
+                        } else {
+                          // Room does not exist
+                          const newChatUser = {
+                            roomId: newChat.roomId,
+                            userId: data.userId,
+                            name: data.name,
+                            image: data.image,
+                            unseenCount: 1,
+                          };
+                          return [newChatUser, ...prevChatUsers];
+                        }
+                      });
+                    }
+                  } else {
+                    const topic = data.topic;
+                    if (topic === "add" || topic === "update") {
+                      fetchChatById(data.chat.id, data.chat.roomId);
+                      setShowUnreadBar(false);
+                      const destination =
+                        "/user/" + data.chat.senderId + "/queue";
+                      let redirectUrl;
+                      const role = localStorage.getItem("role");
+                      if (role === "RIDER") {
+                        redirectUrl = "/delivery/chat";
+                      } else {
+                        redirectUrl = `/orderFood/chat/${data.chat.roomId}`;
+                      }
+                      let dataToSend = {
+                        title: "Chat",
+                        topic: "seen",
+                        chat: data.chat,
+                        redirectUrl: redirectUrl,
+                      };
+                      stompClient.send(
+                        destination,
+                        {},
+                        JSON.stringify(dataToSend)
+                      );
+                    } else if (topic === "delete") {
+                      setChats((prevChats) => {
+                        return prevChats.filter(
+                          (chat) => chat.id !== data.chat.id
+                        );
+                      });
+                      setShowUnreadBar(false);
+                    } else if (topic === "reaction") {
+                      setChats((prevChats) => {
+                        const chatIndex = prevChats.findIndex(
+                          (chat) => chat.id === data.chat.id
+                        );
+
+                        if (chatIndex === -1) {
+                          // If chat not found, return the previous state
+                          return prevChats;
+                        }
+
+                        // Create a new chat object with the updated reaction
+                        const updatedChat = {
+                          ...prevChats[chatIndex],
+                          reaction: data.chat.reaction,
+                        };
+
+                        // Return the new state with the updated chat
+                        return [
+                          ...prevChats.slice(0, chatIndex),
+                          updatedChat,
+                          ...prevChats.slice(chatIndex + 1),
+                        ];
+                      });
+                    } else if (topic === "seenAll") {
+                      const userId = jwtDecode(
+                        localStorage.getItem("token")
+                      ).sub;
+                      setChats((prevChats) =>
+                        prevChats.map((chat) =>
+                          chat.senderId === userId
+                            ? { ...chat, isSeen: true }
+                            : chat
+                        )
+                      );
+                    } else if (topic === "seen") {
+                      setChats((prevChats) =>
+                        prevChats.map((chat) =>
+                          chat.id === data.chat.id
+                            ? { ...chat, isSeen: true }
+                            : chat
+                        )
+                      );
+                    }
+                  }
                 }
               }
             );

@@ -8,7 +8,7 @@ const NotificationPopUp = ({ title, text, setShow, redirectUrl }) => {
   return (
     <div
       role="alert"
-      class="alert grid shadow-lg bg-slate-400 relative rounded-lg"
+      className="alert grid shadow-lg bg-slate-400 relative rounded-lg"
       style={{ gridTemplateColumns: "1rem auto 3.5rem" }}
     >
       <button
@@ -21,21 +21,21 @@ const NotificationPopUp = ({ title, text, setShow, redirectUrl }) => {
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
-        class="stroke-info shrink-0 w-6 h-6"
+        className="stroke-info shrink-0 w-6 h-6"
       >
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
           d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
         ></path>
       </svg>
       <div>
-        <h3 class="font-bold">{title}</h3>
-        <div class="text-xs">{text}</div>
+        <h3 className="font-bold">{title}</h3>
+        <div className="text-xs">{text}</div>
       </div>
       <button
-        class="btn btn-sm"
+        className="btn btn-sm"
         onClick={() => {
           router.push(redirectUrl);
           setShow(false);

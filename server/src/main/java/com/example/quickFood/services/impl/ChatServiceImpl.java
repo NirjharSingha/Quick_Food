@@ -193,9 +193,9 @@ public class ChatServiceImpl implements ChatService {
     @Transactional
     public ResponseEntity<String> deleteChatById(int chatId, int roomId) {
         Order order = orderRepository.findById(roomId).get();
-        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
-            return ResponseEntity.notFound().build();
-        }
+//        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
+//            return ResponseEntity.notFound().build();
+//        }
         chatFileRepository.deleteByChatId(chatId);
         chatRepository.deleteById(chatId);
         return ResponseEntity.ok("Chat deleted successfully");
@@ -270,5 +270,46 @@ public class ChatServiceImpl implements ChatService {
                 .build();
 
         return ResponseEntity.ok(chatDto1);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<ChatDto> getChatById(int chatId, int roomId) {
+        Order order = orderRepository.findById(roomId).get();
+//        if (order.getDeliveryCompleted() != null || order.getCancelled() != null) {
+//            return ResponseEntity.notFound().build();
+//        }
+
+        Chat chat = chatRepository.findById(chatId).get();
+        if (!chat.isSeen()) {
+            chat.setSeen(true);
+            chatRepository.save(chat);
+        }
+
+        List<ChatFile> chatFileList = chatFileRepository.findByChatId(chat.getId());
+        List<ChatFileDto> chatFileDtoList = new ArrayList<>();
+        for (ChatFile chatFile : chatFileList) {
+            ChatFileDto chatFileDto = ChatFileDto.builder()
+                    .id(chatFile.getId())
+                    .data(chatFile.getData())
+                    .fileType(chatFile.getFileType())
+                    .build();
+            chatFileDtoList.add(chatFileDto);
+        }
+
+        ChatDto chatDto = ChatDto.builder()
+                .id(chat.getId())
+                .roomId(chat.getRoom().getId())
+                .senderId(chat.getSender().getId())
+                .receiverId(chat.getReceiver().getId())
+                .message(chat.getMessage())
+                .timestamp(chat.getTimestamp())
+                .isEdited(chat.isEdited())
+                .isSeen(true)
+                .reaction(chat.getReaction())
+                .files(chatFileDtoList)
+                .build();
+
+        return ResponseEntity.ok(chatDto);
     }
 }

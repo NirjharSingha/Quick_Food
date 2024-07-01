@@ -16,7 +16,14 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { handleUnauthorized } from "../utils/unauthorized";
 
-const ChatCard = ({ chat, mySelf, myTarget, roomId, setChatToEdit }) => {
+const ChatCard = ({
+  chat,
+  mySelf,
+  myTarget,
+  roomId,
+  setChatToEdit,
+  sendSocketNotification,
+}) => {
   const router = useRouter();
   const { setToastMessage, setIsLoggedIn, setChats } = useGlobals();
   const [selectedLike, setSelectedLike] = useState(null);
@@ -71,6 +78,7 @@ const ChatCard = ({ chat, mySelf, myTarget, roomId, setChatToEdit }) => {
         setShowEditOrDelete(false);
         setChats((prevChats) => prevChats.filter((c) => c.id !== chat.id));
         setToastMessage("Chat deleted successfully");
+        sendSocketNotification("delete", { id: chat.id });
       }
     } catch (error) {
       console.error(error);
@@ -104,9 +112,14 @@ const ChatCard = ({ chat, mySelf, myTarget, roomId, setChatToEdit }) => {
         }
       );
       if (response.status === 200) {
-        console.log("like added");
-        console.log(response);
         setSelectedLike((prev) => {
+          if (prev !== like) {
+            const chatToSend = {
+              id: chat.id,
+              reaction: like,
+            };
+            sendSocketNotification("reaction", chatToSend);
+          }
           if (prev === like) return null;
           else return like;
         });

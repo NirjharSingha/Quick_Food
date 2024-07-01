@@ -16,8 +16,10 @@ import Loading from "@/app/components/Loading";
 import { jwtDecode } from "jwt-decode";
 import Typing from "../animations/Typing.json";
 import Lottie from "lottie-react";
+import { usePathname } from "next/navigation";
 
 const ChatRoom = ({ roomId }) => {
+  const pathname = usePathname();
   const router = useRouter();
   const [page, setPage] = useState(-1);
   const size = 12;
@@ -30,8 +32,9 @@ const ChatRoom = ({ roomId }) => {
     setIsLoggedIn,
     chats,
     setChats,
+    showUnreadBar,
+    setShowUnreadBar,
   } = useGlobals();
-  const [showUnreadBar, setShowUnreadBar] = useState(true);
   const [inputValue, setInputValue] = useState("");
   const [childInput, setChildInput] = useState("");
   const [chatAttachments, setChatAttachments] = useState([]);
@@ -49,6 +52,51 @@ const ChatRoom = ({ roomId }) => {
   const [myTarget, setMyTarget] = useState({});
   const [unseenChatCount, setUnseenChatCount] = useState(-1);
   const fileInputRef = useRef(null);
+
+  const sendSocketNotification = (topic, chat) => {
+    if (stompClient && stompClient.connected) {
+      let notificationMessage = "";
+      let redirectUrl;
+      if (topic === "add") {
+        notificationMessage = `${mySelf.name} sent you a new message`;
+      } else if (topic === "reaction") {
+        notificationMessage = `${mySelf.name} reacted to your message`;
+      }
+      if (pathname.includes("/orderFood/chat")) {
+        redirectUrl = "/delivery/chat";
+      } else {
+        redirectUrl = `/orderFood/chat/${roomId}`;
+      }
+
+      let dataToSend = {
+        title: "Chat",
+        topic: topic,
+        notificationMessage: notificationMessage,
+        redirectUrl: redirectUrl,
+      };
+
+      if (topic === "add" || topic === "update") {
+        dataToSend = {
+          ...dataToSend,
+          chat: {
+            id: chat.id,
+            roomId: chat.roomId,
+          },
+        };
+      } else {
+        dataToSend = {
+          ...dataToSend,
+          chat: chat,
+        };
+      }
+
+      stompClient.send(
+        "/user/" + destination + "/queue",
+        {},
+        JSON.stringify(dataToSend)
+      );
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,6 +117,7 @@ const ChatRoom = ({ roomId }) => {
           setMyTarget(secondUser);
           setDestination(secondUser.id);
           setUnseenChatCount(unseenCount);
+          sendSocketNotification("seenAll", null);
         }
       } catch (error) {
         console.log("Error:", error);
@@ -324,6 +373,7 @@ const ChatRoom = ({ roomId }) => {
           if (showUnreadBar) {
             setShowUnreadBar(false);
           }
+          sendSocketNotification("add", response.data);
         } else {
           setChats((prev) => {
             const updatedChat = response.data;
@@ -333,6 +383,7 @@ const ChatRoom = ({ roomId }) => {
           });
           setChatToEdit(null);
           setToastMessage("Chat updated successfully");
+          sendSocketNotification("update", response.data);
         }
       }
     } catch (error) {
@@ -415,14 +466,6 @@ const ChatRoom = ({ roomId }) => {
           )}
           {chats.map((chat, index) => (
             <div key={chat.id}>
-              <ChatCard
-                key={chat.id}
-                chat={chat}
-                mySelf={mySelf}
-                myTarget={myTarget}
-                roomId={roomId}
-                setChatToEdit={setChatToEdit}
-              />
               {index === unseenChatCount - 1 && showUnreadBar ? (
                 <p className="mt-3 mb-3 w-full bg-gray-500 text-white font-sans font-bold text-sm p-1 rounded-full text-center">
                   unread messages
@@ -430,6 +473,15 @@ const ChatRoom = ({ roomId }) => {
               ) : (
                 <></>
               )}
+              <ChatCard
+                key={chat.id}
+                chat={chat}
+                mySelf={mySelf}
+                myTarget={myTarget}
+                roomId={roomId}
+                setChatToEdit={setChatToEdit}
+                sendSocketNotification={sendSocketNotification}
+              />
             </div>
           ))}
           {showLoading && (

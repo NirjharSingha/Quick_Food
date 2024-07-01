@@ -134,7 +134,7 @@ const page = () => {
                 className="text-xs w-[26px] h-[26px] rounded-full bg-gray-300 flex justify-center items-center"
                 style={{ gridColumn: "3" }}
               >
-                99
+                {chatUser.unseenCount}
               </div>
             </div>
           ))}

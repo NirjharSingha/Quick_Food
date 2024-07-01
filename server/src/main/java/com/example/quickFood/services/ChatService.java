@@ -25,4 +25,6 @@ public interface ChatService {
     ResponseEntity<String> updateReaction(int chatId, int roomId, Reaction reaction);
 
     ResponseEntity<ChatDto> updateChat(ChatDto chatDto, List<ChatFileDto> chatFiles);
+
+    ResponseEntity<ChatDto> getChatById(int chatId, int roomId);
 }
