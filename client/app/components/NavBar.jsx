@@ -48,7 +48,7 @@ const NavBar = () => {
   const [text, setText] = useState("");
   const [redirectUrl, setRedirectUrl] = useState("");
 
-  const fetchChatById = async (chatId, roomId) => {
+  const fetchChatById = async (chatId, roomId, stompClient, dataChat) => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
@@ -78,6 +78,23 @@ const NavBar = () => {
             return [fetchedChat, ...prevChats];
           }
         });
+
+        setShowUnreadBar(false);
+        const destination = "/user/" + fetchedChat.senderId + "/queue";
+        let redirectUrl;
+        const role = localStorage.getItem("role");
+        if (role === "RIDER") {
+          redirectUrl = `/orderFood/chat/${dataChat.roomId}`;
+        } else {
+          redirectUrl = "/delivery/chat";
+        }
+        let dataToSend = {
+          title: "Chat",
+          topic: "seen",
+          chat: dataChat,
+          redirectUrl: redirectUrl,
+        };
+        stompClient.send(destination, {}, JSON.stringify(dataToSend));
       }
     } catch (error) {
       console.log("Error:", error);
@@ -145,6 +162,16 @@ const NavBar = () => {
                 } else if (data.title === "Typing") {
                   setIsTyping(data.typing);
                 } else if (data.title === "Chat") {
+                  const fullUrl = window.location.href;
+                  const baseUrl = process.env.NEXT_PUBLIC_CLIENT_URL;
+
+                  // Remove the base URL from the full URL to get the relative path
+                  const relativePath = fullUrl.replace(baseUrl, "");
+
+                  // Ensure the relative path starts with a '/'
+                  const pathname = relativePath.startsWith("/")
+                    ? relativePath
+                    : "/" + relativePath;
                   if (data.redirectUrl !== pathname) {
                     if (data.topic === "add" || data.topic === "reaction") {
                       setTitle("Chat Notification!");
@@ -182,27 +209,11 @@ const NavBar = () => {
                   } else {
                     const topic = data.topic;
                     if (topic === "add" || topic === "update") {
-                      fetchChatById(data.chat.id, data.chat.roomId);
-                      setShowUnreadBar(false);
-                      const destination =
-                        "/user/" + data.chat.senderId + "/queue";
-                      let redirectUrl;
-                      const role = localStorage.getItem("role");
-                      if (role === "RIDER") {
-                        redirectUrl = "/delivery/chat";
-                      } else {
-                        redirectUrl = `/orderFood/chat/${data.chat.roomId}`;
-                      }
-                      let dataToSend = {
-                        title: "Chat",
-                        topic: "seen",
-                        chat: data.chat,
-                        redirectUrl: redirectUrl,
-                      };
-                      stompClient.send(
-                        destination,
-                        {},
-                        JSON.stringify(dataToSend)
+                      fetchChatById(
+                        data.chat.id,
+                        data.chat.roomId,
+                        stompClient,
+                        data.chat
                       );
                     } else if (topic === "delete") {
                       setChats((prevChats) => {
@@ -247,13 +258,16 @@ const NavBar = () => {
                         )
                       );
                     } else if (topic === "seen") {
-                      setChats((prevChats) =>
-                        prevChats.map((chat) =>
-                          chat.id === data.chat.id
+                      console.log("chat to seen" + data.chat.id);
+                      console.log("other chats in array:");
+                      setChats((prevChats) => {
+                        return prevChats.map((chat) => {
+                          console.log(chat.id);
+                          return chat.id === data.chat.id
                             ? { ...chat, isSeen: true }
-                            : chat
-                        )
-                      );
+                            : chat;
+                        });
+                      });
                     }
                   }
                 }

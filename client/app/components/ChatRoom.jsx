@@ -16,10 +16,8 @@ import Loading from "@/app/components/Loading";
 import { jwtDecode } from "jwt-decode";
 import Typing from "../animations/Typing.json";
 import Lottie from "lottie-react";
-import { usePathname } from "next/navigation";
 
 const ChatRoom = ({ roomId }) => {
-  const pathname = usePathname();
   const router = useRouter();
   const [page, setPage] = useState(-1);
   const size = 12;
@@ -62,7 +60,8 @@ const ChatRoom = ({ roomId }) => {
       } else if (topic === "reaction") {
         notificationMessage = `${mySelf.name} reacted to your message`;
       }
-      if (pathname.includes("/orderFood/chat")) {
+      const role = localStorage.getItem("role");
+      if (role === "USER") {
         redirectUrl = "/delivery/chat";
       } else {
         redirectUrl = `/orderFood/chat/${roomId}`;
@@ -117,7 +116,6 @@ const ChatRoom = ({ roomId }) => {
           setMyTarget(secondUser);
           setDestination(secondUser.id);
           setUnseenChatCount(unseenCount);
-          sendSocketNotification("seenAll", null);
         }
       } catch (error) {
         console.log("Error:", error);
@@ -125,7 +123,7 @@ const ChatRoom = ({ roomId }) => {
           handleUnauthorized(setIsLoggedIn, setToastMessage, router);
         } else if (error.response.status === 404) {
           setToastMessage(
-            "The chat room is already dissolved as the order is delivered"
+            "The chat room is already dissolved as the order is complete"
           );
           const role = localStorage.getItem("role");
           if (role === "USER") {
@@ -141,6 +139,12 @@ const ChatRoom = ({ roomId }) => {
       fetchData();
     }
   }, [roomId]);
+
+  useEffect(() => {
+    if (destination !== "") {
+      sendSocketNotification("seenAll", null);
+    }
+  }, [destination]);
 
   useEffect(() => {
     if (unseenChatCount >= 0) {

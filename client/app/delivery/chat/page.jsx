@@ -9,11 +9,23 @@ const page = () => {
 
   useEffect(() => {
     const deliveryStatus = JSON.parse(localStorage.getItem("deliveryStatus"));
-    const roomId = deliveryStatus.orderId;
-    setRoomId(roomId);
+    if (deliveryStatus) {
+      const roomId = deliveryStatus.orderId;
+      setRoomId(roomId);
+    }
   }, []);
 
-  return <ChatRoom roomId={roomId} />;
+  return (
+    <>
+      {roomId !== -1 ? (
+        <ChatRoom roomId={roomId} />
+      ) : (
+        <p className="text-md font-serif text-gray-700 w-full h-full flex justify-center items-center">
+          No Chat Room Available Now
+        </p>
+      )}
+    </>
+  );
 };
 
 export default page;
