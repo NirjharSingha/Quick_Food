@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+    environment:
+      - NEXT_PUBLIC_SERVER_URL=http://localhost:8080
+      - NEXT_PUBLIC_CLIENT_URL=http://localhost:3000
+      - NEXT_PUBLIC_OAUTH_CLIENT_ID=Your_OAUTH_CLIENT_ID            # set your oauth client id
+      - NEXT_PUBLIC_OAUTH_CLIENT_SECRET=Your_OAUTH_CLIENT_SECRET    # set your oauth client secret
+      - NEXT_PUBLIC_MAP_API_KEY=Your_Map_API_Key                    # set your map api key
+      - NEXT_PUBLIC_EMAILJS_SERVICE_ID=Your_EmailJS_Service_ID      # set your emailjs service id
+      - NEXT_PUBLIC_EMAILJS_TEMPLATE_ID=Your_EmailJS_Template_ID    # set your emailjs template id
+      - NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=Your_EmailJS_Public_Key      # set your emailjs public key
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/Quick_Food_Database
+      - SPRING_DATASOURCE_USERNAME=root
+      - CLIENT_URL=http://localhost:3000
+      - SPRING_DATASOURCE_PASSWORD=Your_Password        # set your password
+      - JWT_SECRET=Your_JWT_Secret_Key                  # set your jwt secret key
+      - STRIPE_SECRET_KEY=Your_JWT_Stripe_Key           # set your stripe key
+
+  db:
+    image: mysql:8.0
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_DATABASE=Quick_Food_Database
+      - MYSQL_USER=root
+      - MYSQL_ROOT_PASSWORD=Your_Password           # set your password
+      - MYSQL_PASSWORD=Your_Password                # set your password
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:

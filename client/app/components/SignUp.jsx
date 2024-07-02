@@ -10,6 +10,7 @@ import axios from "axios";
 import { useGlobals } from "../contexts/Globals";
 import { jwtDecode } from "jwt-decode";
 import { usePathname } from "next/navigation";
+import emailjs from "@emailjs/browser";
 
 const SignUp = ({ setShowLogin, setShowSignUp, setRiders }) => {
   const [password, setPassword] = useState("");
@@ -20,7 +21,8 @@ const SignUp = ({ setShowLogin, setShowSignUp, setRiders }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const containerRef = useRef(null);
-  const { setIsLoggedIn, setToastMessage, setRole, windowWidth } = useGlobals();
+  const { setIsLoggedIn, setToastMessage, setRole, windowWidth, setShowOtp } =
+    useGlobals();
   const pathname = usePathname();
 
   useEffect(() => {
@@ -54,6 +56,7 @@ const SignUp = ({ setShowLogin, setShowSignUp, setRiders }) => {
       password: password,
       role: !pathname.includes("/admin/riders") ? "USER" : "RIDER",
     };
+
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/signup`,
@@ -67,18 +70,50 @@ const SignUp = ({ setShowLogin, setShowSignUp, setRiders }) => {
             return [...prev, { id: id, name: username, image: null }];
           });
           return;
+        } else {
+          const otp = Math.floor(100000 + Math.random() * 900000).toString();
+          emailjs
+            .send(
+              process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
+              process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
+              {
+                to_name: username,
+                to_email: id,
+                message: `OTP ${otp}`,
+              },
+              process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+            )
+            .then(
+              async () => {
+                const res = await axios.post(
+                  `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/saveOtp`,
+                  {
+                    userEmail: id,
+                    otp: otp,
+                  }
+                );
+                if (res.status === 200) {
+                  const otpObject = {
+                    signupDto: postData,
+                    timestamp: new Date().getTime(),
+                  };
+                  localStorage.setItem("otpObject", JSON.stringify(otpObject));
+                  setShowSignUp(false);
+                  setShowOtp(true);
+                }
+              },
+              (error) => {
+                console.log("Error:", error);
+                setWarning("This email doesn't exist");
+              }
+            );
         }
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("isLoggedIn", true);
-        setIsLoggedIn(true);
-        setRole(response.data.role);
-        localStorage.setItem("role", response.data.role);
-        setShowSignUp(false);
-        setToastMessage("Signed up successfully");
       }
     } catch (error) {
       console.log(error);
-      setWarning("Invalid input");
+      setWarning(
+        `Duplicate ${pathname.includes("/admin/riders") ? "ID" : "email"}`
+      );
     }
   };
 
@@ -213,7 +248,7 @@ const SignUp = ({ setShowLogin, setShowSignUp, setRiders }) => {
           />
         )}
       </div>
-      <p className="font-sans text-sm text-red-600 w-full text-center mt-5">
+      <p className="font-sans text-sm text-red-600 w-full text-center mt-3">
         {warning}
       </p>
       <button

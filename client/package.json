@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.3.3",
     "@nextui-org/input": "^2.1.21",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-dialog": "^1.0.5",
@@ -28,6 +29,7 @@
     "clsx": "^2.1.0",
     "date-fns": "^3.6.0",
     "firebase": "^10.10.0",
+    "input-otp": "^1.2.4",
     "jwt-decode": "^4.0.0",
     "lottie-react": "^2.4.0",
     "net": "^1.0.2",

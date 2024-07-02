@@ -9,4 +9,8 @@ public interface AuthService {
     ResponseEntity<JwtAuthResponse> userLogin(LoginDto request);
 
     ResponseEntity<JwtAuthResponse> googleAuth(GoogleAuth request);
+
+    ResponseEntity<String> saveOtp(OTPDto request);
+
+    ResponseEntity<JwtAuthResponse> verifyOtp(OTPDto request, String username, String password);
 }

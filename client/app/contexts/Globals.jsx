@@ -27,6 +27,7 @@ const GlobalsProvider = ({ children }) => {
   const [chatUsers, setChatUsers] = useState([]);
   const [chats, setChats] = useState([]);
   const [showUnreadBar, setShowUnreadBar] = useState(true);
+  const [showOtp, setShowOtp] = useState(false);
 
   return (
     <GlobalsContext.Provider
@@ -64,6 +65,8 @@ const GlobalsProvider = ({ children }) => {
         setChats,
         showUnreadBar,
         setShowUnreadBar,
+        showOtp,
+        setShowOtp,
       }}
     >
       {children}

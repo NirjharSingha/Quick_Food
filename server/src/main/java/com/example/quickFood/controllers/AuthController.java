@@ -31,4 +31,14 @@ public class AuthController {
         return authenticationService.googleAuth(request);
     }
 
+    @PostMapping("/saveOtp")
+    public ResponseEntity<String> saveOtp(@RequestBody OTPDto request) {
+        return authenticationService.saveOtp(request);
+    }
+
+    @PostMapping("/verifyOtp")
+    public ResponseEntity<JwtAuthResponse> verifyOtp(@RequestBody OTPDto request, @RequestParam String username, @RequestParam String password) {
+        return authenticationService.verifyOtp(request, username, password);
+    }
+
 }

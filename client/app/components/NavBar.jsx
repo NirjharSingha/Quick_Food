@@ -18,6 +18,7 @@ import { IoMdMenu } from "react-icons/io";
 import Cross from "./Cross";
 import { handleUnauthorized } from "../utils/unauthorized";
 import NotificationPopUp from "./NotificationPopUp";
+import Otp from "./Otp";
 
 const NavBar = () => {
   const router = useRouter();
@@ -41,6 +42,8 @@ const NavBar = () => {
     setChatUsers,
     setChats,
     setShowUnreadBar,
+    showOtp,
+    setShowOtp,
   } = useGlobals();
   const pathname = usePathname();
   const [showPopUp, setShowPopUp] = useState(false);
@@ -282,6 +285,10 @@ const NavBar = () => {
     if (isLoggedIn) {
       getUnseenNotifications();
     }
+    const otpObject = JSON.parse(localStorage.getItem("otpObject"));
+    if (otpObject !== undefined && otpObject !== null) {
+      setShowOtp(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -331,6 +338,7 @@ const NavBar = () => {
       {showSignUp && (
         <SignUp setShowSignUp={setShowSignUp} setShowLogin={setShowLogin} />
       )}
+      {showOtp && <Otp />}
       <div style={{ display: "none" }}>
         <Toast />
       </div>

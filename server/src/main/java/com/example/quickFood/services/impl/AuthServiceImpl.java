@@ -2,7 +2,9 @@ package com.example.quickFood.services.impl;
 
 import com.example.quickFood.dto.*;
 import com.example.quickFood.enums.Role;
+import com.example.quickFood.models.OTP;
 import com.example.quickFood.models.User;
+import com.example.quickFood.repositories.OTPRepository;
 import com.example.quickFood.repositories.UserRepository;
 import com.example.quickFood.services.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -13,12 +15,18 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.Timestamp;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     @Autowired
     private final UserRepository userRepository;
+    @Autowired
+    private final OTPRepository otpRepository;
     @Autowired
     private final UserServiceImpl userService;
     @Autowired
@@ -31,23 +39,14 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity<JwtAuthResponse> userSignup(SignupDto request) {
         String hashedPassword = passwordEncoder.encode(request.getPassword());
-
-        User user = User.builder()
-                .id(request.getId())
-                .password(hashedPassword)
-                .name(request.getName())
-                .build();
-
         request.setPassword(hashedPassword);
 
         if (userRepository.findById(request.getId()).isEmpty()) {
-            userService.addUser(request);
-            String jwt = jwtService.generateToken(user);
+            if (request.getRole() == Role.RIDER) {
+                userService.addUser(request);
+            }
 
-            return ResponseEntity.ok(JwtAuthResponse.builder()
-                    .token(jwt)
-                    .role(Role.USER)
-                    .build());
+            return ResponseEntity.status(HttpStatus.OK).build();
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(JwtAuthResponse.builder()
@@ -106,4 +105,60 @@ public class AuthServiceImpl implements AuthService {
         return null;
     }
 
+    @Override
+    public ResponseEntity<String> saveOtp(OTPDto request) {
+        request.setTimestamp(new Timestamp(System.currentTimeMillis()));
+        OTP otp = OTP.builder()
+                .userEmail(request.getUserEmail())
+                .otp(request.getOtp())
+                .timestamp(request.getTimestamp())
+                .build();
+        otpRepository.save(otp);
+        return ResponseEntity.ok("OTP saved successfully");
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<JwtAuthResponse> verifyOtp(OTPDto request, String username, String password) {
+        List<OTP> otpList = otpRepository.findByUserEmail(request.getUserEmail());
+        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+        for (OTP otp : otpList) {
+            if (currentTime.getTime() - otp.getTimestamp().getTime() > 180000) {
+                otpRepository.delete(otp);
+                if (otp.getOtp().equals(request.getOtp())) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                            .body(JwtAuthResponse.builder()
+                                    .error("OTP expired")
+                                    .build());
+                }
+            } else {
+                if (otp.getOtp().equals(request.getOtp())) {
+                    otpRepository.deleteByUserEmail(request.getUserEmail());
+                    String hashedPassword = passwordEncoder.encode(password);
+                    SignupDto signupDto = SignupDto.builder()
+                            .id(request.getUserEmail())
+                            .name(username)
+                            .password(hashedPassword)
+                            .role(Role.USER)
+                            .build();
+                    userService.addUser(signupDto);
+
+                    User user = User.builder()
+                            .id(request.getUserEmail())
+                            .password(hashedPassword)
+                            .name(username)
+                            .build();
+                    var jwt = jwtService.generateToken(user);
+                    return ResponseEntity.ok(JwtAuthResponse.builder()
+                            .token(jwt)
+                            .role(Role.USER)
+                            .build());
+                }
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(JwtAuthResponse.builder()
+                        .error("Wrong OTP")
+                        .build());
+    }
 }
