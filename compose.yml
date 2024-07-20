@@ -33,7 +33,7 @@ services:
       - CLIENT_URL=http://localhost:3000
       - SPRING_DATASOURCE_PASSWORD=Your_Password        # set your password
       - JWT_SECRET=Your_JWT_Secret_Key                  # set your jwt secret key
-      - STRIPE_SECRET_KEY=Your_JWT_Stripe_Key           # set your stripe key
+      - STRIPE_SECRET_KEY=Your_Stripe_Secrect_Key       # set your stripe secret key
 
   db:
     image: mysql:8.0

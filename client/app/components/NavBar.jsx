@@ -282,14 +282,17 @@ const NavBar = () => {
       });
     }
 
-    if (isLoggedIn) {
-      getUnseenNotifications();
-    }
     const otpObject = JSON.parse(localStorage.getItem("otpObject"));
     if (otpObject !== undefined && otpObject !== null) {
       setShowOtp(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      getUnseenNotifications();
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
     setWindowWidth(window.innerWidth);
@@ -353,13 +356,15 @@ const NavBar = () => {
         </div>
       )}
       <div
-        className="navbar h-[4rem] bg-base-100 sticky"
+        className={`flex items-center w-full ${
+          windowWidth < 530 ? "h-[3.3rem]" : "h-[4rem]"
+        } bg-base-100 sticky`}
         style={{ backgroundColor: "#d6c5b7" }}
       >
         <div
           className={`flex items-center ${
             windowWidth >= 700 ? "ml-4" : windowWidth >= 400 ? "ml" : "ml-0"
-          } navbar-start`}
+          } w-[50%] justify-start`}
         >
           {windowWidth > 900 || pathname === "/" ? (
             <div className="bg-yellow-50 p-[0.35rem] flex justify-center items-center mr-2 rounded-full border-2 border-solid border-white">
@@ -384,7 +389,7 @@ const NavBar = () => {
         {!isLoggedIn && <></>}
         {isLoggedIn && (
           <div
-            className={`navbar-center flex justify-between ${
+            className={`shrink-0 flex justify-between ${
               windowWidth > 500
                 ? "gap-6"
                 : windowWidth > 350
@@ -454,7 +459,7 @@ const NavBar = () => {
           </div>
         )}
         <div
-          className="navbar-end"
+          className="flex items-center justify-end w-[50%] ml-auto"
           style={windowWidth < 350 ? { width: "35%" } : {}}
         >
           {windowWidth >= 550 && (
