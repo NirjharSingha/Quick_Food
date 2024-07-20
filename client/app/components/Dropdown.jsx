@@ -37,10 +37,8 @@ export function Dropdown({ setIsUserLogin, setShowLogin, setShowSignUp }) {
           role="button"
           className={
             windowWidth >= 700
-              ? "btn btn-ghost btn-circle"
-              : `${
-                  windowWidth >= 400 ? "mr-1" : "mr-0"
-                } ml-1 hover:btn hover:btn-ghost hover:btn-circle`
+              ? "btn btn-ghost btn-circle hover:btn hover:btn-ghost hover:btn-circle"
+              : `${windowWidth >= 400 ? "mr-1" : "mr-0"} ml-1`
           }
         >
           <svg

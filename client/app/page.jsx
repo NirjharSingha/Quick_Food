@@ -44,14 +44,11 @@ export default function Home() {
   ];
 
   return (
-    <div
-      className="w-screen overflow-x-hidden overflow-y-auto bg-orange-50"
-      style={{ height: "calc(100svh - 4rem)" }}
-    >
+    <div className="w-screen overflow-x-hidden overflow-y-auto bg-orange-50">
       <div className="bg-orange-50 flex flex-col-reverse md:flex-row items-center justify-around">
         <div className="flex flex-col justify-center items-center">
           <p className="w-full text-center text-gray-700 font-bold font-serif text-4xl sm:text-6xl mb-4">
-            Quick Food
+            QuickFood
           </p>
           <p className="w-full text-center text-gray-700 font-bold font-serif text-xl sm:text-3xl">
             From Order to Door

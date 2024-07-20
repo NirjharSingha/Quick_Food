@@ -28,7 +28,10 @@ export default function RootLayout({ children }) {
   return (
     <div
       className="w-screen overflow-x-hidden overflow-y-auto flex"
-      style={{ height: "calc(100svh - 4rem)" }}
+      style={{
+        height:
+          windowWidth > 530 ? "calc(100svh - 4rem)" : "calc(100svh - 3.3rem)",
+      }}
     >
       {(showSideBar || windowWidth > 900) && (
         <div
@@ -103,7 +106,10 @@ export default function RootLayout({ children }) {
       )}
       <div
         className="overflow-x-hidden overflow-y-auto flex w-full"
-        style={{ height: "calc(100svh - 4rem)" }}
+        style={{
+          height:
+            windowWidth > 530 ? "calc(100svh - 4rem)" : "calc(100svh - 3.3rem)",
+        }}
       >
         {children}
       </div>

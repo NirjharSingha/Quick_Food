@@ -53,7 +53,10 @@ const page = () => {
   return (
     <div
       className="w-full flex flex-col overflow-y-auto"
-      style={{ maxHeight: "calc(100svh - 4rem)" }}
+      style={{
+        maxHeight:
+          windowWidth > 530 ? "calc(100svh - 4rem)" : "calc(100svh - 3.3rem)",
+      }}
     >
       {showLoading && (
         <div className="w-full h-full flex justify-center items-center">
