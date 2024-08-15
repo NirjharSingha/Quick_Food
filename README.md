@@ -10,7 +10,7 @@ The frontend of the app is hosted on Vercel and the backend is hosted on Render.
 
 <p align="center">
   <a href="https://quick-food-delta.vercel.app/">
-    <img src="./README/url_img.png" alt="QuickFood" width="300" height="200">
+    <img src="./README/quickfood.png" alt="QuickFood" width="300" height="200">
   </a>
 </p>
 
@@ -151,6 +151,12 @@ Integrates Google Maps to enhance the delivery process by allowing customers to 
 <br />
 <h3>Local Development:</h3> <br />
 
+First clone the git repository using the following command.
+
+```bash
+git clone https://github.com/NirjharSingha/Quick_Food.git
+```
+
 <b>Environment variables that need to update:</b>
 
 <b>Client:</b>
@@ -183,8 +189,8 @@ Integrates Google Maps to enhance the delivery process by allowing customers to 
 |---------------------------------|----------------------------------------------------------------------------|
 | MYSQL_DATABASE                  | Your Database Name (eg "Quick_Food_Database")                              |
 | MYSQL_USER                      | Your database username (You can use "root" user)                           |
-| MYSQL_ROOT_PASSWORD             | Set the required passwor here                                              |
-| MYSQL_PASSWORD                  | Set the required passwor here                                              |
+| MYSQL_ROOT_PASSWORD             | Set the required password here                                              |
+| MYSQL_PASSWORD                  | Set the required password here                                              |
 
 <br />
 
@@ -223,20 +229,13 @@ This will start your react development server. To build your react client projec
 npm run build
 ```
 
-Now let's build the MySQL database locally. Run the following command in terminal.
+Now let's build the MySQL database locally. For this you must have MySQL installed in your local device. Then run the following command in terminal.
 
 ```bash
 mysql -u root -p -e "CREATE DATABASE Quick_Food_Database;"
 ```
 
-This will create an empty database. If you want to insert some sample data, then you can add them from the dumped database file. For this, first come to the base  directory of the project. Then run the following command.
-
-```bash
-cd Resources
-mysql -u root -p Quick_Food_Database < QuickFood_DumpedDB.sql
-```
-
-This will add some sample data in your database. And here your database is ready.
+This will create an empty database with only the entry of the Admin. The id and password of the Admin will be 'ADMIN' and 'pass' respectively. You can further modify this.
 
 <br />
 Now let's build the backend server locally. Come to the base directory of the project and then open the server folder. You can use an IDE <b>(INTELLIJ IDEA Recommended)</b> to run the server of your application. But you must have the <b>Lombok Plugin</b> installed in your <b>INTELLIJ IDEA</b> to run the spring boot server.
@@ -275,23 +274,7 @@ http://localhost:3000
 </p>
 
 <p align="center">
-  <img src="./README/img9.png" alt="Alt text" title="Optional title">
-</p>
-
-<p align="center">
   <img src="./README/img10.png" alt="Alt text" title="Optional title">
-</p>
-
-<p align="center">
-  <img src="./README/img11.png" alt="Alt text" title="Optional title">
-</p>
-
-<p align="center">
-  <img src="./README/img14.png" alt="Alt text" title="Optional title">
-</p>
-
-<p align="center">
-  <img src="./README/img8.png" alt="Alt text" title="Optional title">
 </p>
 
 <p align="center">
@@ -311,7 +294,15 @@ http://localhost:3000
 </p>
 
 <p align="center">
+  <img src="./README/img23.png" alt="Alt text" title="Optional title">
+</p>
+
+<p align="center">
   <img src="./README/img19.png" alt="Alt text" title="Optional title">
+</p>
+
+<p align="center">
+  <img src="./README/img11.png" alt="Alt text" title="Optional title">
 </p>
 
 <p align="center">
@@ -319,7 +310,31 @@ http://localhost:3000
 </p>
 
 <p align="center">
-  <img src="./README/img7.png" alt="Alt text" title="Optional title">
+  <img src="./README/img14.png" alt="Alt text" title="Optional title">
+</p>
+
+<p align="center">
+  <img src="./README/img21.png" alt="Alt text" title="Optional title">
+</p>
+
+<p align="center">
+  <img src="./README/img9.png" alt="Alt text" title="Optional title">
+</p>
+
+<p align="center">
+  <img src="./README/img22.png" alt="Alt text" title="Optional title">
+</p>
+
+<p align="center">
+  <img src="./README/img8.png" alt="Alt text" title="Optional title">
+</p>
+
+<p align="center">
+  <img src="./README/img25.png" alt="Alt text" title="Optional title">
+</p>
+
+<p align="center">
+  <img src="./README/img15.png" alt="Alt text" title="Optional title">
 </p>
 
 <p align="center">
@@ -327,11 +342,15 @@ http://localhost:3000
 </p>
 
 <p align="center">
+  <img src="./README/img7.png" alt="Alt text" title="Optional title">
+</p>
+
+<p align="center">
   <img src="./README/img13.png" alt="Alt text" title="Optional title">
 </p>
 
 <p align="center">
-  <img src="./README/img15.png" alt="Alt text" title="Optional title">
+  <img src="./README/img24.png" alt="Alt text" title="Optional title">
 </p>
 
 <br/><br/>
