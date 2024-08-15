@@ -90,6 +90,7 @@ export function Dropdown({ setIsUserLogin, setShowLogin, setShowSignUp }) {
             <DropdownMenuItem
               onClick={() => {
                 setShowSignUp(true);
+                setIsUserLogin(true);
               }}
             >
               Sign up

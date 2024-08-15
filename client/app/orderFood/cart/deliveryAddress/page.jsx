@@ -98,13 +98,22 @@ const page = () => {
 
   const handleClick = () => {
     const cart = JSON.parse(localStorage.getItem("cart"));
-    const updatedCart = {
-      ...cart,
-      address: selectedLocation.address,
-      latitude: selectedLocation.latitude,
-      longitude: selectedLocation.longitude,
-    };
-
+    let updatedCart;
+    if (selectedLocation === null || selectedLocation === undefined) {
+      updatedCart = {
+        ...cart,
+        address: "Hazaribag, Dhaka 1205, Bangladesh",
+        latitude: 23.7264519,
+        longitude: 90.3771728,
+      };
+    } else {
+      updatedCart = {
+        ...cart,
+        address: selectedLocation.address,
+        latitude: selectedLocation.latitude,
+        longitude: selectedLocation.longitude,
+      };
+    }
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     router.push("/orderFood/cart/payment");
   };

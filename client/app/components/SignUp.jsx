@@ -119,7 +119,7 @@ const SignUp = ({ setShowLogin, setShowSignUp, setRiders }) => {
 
   const handleGoogleAuth = async (details) => {
     const postData = {
-      id: details.id,
+      id: details.email,
       name: details.given_name,
     };
     try {

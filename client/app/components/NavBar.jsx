@@ -261,11 +261,8 @@ const NavBar = () => {
                         )
                       );
                     } else if (topic === "seen") {
-                      console.log("chat to seen" + data.chat.id);
-                      console.log("other chats in array:");
                       setChats((prevChats) => {
                         return prevChats.map((chat) => {
-                          console.log(chat.id);
                           return chat.id === data.chat.id
                             ? { ...chat, isSeen: true }
                             : chat;

@@ -9,7 +9,7 @@ The frontend of the app is hosted on Vercel and the backend is hosted on Render.
 <b> The live link of the app is: </b>
 
 <p align="center">
-  <a href="https://nexus-sphere.vercel.app/">
+  <a href="https://quick-food-delta.vercel.app/">
     <img src="./README/url_img.png" alt="QuickFood" width="300" height="200">
   </a>
 </p>
@@ -37,7 +37,7 @@ These are some sample user accounts using which you can login to the app and see
 <br/>
 
 <p align="center">
-  <a href="https://youtu.be/6fwOk78XaFU?si=CFE05Iq6jhj9pqo9">
+  <a href="https://youtu.be/CQKs_RtvfpY?si=Btow64LsTLCOsQmS">
     <img src="./README/youtube_logo.png" alt="QuickFood" width="300" height="200">
   </a>
 </p>
@@ -336,4 +336,4 @@ http://localhost:3000
 
 <br/><br/>
 
-Nexus Sphere is a feature-rich social media web application designed to offer users an immersive platform for social networking. With a focus on user engagement and connectivity, it provides a wide array of functionalities such as making posts, sharing stories, creating or joining groups, managing friendships, and engaging in private chats. The platform also offers personalized user profiles, real-time notifications, and customizable privacy settings to enhance user experience and security. Additionally, Nexus Sphere integrates advanced features including Gmail authentication via OAuth 2.0, nested comment sections with reply functionality, real-time updates using Server-Sent Events (SSE), and a Socket.IO-powered real-time chat feature. With a responsive design, seamless animations, and infinite scrolling for effortless content exploration, Nexus Sphere offers a modern and dynamic social media experience for users. Powered by technologies such as React JS, Node.js, Express.js, and MongoDB, Nexus Sphere ensures a robust and scalable solution for social networking needs.
+The QuickFood app is poised to revolutionize the food delivery industry by offering a seamless, user-friendly platform that caters to the needs of customers, restaurant owners, and delivery riders alike. With its robust feature set, including real-time order tracking, secure payment processing, and advanced search and filtering options, QuickFood ensures a convenient and satisfying experience for users. Restaurant owners benefit from powerful management tools and performance analytics, while delivery riders can efficiently manage orders and routes. The integration of advanced functionalities like OAuth 2.0, Email.js for OTP verification, WebSockets for real-time communication, and Google Maps for navigation further enhances the platform's reliability and efficiency. By fostering a symbiotic ecosystem, QuickFood enables local restaurants to thrive and customers to enjoy a wide variety of dining options delivered right to their doorstep.

@@ -27,7 +27,6 @@ const page = () => {
   useEffect(() => {
     let status = JSON.parse(localStorage.getItem("deliveryStatus"));
     if (status) {
-      console.log(status.orderId);
       setStep(status.step);
     }
   }, []);

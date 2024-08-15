@@ -48,10 +48,10 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, String> 
             "ORDER BY AVG(r.rating) DESC")
     List<Pair<String, Double>> findTopReviewedItems(@Param("restaurantId") String restaurantId);
 
-    @Query("SELECT COUNT(O) FROM Order O WHERE O.restaurant.id = :restaurantId AND O.isPrepared = TRUE AND O.deliveryTaken IS NULL")
+    @Query("SELECT COUNT(O) FROM Order O WHERE O.restaurant.id = :restaurantId AND O.isPrepared = TRUE AND O.deliveryTaken IS NULL AND O.cancelled IS NULL")
     Double findPreparedPendingOrdersToday(@Param("restaurantId") String restaurantId);
 
-    @Query("SELECT COUNT(O) FROM Order O WHERE O.restaurant.id = :restaurantId AND O.isPrepared = FALSE AND O.deliveryTaken IS NULL")
+    @Query("SELECT COUNT(O) FROM Order O WHERE O.restaurant.id = :restaurantId AND O.isPrepared = FALSE AND O.deliveryTaken IS NULL AND O.cancelled IS NULL")
     Double findUnPreparedPendingOrdersToday(@Param("restaurantId") String restaurantId);
 
     @Query("SELECT NEW com.example.quickFood.dto.IdNameImgDto(r.id, r.name, r.image) FROM Restaurant r")

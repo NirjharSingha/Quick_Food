@@ -56,7 +56,6 @@ const ChatCard = ({
   useEffect(() => {
     const userId = jwtDecode(window.localStorage.getItem("token")).sub;
     setFlag(chat.senderId === userId);
-    console.log(chat.id);
   }, []);
 
   useEffect(() => {
@@ -99,7 +98,6 @@ const ChatCard = ({
   };
 
   const likeHandler = async (like) => {
-    console.log("inside like handler");
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
