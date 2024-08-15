@@ -203,8 +203,28 @@ At first come to the base directory of the project. Then set the value of the en
 docker compose up -d --build
 ```
 
-This will build your client and server in docker containers including all necessary dependencies.
+This will build your client and server in docker containers along with local MySQL instance.
+
 <br /><br />
+
+```bash
+docker exec -it $(docker ps -qf "name=quick_food-db-1") mysql -u root -p<Your Password> -e "CREATE DATABASE IF NOT EXISTS Quick_Food_Database;"
+```
+
+Make sure to place your database password in the place of 'Your Password'. This will create a database named 'Quick_Food_Database' in the docker container. Now your server can connect to the database.
+
+To start all three images (database, server and client), come to the base directory of the project. Then run the following command in terminal.
+
+```bash
+docker compose start
+```
+
+To stop all three images (database, server and client), come to the base directory of the project. Then run the following command in terminal.
+
+```bash
+docker compose stop
+```
+
 <span style="color:green">
 NB: Your client running in docker container is mapped with port 3000 of your localhost. Your server running in docker container is mapped with port 8080 of your localhost. Your database running in docker container is mapped with port 3307 of your localhost.
 </span>
