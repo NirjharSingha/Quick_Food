@@ -101,12 +101,14 @@ const page = ({ params }) => {
     if (sendRequest) {
       getMenu();
     }
-  }, [page, sendRequest]);
-
-  useEffect(() => {
-    setSendRequest(true);
-    setPage(0);
-  }, [nameFilter, categoryFilter, priceFilter, ratingFilter]);
+  }, [
+    page,
+    sendRequest,
+    nameFilter,
+    categoryFilter,
+    priceFilter,
+    ratingFilter,
+  ]);
 
   return (
     <div div className="w-full overflow-y-auto" ref={menuDivRef}>
@@ -133,6 +135,8 @@ const page = ({ params }) => {
             setPriceFilter={setPriceFilter}
             ratingFilter={ratingFilter}
             setRatingFilter={setRatingFilter}
+            setSendRequest={setSendRequest}
+            setPage={setPage}
           />
         </div>
       </div>

@@ -23,6 +23,8 @@ const Filter = ({
   setPriceFilter,
   ratingFilter,
   setRatingFilter,
+  setSendRequest,
+  setPage,
 }) => {
   const buttonRef = useRef(null);
   const [name, setName] = useState(nameFilter);
@@ -171,6 +173,8 @@ const Filter = ({
               setCategoryFilter(category);
               setPriceFilter(price);
               setRatingFilter(rating);
+              setSendRequest(true);
+              setPage(0);
 
               buttonRef && buttonRef.current && buttonRef.current.click();
             }}
