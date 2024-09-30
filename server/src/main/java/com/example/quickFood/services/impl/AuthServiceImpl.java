@@ -161,4 +161,32 @@ public class AuthServiceImpl implements AuthService {
                         .error("Wrong OTP")
                         .build());
     }
+
+    @Override
+    public ResponseEntity<JwtAuthResponse> userSignupReactNative(SignupDto request) {
+        String hashedPassword = passwordEncoder.encode(request.getPassword());
+
+        User user = User.builder()
+                .id(request.getId())
+                .password(hashedPassword)
+                .name(request.getName())
+                .build();
+
+        request.setPassword(hashedPassword);
+
+        if (userRepository.findById(request.getId()).isEmpty()) {
+            userService.addUser(request);
+            String jwt = jwtService.generateToken(user);
+
+            return ResponseEntity.ok(JwtAuthResponse.builder()
+                    .token(jwt)
+                    .role(Role.USER)
+                    .build());
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(JwtAuthResponse.builder()
+                            .error("Duplicate id")
+                            .build());
+        }
+    }
 }

@@ -41,4 +41,9 @@ public class AuthController {
         return authenticationService.verifyOtp(request, username, password);
     }
 
+    @PostMapping("/signupReactNative")
+    public ResponseEntity<JwtAuthResponse> userSignupReactNative(@RequestBody SignupDto request) {
+        return authenticationService.userSignupReactNative(request);
+    }
+
 }

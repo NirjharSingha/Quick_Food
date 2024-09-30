@@ -13,4 +13,6 @@ public interface AuthService {
     ResponseEntity<String> saveOtp(OTPDto request);
 
     ResponseEntity<JwtAuthResponse> verifyOtp(OTPDto request, String username, String password);
+
+    ResponseEntity<JwtAuthResponse> userSignupReactNative(SignupDto request);
 }
