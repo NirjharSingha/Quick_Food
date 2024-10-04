@@ -47,9 +47,16 @@ const OrderCard = ({ order, buttonRef, setSelectedOrder }) => {
       <p className="text-sm text-gray-600 mt-1 pl-3 pr-3 truncate">
         Total : {order.price} Tk
       </p>
-      <p className="text-sm text-gray-600 mt-1 pl-3 pr-3 truncate">
-        Payment : {order.paymentMethod === "COD" ? "COD" : "Done"}
-      </p>
+      {pathname !== "/orderFood/submitRating" && (
+        <p className="text-sm text-gray-600 mt-1 pl-3 pr-3 truncate">
+          Payment : {order.paymentMethod === "COD" ? "COD" : "Done"}
+        </p>
+      )}
+      {pathname === "/orderFood/submitRating" && (
+        <p className="text-sm text-gray-600 mt-1 pl-3 pr-3 truncate">
+          Payment Method : {order.paymentMethod === "COD" ? "COD" : "Online"}
+        </p>
+      )}
       <p className="text-sm text-gray-600 mt-1 pl-3 pr-3 truncate">
         Date : {new Date(order.timestamp).toLocaleString()}
       </p>
