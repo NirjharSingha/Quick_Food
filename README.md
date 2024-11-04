@@ -188,9 +188,11 @@ git clone https://github.com/NirjharSingha/Quick_Food.git
 | Variable Name                   | Value                                                                      |
 |---------------------------------|----------------------------------------------------------------------------|
 | MYSQL_DATABASE                  | Your Database Name (eg "Quick_Food_Database")                              |
-| MYSQL_USER                      | Your database username (You can use "root" user)                           |
-| MYSQL_ROOT_PASSWORD             | Set the required password here                                              |
-| MYSQL_PASSWORD                  | Set the required password here                                              |
+| MYSQL_USER(not for docker)      | Your database username (You can use "root" user)                           |
+| MYSQL_ROOT_PASSWORD             | Set the required password here                                             |
+| MYSQL_PASSWORD(not for docker)  | Set the required password here                                             |
+
+<b>MYSQL_USER and MYSQL_PASSWORD are needed only for local connection without docker. If you use docker build then ignore these two variable and update the rest of the two in compose.yml</b>
 
 <br />
 
