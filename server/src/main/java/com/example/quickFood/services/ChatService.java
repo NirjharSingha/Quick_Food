@@ -6,6 +6,7 @@ import com.example.quickFood.dto.ChatRoomInit;
 import com.example.quickFood.dto.ChatUserDto;
 import com.example.quickFood.enums.Reaction;
 import org.springframework.http.ResponseEntity;
+import com.example.quickFood.dto.SocketData;
 
 import java.util.List;
 
@@ -27,4 +28,6 @@ public interface ChatService {
     ResponseEntity<ChatDto> updateChat(ChatDto chatDto, List<ChatFileDto> chatFiles);
 
     ResponseEntity<ChatDto> getChatById(int chatId, int roomId);
+
+    ResponseEntity<String> socketChat_ReactNative(SocketData socketData);
 }

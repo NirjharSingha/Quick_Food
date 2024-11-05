@@ -55,7 +55,6 @@ const Page = () => {
           setId(response.data.id);
           if (response.data.profilePic !== null) {
             setImgStream(`data:image/jpeg;base64,${response.data.profilePic}`);
-            console.log(typeof response.data.profilePic);
           }
         }
       } catch (error) {

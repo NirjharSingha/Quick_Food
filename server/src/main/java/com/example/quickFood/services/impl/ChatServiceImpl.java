@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,8 @@ public class ChatServiceImpl implements ChatService {
     private final ChatFileRepository chatFileRepository;
     @Autowired
     private final OrderRepository orderRepository;
+    @Autowired
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     @Override
     public ResponseEntity<List<ChatDto>> getChats(int page, int size, int roomId) {
@@ -159,7 +162,8 @@ public class ChatServiceImpl implements ChatService {
         for (ChatUserDto chatUserDto : chatUserDtoList) {
             chatUserDto.setUnseenCount(chatRepository.getUnseenCount(chatUserDto.getRoomId(), userId));
             Timestamp lastChatTime = chatRepository.getLastChatTime(chatUserDto.getRoomId());
-            lastChatTimeList.add(Pair.of(chatUserDto.getRoomId(), Objects.requireNonNullElseGet(lastChatTime, () -> new Timestamp(0))));
+            lastChatTimeList.add(Pair.of(chatUserDto.getRoomId(),
+                    Objects.requireNonNullElseGet(lastChatTime, () -> new Timestamp(0))));
         }
 
         // Create a map to store roomId and lastChatTime
@@ -189,7 +193,7 @@ public class ChatServiceImpl implements ChatService {
         User rider = order.getRider();
 
         IdNameImgDto firstUser, secondUser;
-        if(customer.getId().equals(userId)) {
+        if (customer.getId().equals(userId)) {
             firstUser = new IdNameImgDto(customer.getId(), customer.getName(), customer.getProfilePic());
             secondUser = new IdNameImgDto(rider.getId(), rider.getName(), rider.getProfilePic());
         } else {
@@ -198,7 +202,7 @@ public class ChatServiceImpl implements ChatService {
         }
 
         int unseenCount = chatRepository.getUnseenCount(roomId, userId);
-        if(unseenCount > 0) {
+        if (unseenCount > 0) {
             chatRepository.makeSeen(roomId, userId);
         }
 
@@ -226,8 +230,6 @@ public class ChatServiceImpl implements ChatService {
         }
 
         Reaction prevReaction = chatRepository.chatReaction(chatId);
-        System.out.println(prevReaction);
-        System.out.println(reaction);
         if (prevReaction == reaction) {
             chatRepository.updateReaction(chatId, null);
         } else {
@@ -327,5 +329,12 @@ public class ChatServiceImpl implements ChatService {
                 .build();
 
         return ResponseEntity.ok(chatDto);
+    }
+
+    @Override
+    public ResponseEntity<String> socketChat_ReactNative(SocketData socketData) {
+        String destination = socketData.getDestination();
+        simpMessagingTemplate.convertAndSend(destination, socketData);
+        return ResponseEntity.ok("Message sent successfully");
     }
 }

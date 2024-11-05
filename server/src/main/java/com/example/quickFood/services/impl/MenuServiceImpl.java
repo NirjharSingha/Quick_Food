@@ -45,7 +45,6 @@ public class MenuServiceImpl implements MenuService {
             try {
                 Menu savedMenu = menuRepository.save(menu);
                 int id = savedMenu.getId();
-                System.out.println("Menu ID: " + id);
                 menuDto.setId(id);
 
                 return ResponseEntity.ok(menuDto);
@@ -100,7 +99,6 @@ public class MenuServiceImpl implements MenuService {
         List<MenuDto> menuDtoList = new ArrayList<>();
 
         for (Menu menu : menuPage) {
-            System.out.println(menu.getId());
             MenuDto menuDto = new MenuDto(menu.getId(), menu.getRestaurant().getId(), menu.getName(), menu.getPrice(),
                     menu.getCategory(), menu.getImage(), menu.getQuantity());
             menuDtoList.add(menuDto);

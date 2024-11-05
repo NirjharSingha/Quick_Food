@@ -34,7 +34,6 @@ const page = () => {
         if (response.status == 200) {
           setShowLoading(false);
           setPendingOrders(response.data);
-          console.log(response.data);
           if (response.data.length === 0) {
             setShowMessage(true);
           }

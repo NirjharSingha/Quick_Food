@@ -48,7 +48,6 @@ const page = () => {
           }
         );
         if (response.status == 200) {
-          console.log(response.data);
           if (response.data === "Status updated") {
             if (step < 2) {
               setStep((prev) => prev + 1);

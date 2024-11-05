@@ -156,7 +156,6 @@ const ChatRoom = ({ roomId }) => {
 
   useEffect(() => {
     const getAllChats = async (currentPage) => {
-      console.log("currentPage:", currentPage);
       try {
         setShowLoading(true);
         const response = await axios.get(
